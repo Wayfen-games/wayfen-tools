@@ -59,13 +59,14 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .foot{font-size:13px;color:var(--muted);text-align:center;display:grid;gap:4px}
 .foot a{color:var(--accent);font-weight:800;text-decoration:none}
 @media (prefers-reduced-motion:reduce){.dial .prog{transition:none}.bgart{transition:none}}
+.langmenu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;display:grid;min-width:170px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.35)} .langmenu button{background:none;border:0;color:inherit;font:15px system-ui;text-align:left;padding:9px 10px;border-radius:8px;cursor:pointer} .langmenu button:hover,.langmenu button[aria-current="true"]{background:rgba(255,255,255,.12)}
 </style>
 
 <div class="bgart" id="bgart"></div>
 <div class="wrap">
   <header>
     <h1><span data-t="title">Wayfen Study Timer</span><small data-t="sub">lofi focus timer</small></h1>
-    <span style="display:flex;gap:8px;align-items:center"><span class="count" id="count">0 sessions today</span><button class="chip" id="lang" style="padding:4px 10px;font-size:12px" aria-label="Language">🌐</button></span>
+    <span style="display:flex;gap:8px;align-items:center"><span class="count" id="count">0 sessions today</span><span style="position:relative"><button class="chip" id="lang" style="padding:4px 10px;font-size:12px" aria-label="Language" aria-haspopup="true" aria-expanded="false">🌐</button><span id="langMenu" class="langmenu" hidden></span></span></span>
   </header>
 
   <div class="dial" role="timer" aria-live="off">
@@ -189,7 +190,15 @@ document.querySelectorAll('.modes .chip').forEach(b => b.setAttribute('aria-pres
 document.addEventListener('visibilitychange', async () => { if (document.visibilityState === 'visible' && running){ tick(); if (running) try{ lock = await navigator.wakeLock?.request('screen') }catch(e){} } });
 // 아이폰은 음량 조절을 막아 두므로 슬라이더를 숨김
 if (/iPhone|iPad|iPod/.test(navigator.userAgent)) $('#vol').closest('label').hidden = true;
-$('#lang').addEventListener('click', () => { L = {en:'ko', ko:'ja', ja:'zh', zh:'tw', tw:'id', id:'vi', vi:'th', th:'en'}[L] || 'en'; store.set('lang', L); try{ history.replaceState(null, '', location.pathname + location.hash) }catch(e){} applyLang(); paint() });
+// 언어: 누르면 목록이 펼쳐져 바로 고름(하나씩 넘기지 않음)
+const LANGS_T = [['en','English'],['ko','한국어'],['ja','日本語'],['zh','简体中文'],['tw','繁體中文'],['id','Bahasa Indonesia'],['vi','Tiếng Việt'],['th','ไทย']];
+function langMenu(open){ const m = $('#langMenu'); m.hidden = !open; $('#lang').setAttribute('aria-expanded', String(open));
+  if (open) m.innerHTML = LANGS_T.map(([k,n]) => `<button data-l="${k}" aria-current="${k===L}">${n}</button>`).join('') }
+$('#lang').addEventListener('click', e => { e.stopPropagation(); langMenu($('#langMenu').hidden) });
+$('#langMenu').addEventListener('click', e => { const b = e.target.closest('[data-l]'); if (!b) return; L = b.dataset.l; store.set('lang', L);
+  try{ history.replaceState(null, '', location.pathname + location.hash) }catch(e){} applyLang(); paint(); langMenu(false) });
+document.addEventListener('click', e => { if (!$('#langMenu').hidden && !e.target.closest('#langMenu')) langMenu(false) });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') langMenu(false) });
 applyLang();
 setTrack(ti); left = total();
 { const r = store.get('run', null); if (r && r.phase){ phase = r.phase; left = total(); if (r.running && r.endAt){ endAt = r.endAt; running = false; left = Math.max(0, Math.ceil((endAt - Date.now()) / 1000));
