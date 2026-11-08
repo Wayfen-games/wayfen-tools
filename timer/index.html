@@ -62,8 +62,8 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 <div class="bgart" id="bgart"></div>
 <div class="wrap">
   <header>
-    <h1>Wayfen Study Timer<small>lofi focus timer</small></h1>
-    <span class="count" id="count">0 sessions today</span>
+    <h1><span data-t="title">Wayfen Study Timer</span><small data-t="sub">lofi focus timer</small></h1>
+    <span style="display:flex;gap:8px;align-items:center"><span class="count" id="count">0 sessions today</span><button class="chip" id="lang" style="padding:4px 10px;font-size:12px" aria-label="Language">한/EN</button></span>
   </header>
 
   <div class="dial" role="timer" aria-live="off">
@@ -86,19 +86,30 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   <div class="now">
     <div class="row"><div><b id="tTitle">Bookshop Afternoon</b><br><span>Wayfen Sounds · lofi</span></div>
       <button class="round" id="next" aria-label="Next song" style="width:44px;height:44px;font-size:15px">♪⏭</button></div>
-    <label style="display:grid;gap:2px;font-size:12px;color:var(--muted)">Music volume<input type="range" id="vol" min="0" max="100" value="60"></label>
-    <label style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)"><input type="checkbox" id="restMusic" checked style="accent-color:var(--accent)"> Keep music on during breaks</label>
+    <label style="display:grid;gap:2px;font-size:12px;color:var(--muted)"><span data-t="vol">Music volume</span><input type="range" id="vol" min="0" max="100" value="60"></label>
+    <label style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)"><input type="checkbox" id="restMusic" checked style="accent-color:var(--accent)"> <span data-t="rest">Keep music on during breaks</span></label>
     <div class="tracks" id="tracks"></div>
   </div>
 
   <div class="foot">
     <span>Music by Wayfen Sounds.</span>
-    <span>More long mixes on YouTube: <a href="https://www.youtube.com/@WayfenSounds" target="_blank" rel="noopener">Wayfen Sounds</a></span>
+    <span><span data-t="more">More long mixes on YouTube:</span> <a href="https://www.youtube.com/@WayfenSounds" target="_blank" rel="noopener">Wayfen Sounds</a></span>
   </div>
 </div>
 <audio id="aud" preload="auto"></audio>
 
 <script>
+// 언어: ?lang=ko|en > 저장값 > 폰 언어
+const T = {
+  en: {title:'Wayfen Study Timer', sub:'lofi focus timer', vol:'Music volume', rest:'Keep music on during breaks', more:'More long mixes on YouTube:',
+       focus:'Focus', brk:'Break', sess:n=>`${n} session${n===1?'':'s'} today`, start:'Start', pause:'Pause', reset:'Reset timer', skip:'Skip to next phase', next:'Next song'},
+  ko: {title:'Wayfen 공부 타이머', sub:'로파이 집중 타이머', vol:'음악 소리', rest:'쉬는 시간에도 음악 켜 두기', more:'더 긴 믹스는 유튜브에서:',
+       focus:'집중', brk:'휴식', sess:n=>`오늘 ${n}번 완료`, start:'시작', pause:'일시정지', reset:'처음으로', skip:'다음 단계로', next:'다음 곡'}};
+let L = (new URLSearchParams(location.search).get('lang')) || (()=>{try{return localStorage.getItem('lang')}catch(e){return null}})() || ((navigator.language||'').toLowerCase().startsWith('ko') ? 'ko' : 'en');
+if (!T[L]) L = 'en';
+function applyLang(){ document.documentElement.lang = L; document.querySelectorAll('[data-t]').forEach(e => e.textContent = T[L][e.dataset.t]);
+  document.getElementById('reset').setAttribute('aria-label', T[L].reset); document.getElementById('skip').setAttribute('aria-label', T[L].skip);
+  document.getElementById('next').setAttribute('aria-label', T[L].next); }
 const TRACKS = [
   ["bookshop_afternoon","Bookshop Afternoon"],["hearthside","Hearthside"],["cocoa_shop","Cocoa Shop"],
   ["frosted_glass","Frosted Glass"],["snow_dawn","Snow Dawn"],["sleepy_autumn","Sleepy Autumn"]];
@@ -127,10 +138,10 @@ function chime(){ try{ ac = ac || new (window.AudioContext||window.webkitAudioCo
 // 타이머
 function total(){ return (phase === 'focus' ? mode.f : mode.r) * 60 }
 function paint(){ const m = Math.floor(left/60), s = left % 60; $('#time').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  $('#phase').textContent = phase === 'focus' ? 'Focus' : 'Break'; $('#phase').style.color = phase === 'focus' ? 'var(--accent)' : 'var(--rest)';
+  $('#phase').textContent = phase === 'focus' ? T[L].focus : T[L].brk; $('#phase').style.color = phase === 'focus' ? 'var(--accent)' : 'var(--rest)';
   $('#prog').style.stroke = phase === 'focus' ? 'var(--accent)' : 'var(--rest)';
-  $('#prog').style.strokeDashoffset = C * (1 - left / total()); $('#count').textContent = `${stats.n} session${stats.n===1?'':'s'} today`;
-  document.title = running ? `${$('#time').textContent} · ${phase==='focus'?'Focus':'Break'}` : 'Wayfen Study Timer' }
+  $('#prog').style.strokeDashoffset = C * (1 - left / total()); $('#count').textContent = T[L].sess(stats.n); $('#play').setAttribute('aria-label', running ? T[L].pause : T[L].start);
+  document.title = running ? `${$('#time').textContent} · ${phase==='focus'?T[L].focus:T[L].brk}` : T[L].title }
 function tick(){ left = Math.max(0, Math.ceil((endAt - Date.now()) / 1000)); if (left <= 0){ chime(); if (phase === 'focus'){ stats.n++; store.set('stats', stats) } switchPhase() } paint() }
 function switchPhase(){ phase = phase === 'focus' ? 'rest' : 'focus'; left = total(); endAt = Date.now() + left * 1000;
   if (phase === 'rest' && !$('#restMusic').checked) aud.pause(); else if (running) aud.play().catch(()=>{}) }
@@ -149,6 +160,8 @@ document.querySelectorAll('.modes .chip').forEach(b => b.setAttribute('aria-pres
 document.addEventListener('visibilitychange', async () => { if (document.visibilityState === 'visible' && running){ tick(); try{ lock = await navigator.wakeLock?.request('screen') }catch(e){} } });
 // 아이폰은 음량 조절을 막아 두므로 슬라이더를 숨김
 if (/iPhone|iPad|iPod/.test(navigator.userAgent)) $('#vol').closest('label').hidden = true;
+$('#lang').addEventListener('click', () => { L = L === 'ko' ? 'en' : 'ko'; try{ localStorage.setItem('lang', L) }catch(e){} applyLang(); paint() });
+applyLang();
 setTrack(ti); left = total(); paint();
 </script>
 
