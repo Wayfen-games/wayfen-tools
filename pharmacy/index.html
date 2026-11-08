@@ -107,6 +107,8 @@ textarea{width:100%;min-height:96px;font:16px/1.5 var(--f-ko);padding:12px;borde
 <section id="p-taxi" role="tabpanel" hidden>
   <p class="hint" data-i="taxiHint">Paste the Korean address of your hotel or destination (copy it from your booking or a map app). It stays on this phone only.</p>
   <textarea id="addr" aria-label="Destination address in Korean" placeholder="예: 서울특별시 중구 명동길 14"></textarea>
+  <label class="hint" style="display:block"><span id="lbHotel">Hotel name (optional)</span><input id="hotel" autocomplete="off" style="display:block;width:100%;font:16px var(--f-ui);padding:9px;border:1px solid var(--line);border-radius:10px;margin-top:4px"></label>
+  <label class="hint" style="display:block"><span id="lbPhone">Hotel phone number (optional)</span><input id="hphone" inputmode="tel" autocomplete="off" style="display:block;width:100%;font:16px var(--f-ui);padding:9px;border:1px solid var(--line);border-radius:10px;margin-top:4px"></label>
   <button class="primary" id="showTaxi" disabled data-i="showTaxi">Show the driver</button>
   <h2 data-i="h4">Phrases for the ride</h2>
   <div id="tq" style="display:grid;gap:8px"></div>
@@ -394,7 +396,7 @@ let histPushed = false;
 addEventListener('popstate', () => { if (!$('#show').hidden){ histPushed = false; hide(true) } });
 function hide(fromPop){ if (fromPop !== true && histPushed){ histPushed = false; try{ history.back() }catch(e){} } stopAudio(); $('#show').hidden = true; $('#sos').hidden = false; dsel.fill(null); try{ lock && lock.release() }catch(e){} lock = null }
 $('#close').addEventListener('click', hide); document.addEventListener('keydown', e => { if (e.key==='Escape') hide() });
-$('#sos').addEventListener('click', () => show('Emergency', `<p class="say"><b>몸이 많이 아파요.</b></p><p class="say"><b>119에 전화해 주세요.</b></p><p class="say">가까운 병원 응급실로 가야 해요.</p><p class="thanks">도와주세요!</p>`,
+$('#sos').addEventListener('click', () => show('Emergency', `<p class="say"><b>몸이 많이 아파요.</b></p><p class="say"><b>119에 전화해 주세요.</b></p><p class="say">가까운 병원 응급실로 가야 해요.</p><p class="thanks">도와주세요!</p><p style="font:600 16px/1.5 var(--f-ko);background:#fff4e5;border:1px solid #f0c27a;border-radius:10px;padding:10px 12px;margin:0"><b>119에 이렇게 말해 주세요:</b> "외국인이 많이 아파요." 그다음 증상과 지금 있는 곳의 주소를 말해 주세요.</p>`,
   W.sos, ['sos','help']));
 
 // 약국
@@ -415,10 +417,17 @@ PQ.forEach(([ko,en],k) => { const b = document.createElement('button'); b.classN
   b.addEventListener('click', () => show('Question', `<p class="say">${esc(ko)}</p>`, en, ['pq' + k], 'ph')); $('#pq').appendChild(b) });
 
 // 택시
-const addr = $('#addr'); addr.value = store.get('addr', ''); $('#showTaxi').disabled = !addr.value.trim();
-addr.addEventListener('input', () => { store.set('addr', addr.value); $('#showTaxi').disabled = !addr.value.trim() });
-$('#showTaxi').addEventListener('click', () => show('Taxi', `<p class="say"><b>이 주소로 가 주세요.</b></p><p class="addr">${esc(addr.value.trim())}</p><p class="thanks">감사합니다!</p>`,
-  W.taxi, ['taxi','thanks'], 'tx'));
+const addr = $('#addr'); addr.value = store.get('addr', '');
+// 숙소 이름·전화: 영어 주소밖에 없을 때 기사님이 전화로 위치를 물을 수 있게(이 폰에만 저장)
+{ const LB = ({"en": ["Hotel name (optional)", "Hotel phone number (optional)"], "zh": ["酒店名称（选填）", "酒店电话（选填）"], "tw": ["飯店名稱（選填）", "飯店電話（選填）"], "ja": ["ホテル名（任意）", "ホテルの電話番号（任意）"], "id": ["Nama hotel (opsional)", "Nomor telepon hotel (opsional)"], "vi": ["Tên khách sạn (không bắt buộc)", "Số điện thoại khách sạn (không bắt buộc)"], "th": ["ชื่อโรงแรม (ไม่บังคับ)", "เบอร์โทรโรงแรม (ไม่บังคับ)"]})[LANG] || null; if (LB){ $('#lbHotel').textContent = LB[0]; $('#lbPhone').textContent = LB[1] } }
+$('#hotel').value = store.get('hotel', ''); $('#hphone').value = store.get('hphone', '');
+const taxiOk = () => { $('#showTaxi').disabled = !(addr.value.trim() || ($('#hotel').value.trim() && $('#hphone').value.trim())) }; taxiOk();
+addr.addEventListener('input', () => { store.set('addr', addr.value); taxiOk() });
+$('#hotel').addEventListener('input', e => { store.set('hotel', e.target.value); taxiOk() }); $('#hphone').addEventListener('input', e => { store.set('hphone', e.target.value); taxiOk() });
+$('#showTaxi').addEventListener('click', () => { const a = addr.value.trim(), h = $('#hotel').value.trim(), ph = $('#hphone').value.trim();
+  show('Taxi', (a ? `<p class="say"><b>이 주소로 가 주세요.</b></p><p class="addr">${esc(a)}</p>` : `<p class="say"><b>이 숙소로 가 주세요.</b></p>`)
+    + (h ? `<p class="say">숙소 이름: <b>${esc(h)}</b></p>` : '') + (ph ? `<p class="say">위치를 모르시면 숙소에 전화해 주세요: <b>${esc(ph)}</b></p>` : '') + `<p class="thanks">감사합니다!</p>`,
+  a ? W.taxi : '', a ? ['taxi','thanks'] : [], 'tx') });
 SQ.forEach(([ko,en],k) => { const b = document.createElement('button'); b.className='ask'; b.id='sq-'+k; b.innerHTML = `<b>${esc(ko)}</b><span>${esc(en)}</span>`;
   b.addEventListener('click', () => show('Shopping', `<p class="say">${esc(ko)}</p>`, en, ['sq' + k], 'sh')); $('#sq').appendChild(b) });
 TQ.forEach(([ko,en],k) => { const b = document.createElement('button'); b.className='ask'; b.id='tq-'+k; b.innerHTML = `<b>${esc(ko)}</b><span>${esc(en)}</span>`;
