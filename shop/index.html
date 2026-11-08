@@ -145,6 +145,7 @@ tr.miss td{color:var(--warn)}
 
 <section id="p-rx" role="tabpanel" hidden>
   <p class="hint">약국·병원용. 약사·의사가 정한 복용법을 골라 손님 나라 말(영어·중국어·일본어)로 보여 주는 도구예요. 판단은 하지 않고 말만 옮겨요.</p>
+  <h2>손님 언어 (여러 개 가능)</h2><div class="langs" id="rxLangs"></div>
   <h2>몇 번 (필수)</h2><div class="langs" id="rxTimes"></div>
   <div id="rxMaxWrap" hidden><h2>하루 최대 (필수)</h2><div class="langs" id="rxMax"></div></div>
   <h2>언제</h2><div class="langs" id="rxWhen"></div>
@@ -316,6 +317,33 @@ const RX = {
 };
 const EXT = ['patch','cream','eye'];
 const ASK = {en:'If anything is unclear, please ask the pharmacist again.', zh:'如有不清楚的地方，请再问药剂师。', ja:'わからないことがあれば、もう一度薬剤師に聞いてください。', ko:'모르면 약사에게 다시 물어보세요.'};
+// 약 복용 안내: 인도네시아어·베트남어 [번역: Claude, 원어민 검수 전]
+const RX_MORE = {
+  id: {times:{'1':'Sekali sehari','2':'Dua kali sehari','3':'3 kali sehari','need':'Hanya jika perlu'},
+       max:{m2:'maksimal 2 kali sehari',m3:'maksimal 3 kali sehari',m4:'maksimal 4 kali sehari'},
+       when:{after30:'30 menit setelah makan',afterNow:'segera setelah makan',before:'30 menit sebelum makan',morning:'pagi hari',bed:'sebelum tidur',food:'boleh sebelum atau sesudah makan'},
+       dose:{half:'setengah tablet setiap kali',['1t']:'1 tablet setiap kali',['2t']:'2 tablet setiap kali',['1p']:'1 bungkus setiap kali',['1b']:'1 botol setiap kali (diminum)',patch:'tempel 1 koyo di bagian yang sakit',cream:'oleskan tipis di bagian yang sakit',eye:'1–2 tetes di mata yang sakit'},
+       days:{d1:'Ini obat untuk 1 hari.',d3:'Ini obat untuk 3 hari.',d5:'Ini obat untuk 5 hari.',d7:'Ini obat untuk 7 hari.'},
+       note:{sleepy:'Obat ini bisa membuat mengantuk. Jangan menyetir.',alcohol:'Jangan minum alkohol selama minum obat ini.',water:'Minum dengan air.',chew:'Telan utuh. Jangan dikunyah.',gap:'Beri jeda minimal 4 jam setiap kali minum obat.',other:'Jangan diminum bersama obat flu atau obat nyeri lain.',empty:'Jangan diminum saat perut kosong.',finish:'Habiskan semua, walaupun sudah merasa lebih baik.',shake:'Kocok dulu sebelum diminum.',fridge:'Simpan di kulkas.',skin:'Jangan dipakai di kulit yang luka atau lecet.',pregnant:'Beri tahu kami jika Anda hamil atau menyusui.',doctor:'Jika tidak membaik dalam 3 hari, pergilah ke dokter.'},
+       ask:'Jika ada yang kurang jelas, tanyakan lagi ke apoteker.'},
+  vi: {times:{'1':'Ngày 1 lần','2':'Ngày 2 lần','3':'Ngày 3 lần','need':'Chỉ khi cần'},
+       max:{m2:'tối đa 2 lần một ngày',m3:'tối đa 3 lần một ngày',m4:'tối đa 4 lần một ngày'},
+       when:{after30:'30 phút sau khi ăn',afterNow:'ngay sau khi ăn',before:'30 phút trước khi ăn',morning:'vào buổi sáng',bed:'trước khi ngủ',food:'trước hay sau khi ăn đều được'},
+       dose:{half:'mỗi lần nửa viên',['1t']:'mỗi lần 1 viên',['2t']:'mỗi lần 2 viên',['1p']:'mỗi lần 1 gói',['1b']:'mỗi lần 1 chai (uống)',patch:'dán 1 miếng vào chỗ đau',cream:'bôi một lớp mỏng lên chỗ đau',eye:'nhỏ 1–2 giọt vào mắt bị đau'},
+       days:{d1:'Đây là thuốc cho 1 ngày.',d3:'Đây là thuốc cho 3 ngày.',d5:'Đây là thuốc cho 5 ngày.',d7:'Đây là thuốc cho 7 ngày.'},
+       note:{sleepy:'Thuốc có thể gây buồn ngủ. Không được lái xe.',alcohol:'Không uống rượu bia trong thời gian dùng thuốc.',water:'Uống với nước.',chew:'Nuốt nguyên viên, không nhai.',gap:'Mỗi lần uống cách nhau ít nhất 4 tiếng.',other:'Không uống chung với thuốc cảm hoặc thuốc giảm đau khác.',empty:'Không uống khi bụng đói.',finish:'Uống hết thuốc dù đã thấy đỡ.',shake:'Lắc đều trước khi uống.',fridge:'Bảo quản trong tủ lạnh.',skin:'Không dùng trên vết thương hoặc da bị trầy.',pregnant:'Xin cho chúng tôi biết nếu bạn đang mang thai hoặc cho con bú.',doctor:'Nếu sau 3 ngày không đỡ, hãy đi khám bác sĩ.'},
+       ask:'Nếu có gì chưa rõ, hãy hỏi lại dược sĩ.'}};
+Object.entries(RX_MORE).forEach(([l, m]) => { ['times','max','when','dose','days','note'].forEach(g => RX[g].forEach(e => { e[1][l] = m[g][e[0]] || e[1].en })); ASK[l] = m.ask });  // 빠진 번역은 영어로
+const RX_LANGS = [['en','English'],['zh','中文'],['ja','日本語'],['id','Bahasa Indonesia'],['vi','Tiếng Việt']];
+let rxLangs = (v => Array.isArray(v) ? RX_LANGS.map(x => x[0]).filter(x => v.includes(x)) : [])(store.get('rxLangs', null)); if (!rxLangs.length) rxLangs = ['en','zh','ja'];
+function rxLangChips(){ const box = $('#rxLangs'); box.innerHTML = '';
+  RX_LANGS.forEach(([k, n]) => { const l = document.createElement('label'); l.className = 'chip';
+    l.innerHTML = `<input type="checkbox"${rxLangs.includes(k) ? ' checked' : ''}> ${n}`;
+    l.querySelector('input').addEventListener('change', e => { rxLangs = e.target.checked ? [...rxLangs, k] : rxLangs.filter(x => x !== k);
+      if (!rxLangs.length) rxLangs = ['en','zh','ja']; rxLangs = RX_LANGS.map(x => x[0]).filter(x => rxLangs.includes(x)); store.set('rxLangs', rxLangs); rxLangChips(); rxAll() });
+    box.appendChild(l) }) }
+const rxCls = l => l === 'zh' || l === 'ja' ? l : 'en';
+const rxLang = l => l === 'zh' ? 'zh-Hans' : l;
 function rxClean(v){ const ok = (key, k) => RX[key].some(x => x[0] === k);
   v = Object.assign({times:'', max:'', when:'', dose:'', days:'', note:[]}, v && typeof v === 'object' ? v : {});
   ['times','max','when','dose','days'].forEach(key => { if (!ok(key, v[key])) v[key] = '' });
@@ -351,9 +379,9 @@ function rxGroup(id, key, multi){
 function rxText(lang){
   const g = (key, k) => (RX[key].find(x => x[0] === k) || [0, {}])[1][lang] || '';
   const sep = lang === 'ja' ? '、' : lang === 'zh' ? '，' : ', ';
-  const end = lang === 'en' || lang === 'ko' ? '.' : '。';
+  const end = ['en','ko','id','vi'].includes(lang) ? '.' : '。';
   const first = [g('times', rx.times), rx.times === 'need' ? g('max', rx.max) : '', g('when', rx.when), g('dose', rx.dose)].filter(Boolean)
-    .map((x, i) => lang === 'en' ? (i ? x[0].toLowerCase() : x[0].toUpperCase()) + x.slice(1) : x);
+    .map((x, i) => ['en','id','vi'].includes(lang) ? (i ? x[0].toLowerCase() : x[0].toUpperCase()) + x.slice(1) : x);
   const notes = RX.note.filter(x => rx.note.includes(x[0])).map(x => x[1][lang]);
   return [first.join(sep) + end, ...(rx.days ? [g('days', rx.days)] : []), ...notes];
 }
@@ -363,13 +391,13 @@ function rxAll(){
   $('#rxMaxWrap').hidden = rx.times !== 'need';
   $('#rxShow').disabled = !rxReady();
   const need = rx.times === 'need' ? " '필요할 때만'은 하루 최대 횟수도 골라 주세요." : '';
-  $('#rxOut').innerHTML = rxReady() ? `<div class="ko">${rxText('ko').map(esc).join('<br>')}</div><hr>` + ['en','zh','ja'].map(l => `<div class="${l}" lang="${l==='zh'?'zh-Hans':l}">${rxText(l).map(esc).join('<br>')}</div>`).join('')
+  $('#rxOut').innerHTML = rxReady() ? `<div class="ko">${rxText('ko').map(esc).join('<br>')}</div><hr>` + rxLangs.map(l => `<div class="${rxCls(l)}" lang="${rxLang(l)}">${rxText(l).map(esc).join('<br>')}</div>`).join('')
     : `<p class="hint">몇 번 · 얼마나를 고르면 여기에 문장이 나와요.${need}</p>`;
 }
-rxFix(); rxAll();
+rxFix(); rxLangChips(); rxAll();
 $('#rxReset').addEventListener('click', () => { rx = rxClean(null); store.set('rx2', rx); rxAll() });
 $('#rxShow').addEventListener('click', () => { if (!rxReady()) return;
-  $('#showBody').innerHTML = ['en','zh','ja'].map(l => `<div class="${l}" lang="${l==='zh'?'zh-Hans':l}">${rxText(l).map(esc).join('<br>')}<br><small style="font-size:.5em;font-weight:500">${esc(ASK[l])}</small></div>`).join('') + `<div class="ko">${rxText('ko').map(esc).join(' ')}</div>`;
+  $('#showBody').innerHTML = rxLangs.map(l => `<div class="${rxCls(l)}" lang="${rxLang(l)}">${rxText(l).map(esc).join('<br>')}<br><small style="font-size:.5em;font-weight:500">${esc(ASK[l])}</small></div>`).join('') + `<div class="ko">${rxText('ko').map(esc).join(' ')}</div>`;
   $('#show').hidden = false; $('#close').focus() });
 translate(); render(); { const h = location.hash.slice(1), t = TABS.includes(h) ? h : store.get('tab','talk'); openTab(TABS.includes(t)?t:'talk') }
 </script>
