@@ -110,7 +110,7 @@ textarea{width:100%;min-height:96px;font:16px/1.5 var(--f-ko);padding:12px;borde
 
 <button class="sos" id="sos" aria-label="Emergency card">SOS</button>
 <div class="show" id="show" hidden role="dialog" aria-modal="true" aria-labelledby="showTitle">
-  <div class="top"><span id="showTitle">보여 드려요</span><button class="close" id="close" data-i="close">Close</button></div>
+  <div class="top"><span id="showTitle">보여 드려요</span><span style="display:flex;gap:8px"><button class="close" id="speak" hidden>🔊</button><button class="close" id="close" data-i="close">Close</button></span></div>
   <div class="body" id="showBody"></div>
   <p class="en" id="showEn"></p>
 </div>
@@ -232,17 +232,23 @@ function openTab(t){ document.querySelectorAll('nav button').forEach(b=>b.setAtt
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
 
 let lock = null;
-async function show(title, html, en){
+// 미리 녹음한 목소리: 공개판 만들 때 window.PH_AUDIO = {문장id: 'audio/파일.mp3'} 가 들어감(검증 통과한 것만)
+let curClips = [], player = null;
+const AUD = () => window.PH_AUDIO || {};
+function stopAudio(){ try{ player && player.pause() }catch(e){} player = null }
+async function show(title, html, en, ids){
+  curClips = (ids || []).map(i => AUD()[i]).filter(Boolean); $('#speak').hidden = !curClips.length;
   $('#showTitle').textContent = '이 화면을 봐 주세요 · ' + ((X && X.titles && X.titles[title]) || title); $('#showBody').innerHTML = html; $('#showEn').textContent = en; $('#show').hidden = false; fit(); $('#close').focus();
   try{ lock && lock.release() }catch(e){} try{ lock = await navigator.wakeLock?.request('screen') }catch(e){ lock = null } }
 function fit(){ const b = $('#showBody'); let lo = 16, hi = Math.min(48, Math.round(innerWidth * 0.09)); b.style.setProperty('--fs', hi + 'px');
   if (b.scrollHeight <= b.clientHeight) return; while (hi - lo > 1){ const m = (lo + hi) >> 1; b.style.setProperty('--fs', m + 'px'); (b.scrollHeight <= b.clientHeight) ? lo = m : hi = m }
   b.style.setProperty('--fs', lo + 'px'); b.scrollTop = 0 }
 addEventListener('resize', () => { if (!$('#show').hidden) fit() });
-function hide(){ $('#show').hidden = true; try{ lock && lock.release() }catch(e){} lock = null }
+$('#speak').addEventListener('click', () => { stopAudio(); let i = 0; const next = () => { if (i >= curClips.length) return; player = new Audio(curClips[i++]); player.onended = () => setTimeout(next, 250); player.play().catch(()=>{}) }; next() });
+function hide(){ stopAudio(); $('#show').hidden = true; try{ lock && lock.release() }catch(e){} lock = null }
 $('#close').addEventListener('click', hide); document.addEventListener('keydown', e => { if (e.key==='Escape') hide() });
 $('#sos').addEventListener('click', () => show('Emergency', `<p class="say"><b>몸이 많이 아파요.</b></p><p class="say"><b>119에 전화해 주세요.</b></p><p class="say">가까운 병원 응급실로 가야 해요.</p><p class="thanks">도와주세요!</p>`,
-  W.sos));
+  W.sos, ['sos','help']));
 
 // 약국
 let sym = new Set(store.get('sym', [])), info = new Set(store.get('info', []));
@@ -255,18 +261,19 @@ $('#showPharm').addEventListener('click', () => {
   const s = SYM.filter(x => sym.has(x[0])), i = INFO.filter(x => info.has(x[0]));
   let h = s.map(x => `<p class="say">${kb(x[2])}</p>`).join('') + i.map(x => `<p class="say">${kb(x[2])}</p>`).join('');
   h += `<p class="say">맞는 약을 추천해 주세요.</p><p class="thanks">감사합니다!</p>`;
-  show('Pharmacy', h, W.have + s.map(x=>x[1]).join(W.sep) + W.end + (i.length ? W.also + i.map(x=>x[1]).join(W.sep) + W.end : '') + W.rec);
+  show('Pharmacy', h, W.have + s.map(x=>x[1]).join(W.sep) + W.end + (i.length ? W.also + i.map(x=>x[1]).join(W.sep) + W.end : '') + W.rec,
+       [...s.map(x => x[0]), ...i.map(x => 'i_' + x[0]), 'rec', 'thanks']);
 });
 PQ.forEach(([ko,en],k) => { const b = document.createElement('button'); b.className='ask'; b.id='pq-'+k; b.innerHTML = `<b>${esc(ko)}</b><span>${esc(en)}</span>`;
-  b.addEventListener('click', () => show('Question', `<p class="say">${esc(ko)}</p>`, en)); $('#pq').appendChild(b) });
+  b.addEventListener('click', () => show('Question', `<p class="say">${esc(ko)}</p>`, en, ['pq' + k])); $('#pq').appendChild(b) });
 
 // 택시
 const addr = $('#addr'); addr.value = store.get('addr', ''); $('#showTaxi').disabled = !addr.value.trim();
 addr.addEventListener('input', () => { store.set('addr', addr.value); $('#showTaxi').disabled = !addr.value.trim() });
 $('#showTaxi').addEventListener('click', () => show('Taxi', `<p class="say"><b>이 주소로 가 주세요.</b></p><p class="addr">${esc(addr.value.trim())}</p><p class="thanks">감사합니다!</p>`,
-  W.taxi));
+  W.taxi, ['taxi','thanks']));
 TQ.forEach(([ko,en],k) => { const b = document.createElement('button'); b.className='ask'; b.id='tq-'+k; b.innerHTML = `<b>${esc(ko)}</b><span>${esc(en)}</span>`;
-  b.addEventListener('click', () => show('Taxi', `<p class="say">${esc(ko)}</p>`, en)); $('#tq').appendChild(b) });
+  b.addEventListener('click', () => show('Taxi', `<p class="say">${esc(ko)}</p>`, en, ['tq' + k])); $('#tq').appendChild(b) });
 { const t = store.get('tab','pharm'); openTab(TABS.includes(t) ? t : 'pharm') }
 </script>
 
