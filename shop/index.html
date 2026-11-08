@@ -235,6 +235,8 @@ $('#dictN').textContent = DATA.menu.length;
 // 표시 말: '소' 한 글자는 '족발 소'(크기)와 헷갈려서 받지 않음. 표시는 가격 뒤에 있을 때만 떼어 냄
 const MK = {'돼지':'P','돼지고기':'P','소고기':'B','해물':'S','해산물':'S','매움':'H','매운':'H'};
 const MKN = {P:'돼지',B:'소고기',S:'해물',H:'매움'};
+const MKL = {en:{P:'Pork',B:'Beef',S:'Seafood',H:'Spicy'}, zh:{P:'猪肉',B:'牛肉',S:'海鲜',H:'辣'}, ja:{P:'豚肉',B:'牛肉',S:'海鮮',H:'辛い'}};
+const mk = (marks, l) => marks ? ` <small class="mk">(${[...marks].map(x=>MKL[l][x]).join(l==='en'?', ':'、')})</small>` : '';
 function parseLine(line){ const words = line.split(/\s+/), tail = [];
   while (words.length > 2 && MK[words[words.length-1]]) tail.unshift(MK[words.pop()]);
   let rest = words.join(' '), pm = rest.match(/^(.*?)[\s,]+([\d,]+)\s*원?$/), marks = '';
@@ -246,7 +248,7 @@ function translate(){
   $('#menuOut').innerHTML = rows.map(line => { const {pm, r, marks} = parseLine(line);
     const price = pm ? Number(pm[2].replace(/,/g,'')).toLocaleString('ko-KR') : ''; const key = keyOf(r);
     const m = key && DICT[key]; const tg = marks ? ` <small style="color:#9a3b23">${[...marks].map(x=>MKN[x]).join('·')}</small>` : '';
-    return m ? `<tr><td>${esc(r)}${tg}</td><td>${esc(m[1])}</td><td class="zh" lang="zh-Hans">${esc(m[2])}</td><td class="ja" lang="ja">${esc(m[3])}</td><td>${price}</td></tr>`
+    return m ? `<tr><td>${esc(r)}${tg}</td><td>${esc(m[1])}${mk(marks,'en')}</td><td class="zh" lang="zh-Hans">${esc(m[2])}${mk(marks,'zh')}</td><td class="ja" lang="ja">${esc(m[3])}${mk(marks,'ja')}</td><td>${price}</td></tr>`
              : `<tr class="miss"><td>${esc(r)}${tg}</td><td colspan="3">사전에 없어요</td><td>${price}</td></tr>` }).join('');
   store.set('menu', $('#menuIn').value);
 }
