@@ -36,9 +36,11 @@ const T = {
       note:'Label bahan ditambahkan oleh restoran. Menu tanpa label tetap bisa mengandung babi atau bahan lain — beri tahu staf jika Anda punya pantangan makanan atau alergi. Nama menu dalam bahasa Inggris. Harga dalam won Korea (₩).', err:'Tautan menu ini tidak lengkap. Silakan tanya staf.'},
   vi:{menu:'Thực đơn', P:'Thịt heo', B:'Thịt bò', S:'Hải sản', H:'Cay', ask:'(hỏi nhân viên)',
       note:'Nhãn nguyên liệu do nhà hàng tự ghi. Món không có nhãn vẫn có thể có thịt heo hoặc nguyên liệu khác — hãy báo nhân viên nếu bạn kiêng ăn hoặc bị dị ứng. Tên món bằng tiếng Anh. Giá tính bằng won Hàn Quốc (₩).', err:'Liên kết thực đơn này không đầy đủ. Vui lòng hỏi nhân viên.'},
+  th:{menu:'เมนู', P:'หมู', B:'เนื้อวัว', S:'อาหารทะเล', H:'เผ็ด', ask:'(ถามพนักงาน)',
+      note:'ร้านเป็นผู้ใส่ป้ายวัตถุดิบเอง เมนูที่ไม่มีป้ายก็อาจมีหมูหรือวัตถุดิบอื่น ถ้าคุณมีข้อจำกัดด้านอาหารหรือแพ้อาหาร กรุณาบอกพนักงาน ชื่อเมนูเป็นภาษาอังกฤษ ราคาเป็นเงินวอนเกาหลี (₩)', err:'ลิงก์เมนูนี้ไม่สมบูรณ์ กรุณาถามพนักงาน'},
   ko:{menu:'메뉴', P:'돼지고기', B:'소고기', S:'해산물', H:'매움', ask:'',
       note:'재료 표시는 가게에서 넣은 것이에요. 표시가 없어도 돼지고기 등이 들어 있을 수 있으니 알레르기·식단 제한이 있으면 직원에게 알려 주세요.', err:'메뉴 링크가 잘못됐어요.'}};
-const LBL = {en:'EN', zh:'中文', ja:'日本語', id:'Bahasa Indonesia', vi:'Tiếng Việt', ko:'한국어'};
+const LBL = {en:'EN', zh:'中文', ja:'日本語', id:'Bahasa Indonesia', vi:'Tiếng Việt', th:'ไทย', ko:'한국어'};
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const dec = s => { try { return decodeURIComponent(s) } catch(e) { return '' } };
 // 주소 형식(바꾸지 말 것): #1;가게이름;번호.가격.표시,~이름[~영어~중국어~일본어].가격.표시
@@ -49,13 +51,13 @@ function parse(h){
     if (id[0] === '~') { const t = id.slice(1).split('~').map(dec); return {ko: t[0], e: t.length === 4 && t.every(Boolean) ? t : null, price, marks} }  // ~한국어[~영~중~일] (맞춤 번역)
     const e = /^\d+$/.test(id) && DICT[Number(id)]; return e ? {ko: e[0], e, price, marks} : null }).filter(x => x && x.ko);
   return items.length ? {n: dec(p[1]), items} : null }
-let lang = (/^zh/i.test(navigator.language) ? 'zh' : /^ja/i.test(navigator.language) ? 'ja' : /^ko/i.test(navigator.language) ? 'ko' : /^(id|in|ms)/i.test(navigator.language) ? 'id' : /^vi/i.test(navigator.language) ? 'vi' : 'en');
+let lang = (/^zh/i.test(navigator.language) ? 'zh' : /^ja/i.test(navigator.language) ? 'ja' : /^ko/i.test(navigator.language) ? 'ko' : /^(id|in|ms)/i.test(navigator.language) ? 'id' : /^vi/i.test(navigator.language) ? 'vi' : /^th/i.test(navigator.language) ? 'th' : 'en');
 function render(){
   const d = parse(location.hash.slice(1)), t = T[lang], m = document.getElementById('m');
   document.documentElement.lang = lang === 'zh' ? 'zh-Hans' : lang;
   if (!d){ m.innerHTML = `<p class="err">${t.err}</p>`; return }
   document.title = d.n ? d.n + ' · ' + t.menu : t.menu;
-  const col = {en:1, zh:2, ja:3, id:1, vi:1}[lang];
+  const col = {en:1, zh:2, ja:3, id:1, vi:1, th:1}[lang];
   m.innerHTML = `<h1>${esc(d.n || t.menu)}</h1>
     <div class="langs">${Object.keys(LBL).map(k => `<button data-l="${k}" aria-pressed="${k===lang}">${LBL[k]}</button>`).join('')}</div>`
     + d.items.map(({ko, e, price, marks}) => {

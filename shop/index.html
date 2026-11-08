@@ -331,7 +331,7 @@ const RX = {
 };
 const EXT = ['patch','cream','eye'];
 const ASK = {en:'If anything is unclear, please ask the pharmacist again.', zh:'如有不清楚的地方，请再问药剂师。', ja:'わからないことがあれば、もう一度薬剤師に聞いてください。', ko:'모르면 약사에게 다시 물어보세요.'};
-// 약 복용 안내: 인도네시아어·베트남어 [번역: Claude, 원어민 검수 전]
+// 약 복용 안내: 인도네시아어·베트남어·태국어 [번역: Claude, 원어민 검수 전]
 const RX_MORE = {
   id: {times:{'1':'Sekali sehari','2':'Dua kali sehari','3':'3 kali sehari','need':'Hanya jika perlu'},
        max:{m2:'maksimal 2 kali sehari',m3:'maksimal 3 kali sehari',m4:'maksimal 4 kali sehari'},
@@ -346,9 +346,16 @@ const RX_MORE = {
        dose:{half:'mỗi lần nửa viên',['1t']:'mỗi lần 1 viên',['2t']:'mỗi lần 2 viên',['1p']:'mỗi lần 1 gói',['1b']:'mỗi lần 1 chai (uống)',patch:'dán 1 miếng vào chỗ đau',cream:'bôi một lớp mỏng lên chỗ đau',eye:'nhỏ 1–2 giọt vào mắt bị đau'},
        days:{d1:'Đây là thuốc cho 1 ngày.',d3:'Đây là thuốc cho 3 ngày.',d5:'Đây là thuốc cho 5 ngày.',d7:'Đây là thuốc cho 7 ngày.'},
        note:{sleepy:'Thuốc có thể gây buồn ngủ. Không được lái xe.',alcohol:'Không uống rượu bia trong thời gian dùng thuốc.',water:'Uống với nước.',chew:'Nuốt nguyên viên, không nhai.',gap:'Mỗi lần uống cách nhau ít nhất 4 tiếng.',other:'Không uống chung với thuốc cảm hoặc thuốc giảm đau khác.',empty:'Không uống khi bụng đói.',finish:'Uống hết thuốc dù đã thấy đỡ.',shake:'Lắc đều trước khi uống.',fridge:'Bảo quản trong tủ lạnh.',skin:'Không dùng trên vết thương hoặc da bị trầy.',pregnant:'Xin cho chúng tôi biết nếu bạn đang mang thai hoặc cho con bú.',doctor:'Nếu sau 3 ngày không đỡ, hãy đi khám bác sĩ.'},
-       ask:'Nếu có gì chưa rõ, hãy hỏi lại dược sĩ.'}};
+       ask:'Nếu có gì chưa rõ, hãy hỏi lại dược sĩ.'},
+  th: {times:{'1':'วันละ 1 ครั้ง','2':'วันละ 2 ครั้ง','3':'วันละ 3 ครั้ง','need':'ใช้เฉพาะเมื่อจำเป็น'},
+       max:{m2:'ไม่เกินวันละ 2 ครั้ง',m3:'ไม่เกินวันละ 3 ครั้ง',m4:'ไม่เกินวันละ 4 ครั้ง'},
+       when:{after30:'หลังอาหาร 30 นาที',afterNow:'หลังอาหารทันที',before:'ก่อนอาหาร 30 นาที',morning:'ตอนเช้า',bed:'ก่อนนอน',food:'ก่อนหรือหลังอาหารก็ได้'},
+       dose:{half:'ครั้งละครึ่งเม็ด',['1t']:'ครั้งละ 1 เม็ด',['2t']:'ครั้งละ 2 เม็ด',['1p']:'ครั้งละ 1 ซอง',['1b']:'ครั้งละ 1 ขวด (ดื่ม)',patch:'แปะ 1 แผ่นบริเวณที่ปวด',cream:'ทาบางๆ บริเวณที่เป็น',eye:'หยอดตาข้างที่เป็น 1–2 หยด'},
+       days:{d1:'ยานี้สำหรับ 1 วัน',d3:'ยานี้สำหรับ 3 วัน',d5:'ยานี้สำหรับ 5 วัน',d7:'ยานี้สำหรับ 7 วัน'},
+       note:{sleepy:'ยานี้อาจทำให้ง่วง ห้ามขับรถ',alcohol:'ห้ามดื่มแอลกอฮอล์ระหว่างทานยานี้',water:'ทานพร้อมน้ำ',chew:'กลืนทั้งเม็ด ห้ามเคี้ยว',gap:'ทานแต่ละครั้งห่างกันอย่างน้อย 4 ชั่วโมง',other:'ห้ามทานร่วมกับยาแก้หวัดหรือยาแก้ปวดตัวอื่น',empty:'ห้ามทานตอนท้องว่าง',finish:'ทานให้หมด แม้อาการจะดีขึ้นแล้ว',shake:'เขย่าขวดก่อนทาน',fridge:'เก็บในตู้เย็น',skin:'ห้ามใช้กับแผลเปิดหรือผิวที่ถลอก',pregnant:'ถ้าตั้งครรภ์หรือให้นมลูกอยู่ กรุณาบอกเรา',doctor:'ถ้าผ่านไป 3 วันแล้วไม่ดีขึ้น กรุณาไปพบแพทย์'},
+       ask:'ถ้าไม่เข้าใจตรงไหน กรุณาถามเภสัชกรอีกครั้ง'}};
 Object.entries(RX_MORE).forEach(([l, m]) => { ['times','max','when','dose','days','note'].forEach(g => RX[g].forEach(e => { e[1][l] = m[g][e[0]] || e[1].en })); ASK[l] = m.ask });  // 빠진 번역은 영어로
-const RX_LANGS = [['en','English'],['zh','中文'],['ja','日本語'],['id','Bahasa Indonesia'],['vi','Tiếng Việt']];
+const RX_LANGS = [['en','English'],['zh','中文'],['ja','日本語'],['id','Bahasa Indonesia'],['vi','Tiếng Việt'],['th','ไทย']];
 let rxLangs = (v => Array.isArray(v) ? RX_LANGS.map(x => x[0]).filter(x => v.includes(x)) : [])(store.get('rxLangs', null)); if (!rxLangs.length) rxLangs = ['en','zh','ja'];
 function rxLangChips(){ const box = $('#rxLangs'); box.innerHTML = '';
   RX_LANGS.forEach(([k, n]) => { const l = document.createElement('label'); l.className = 'chip';
@@ -392,8 +399,8 @@ function rxGroup(id, key, multi){
 }
 function rxText(lang){
   const g = (key, k) => (RX[key].find(x => x[0] === k) || [0, {}])[1][lang] || '';
-  const sep = lang === 'ja' ? '、' : lang === 'zh' ? '，' : ', ';
-  const end = ['en','ko','id','vi'].includes(lang) ? '.' : '。';
+  const sep = lang === 'ja' ? '、' : lang === 'zh' ? '，' : lang === 'th' ? ' ' : ', ';
+  const end = ['en','ko','id','vi'].includes(lang) ? '.' : lang === 'th' ? '' : '。';
   const first = [g('times', rx.times), rx.times === 'need' ? g('max', rx.max) : '', g('when', rx.when), g('dose', rx.dose)].filter(Boolean)
     .map((x, i) => ['en','id','vi'].includes(lang) ? (i ? x[0].toLowerCase() : x[0].toUpperCase()) + x.slice(1) : x);
   const notes = RX.note.filter(x => rx.note.includes(x[0])).map(x => x[1][lang]);
