@@ -329,7 +329,10 @@ $('#rMain').addEventListener('click', () => { if (rMode === 'card') replyList();
 $('#rAlt').addEventListener('click', replyList);
 // 안드로이드 뒤로가기: 큰 화면만 닫음(페이지를 떠나지 않게)
 let histPushed = false;
-addEventListener('popstate', () => { if (!$('#show').hidden){ histPushed = false; hide(true) } });
+addEventListener('popstate', () => { if ($('#show').hidden) return;
+  // 답 목록·답 화면이면 카드로 한 단계만 돌아감(기록을 다시 하나 쌓음), 카드면 닫음
+  if ((rMode === 'list' || rMode === 'answer') && lastShow){ histPushed = false; show(...lastShow); return }
+  histPushed = false; hide(true) });
 function hide(fromPop){ if (fromPop !== true && histPushed){ histPushed = false; try{ history.back() }catch(e){} } stopAudio(); $('#show').hidden = true; $('#sos').hidden = false; try{ lock && lock.release() }catch(e){} lock = null }
 $('#close').addEventListener('click', hide);
 document.addEventListener('keydown', e => { if(e.key==='Escape') hide() });

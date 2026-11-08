@@ -395,7 +395,9 @@ $('#rMain').addEventListener('click', () => { if (rMode === 'card') replyList();
 $('#rAlt').addEventListener('click', replyList);
 // 안드로이드 뒤로가기: 큰 화면만 닫음(페이지를 떠나지 않게)
 let histPushed = false;
-addEventListener('popstate', () => { if (!$('#show').hidden){ histPushed = false; hide(true) } });
+addEventListener('popstate', () => { if ($('#show').hidden) return;
+  if ((rMode === 'list' || rMode === 'answer') && lastShow){ histPushed = false; show(...lastShow); return }
+  histPushed = false; hide(true) });
 function hide(fromPop){ if (fromPop !== true && histPushed){ histPushed = false; try{ history.back() }catch(e){} } stopAudio(); $('#show').hidden = true; $('#sos').hidden = false; dsel.fill(null); try{ lock && lock.release() }catch(e){} lock = null }
 $('#close').addEventListener('click', hide); document.addEventListener('keydown', e => { if (e.key==='Escape') hide() });
 $('#sos').addEventListener('click', () => show('Emergency', `<p class="say"><b>몸이 많이 아파요.</b></p><p class="say"><b>119에 전화해 주세요.</b></p><p class="say">가까운 병원 응급실로 가야 해요.</p><p class="thanks">도와주세요!</p><p style="font:600 16px/1.5 var(--f-ko);background:#fff4e5;border:1px solid #f0c27a;border-radius:10px;padding:10px 12px;margin:0"><b>119에 이렇게 말해 주세요:</b> "외국인이 많이 아파요." 그다음 증상과 지금 있는 곳의 주소를 말해 주세요.</p>`,
