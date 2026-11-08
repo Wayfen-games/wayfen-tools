@@ -35,6 +35,7 @@ body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-ui);margin:0;
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .wrap{max-width:560px;margin:0 auto}
 header{padding-block:18px 8px} h1{font:700 22px/1.2 var(--f-ui);margin:0} .sub{color:var(--muted);margin:4px 0 0;font-size:14px}
+.langs{margin:6px 0 0;font-size:14px;color:var(--muted)} .langs a{color:var(--brand)}
 nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;padding-block:10px;overflow-x:auto}
 nav button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 14px var(--f-ui);padding:9px 14px;border-radius:999px;cursor:pointer}
 nav button[aria-selected="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
@@ -68,7 +69,8 @@ textarea{width:100%;min-height:96px;font:16px/1.5 var(--f-ko);padding:12px;borde
 <div class="wrap">
 <header>
   <h1>Korea Pharmacy &amp; Taxi Cards</h1>
-  <p class="sub">Pick what you need, then hand your phone to the pharmacist or taxi driver. Big Korean for them, a small English line for you.</p>
+  <p class="sub" data-i="sub">Pick what you need, then hand your phone to the pharmacist or taxi driver. Big Korean for them, a small English line for you.</p>
+  <p class="langs" id="langs"></p>
 </header>
 <nav role="tablist" aria-label="Sections">
   <button id="t-pharm" role="tab" aria-selected="true" data-tab="pharm">Pharmacy</button>
@@ -77,36 +79,36 @@ textarea{width:100%;min-height:96px;font:16px/1.5 var(--f-ko);padding:12px;borde
 </nav>
 
 <section id="p-pharm" role="tabpanel">
-  <h2>1. What's wrong?</h2>
+  <h2 data-i="h1">1. What's wrong?</h2>
   <div class="picks" id="sym"></div>
-  <h2>2. About you (optional)</h2>
+  <h2 data-i="h2">2. About you (optional)</h2>
   <div class="picks" id="info"></div>
-  <button class="primary" id="showPharm" disabled>Show the pharmacist</button>
-  <h2>Questions to point at</h2>
+  <button class="primary" id="showPharm" disabled data-i="showPharm">Show the pharmacist</button>
+  <h2 data-i="h3">Questions to point at</h2>
   <div id="pq" style="display:grid;gap:8px"></div>
 </section>
 
 <section id="p-taxi" role="tabpanel" hidden>
-  <p class="hint">Paste the Korean address of your hotel or destination (copy it from your booking or a map app). It stays on this phone only.</p>
+  <p class="hint" data-i="taxiHint">Paste the Korean address of your hotel or destination (copy it from your booking or a map app). It stays on this phone only.</p>
   <textarea id="addr" aria-label="Destination address in Korean" placeholder="예: 서울특별시 중구 명동길 14"></textarea>
-  <button class="primary" id="showTaxi" disabled>Show the driver</button>
-  <h2>Phrases for the ride</h2>
+  <button class="primary" id="showTaxi" disabled data-i="showTaxi">Show the driver</button>
+  <h2 data-i="h4">Phrases for the ride</h2>
   <div id="tq" style="display:grid;gap:8px"></div>
 </section>
 
 <section id="p-about" role="tabpanel" hidden>
-  <div class="tip"><p><b>Pharmacy</b> = 약국 (yak-guk). Look for a green or red <b>약</b> sign. Many close in the evening and on Sundays.</p>
-    <p><b>24-hour convenience stores</b> sell a few basic medicines when pharmacies are closed: pain and fever relievers, cold medicine, digestive aids and pain patches. They do not sell medicine for diarrhea (as of Nov 2026).</p></div>
-  <div class="tip"><p><b>Emergency:</b> 119 (ambulance). <b>Korea Travel Hotline:</b> 1330 can help interpret (check current hours).</p>
-    <p>These cards help you describe how you feel. They are not medical advice. If it is serious, getting worse, or you are unsure, see a doctor or call 119.</p></div>
-  <div class="tip"><p><b>Free to use.</b> If this helped, please share it with other travelers.</p></div>
+  <div class="tip"><p data-ih="ab1"><b>Pharmacy</b> = 약국 (yak-guk). Look for a green or red <b>약</b> sign. Many close in the evening and on Sundays.</p>
+    <p data-ih="ab2"><b>24-hour convenience stores</b> sell a few basic medicines when pharmacies are closed: pain and fever relievers, cold medicine, digestive aids and pain patches. They do not sell medicine for diarrhea (as of Nov 2026).</p></div>
+  <div class="tip"><p data-ih="ab3"><b>Emergency:</b> 119 (ambulance). <b>Korea Travel Hotline:</b> 1330 can help interpret (check current hours).</p>
+    <p data-i="ab4">These cards help you describe how you feel. They are not medical advice. If it is serious, getting worse, or you are unsure, see a doctor or call 119.</p></div>
+  <div class="tip"><p data-ih="ab5"><b>Free to use.</b> If this helped, please share it with other travelers.</p></div>
   <p class="hint">Version 0.1 · November 2026 · prototype</p>
 </section>
 </div>
 
 <button class="sos" id="sos" aria-label="Emergency card">SOS</button>
 <div class="show" id="show" hidden role="dialog" aria-modal="true" aria-labelledby="showTitle">
-  <div class="top"><span id="showTitle">보여 드려요</span><button class="close" id="close">Close</button></div>
+  <div class="top"><span id="showTitle">보여 드려요</span><button class="close" id="close" data-i="close">Close</button></div>
   <div class="body" id="showBody"></div>
   <p class="en" id="showEn"></p>
 </div>
@@ -172,6 +174,53 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const kb = s => esc(s).replace(/&lt;b&gt;/g,'<b>').replace(/&lt;\/b&gt;/g,'</b>').replace(/___/g,'<b>____</b>');
 const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+// 손님 화면 언어(중·일). 약사·기사에게 보여 주는 한국어는 그대로. [번역: Claude, 원어민 검수 전]
+const I18N = {
+ zh: {sub:'选好需要的内容，把手机递给药剂师或出租车司机。大字韩语给对方看，下面的小字是给您看的说明。',
+  tabs:['药店','出租车','须知'], h1:'1. 哪里不舒服？', h2:'2. 关于您（可选）', showPharm:'给药剂师看', h3:'可以指着问的问题',
+  taxiHint:'粘贴酒店或目的地的韩语地址（可从预订信息或地图应用复制）。只保存在这部手机上。', showTaxi:'给司机看', h4:'乘车用语', close:'关闭',
+  ab1:'<b>药店</b>韩语叫 약국 (yak-guk)。请找写着 <b>약</b> 的绿色或红色招牌。很多药店晚上和周日不营业。',
+  ab2:'<b>24小时便利店</b>在药店关门时出售少数常用药：退烧止痛药、感冒药、消化药和止痛贴。不卖止泻药（截至2026年11月）。',
+  ab3:'<b>紧急情况：</b>119（救护车）。<b>韩国旅游咨询热线：</b>1330 可协助翻译（请确认服务时间）。',
+  ab4:'这些卡片帮助您描述身体状况，不是医疗建议。如果情况严重、加重或拿不准，请去看医生或拨打119。',
+  ab5:'<b>免费使用。</b>如果有帮助，请分享给其他旅行者。',
+  have:'我的症状：', also:'另外：', rec:'请推荐合适的药。谢谢！', taxi:'请送我到这个地址。谢谢！',
+  sos:'我非常不舒服。请拨打119（救护车）。我需要去最近的医院急诊室。请帮帮我。', sep:'、', end:'。',
+  sym:{headache:'头痛',fever:'发烧',cold:'感冒',cough:'咳嗽',throat:'喉咙痛',nose:'流鼻涕、鼻塞',indigestion:'消化不良',heartburn:'胃灼热',diarrhea:'腹泻',constipation:'便秘',nausea:'恶心',motion:'晕车晕船',period:'痛经',muscle:'肌肉酸痛',bite:'蚊虫叮咬',rash:'皮疹',allergy:'花粉症',eyes:'眼睛干涩',cut:'小伤口',burn:'轻微烫伤',sunburn:'晒伤',hangover:'宿醉'},
+  info:{child:'给孩子用（请出示年龄）',pregnant:'怀孕中',breast:'哺乳期',meds:'正在服用其他药',nodrowsy:'请给不嗜睡的药',penicillin:'青霉素过敏',aspirin:'阿司匹林过敏',ibuprofen:'布洛芬过敏'},
+  pq:['一天吃几次，每次几粒？','饭前吃还是饭后吃？','吃这个药会犯困吗？','这个药需要处方吗？','最近的诊所或医院在哪里？','附近有开门的药店吗？'],
+  tq:['请在这里停车。','我用卡付款。','请给我收据。','请打开后备箱。','需要多长时间？','请开慢一点。','请去仁川机场。','请去仁川机场第1航站楼。','请去仁川机场第2航站楼。','请去金浦机场。','请去最近的地铁站。']},
+ ja: {sub:'必要なものを選んで、スマホを薬剤師さんやタクシーの運転手さんに見せてください。大きな韓国語は相手用、下の小さな文字はあなた用の説明です。',
+  tabs:['薬局','タクシー','知っておくこと'], h1:'1. どこが具合悪いですか？', h2:'2. あなたについて（任意）', showPharm:'薬剤師さんに見せる', h3:'指さして聞ける質問',
+  taxiHint:'ホテルや目的地の韓国語の住所を貼り付けてください（予約情報や地図アプリからコピー）。このスマホにだけ保存されます。', showTaxi:'運転手さんに見せる', h4:'乗車中のフレーズ', close:'閉じる',
+  ab1:'<b>薬局</b>は韓国語で 약국（ヤックク）。<b>약</b> と書かれた緑か赤の看板が目印です。夜や日曜は閉まる店が多いです。',
+  ab2:'<b>24時間営業のコンビニ</b>では、薬局が閉まっている時間に一部の常備薬を買えます：解熱鎮痛薬、かぜ薬、胃腸薬、湿布。下痢止めは売っていません（2026年11月時点）。',
+  ab3:'<b>緊急時：</b>119（救急車）。<b>観光通訳案内電話：</b>1330 で通訳の手助けを受けられます（受付時間はご確認ください）。',
+  ab4:'このカードは体調を伝えるためのもので、医療アドバイスではありません。重い、悪化している、判断に迷うときは医師の診察を受けるか119に電話してください。',
+  ab5:'<b>無料です。</b>役に立ったら、ほかの旅行者にも教えてあげてください。',
+  have:'症状：', also:'そのほか：', rec:'合う薬をすすめてください。ありがとうございます！', taxi:'この住所までお願いします。ありがとうございます！',
+  sos:'とても具合が悪いです。119（救急車）を呼んでください。近くの病院の救急外来に行く必要があります。助けてください。', sep:'、', end:'。',
+  sym:{headache:'頭痛',fever:'発熱',cold:'かぜ',cough:'せき',throat:'のどの痛み',nose:'鼻水・鼻づまり',indigestion:'消化不良',heartburn:'胸やけ',diarrhea:'下痢',constipation:'便秘',nausea:'吐き気',motion:'乗り物酔い',period:'生理痛',muscle:'筋肉痛',bite:'虫刺され',rash:'発疹',allergy:'花粉症',eyes:'ドライアイ',cut:'小さな切り傷',burn:'軽いやけど',sunburn:'日焼け',hangover:'二日酔い'},
+  info:{child:'子ども用（年齢を伝える）',pregnant:'妊娠中',breast:'授乳中',meds:'ほかの薬を服用中',nodrowsy:'眠くならない薬を希望',penicillin:'ペニシリンアレルギー',aspirin:'アスピリンアレルギー',ibuprofen:'イブプロフェンアレルギー'},
+  pq:['1日に何回、何錠ずつ飲みますか？','食前ですか、食後ですか？','この薬を飲むと眠くなりますか？','この薬は処方箋が必要ですか？','いちばん近いクリニックや病院はどこですか？','近くに開いている薬局はありますか？'],
+  tq:['ここで止めてください。','カードで払います。','領収書をください。','トランクを開けてください。','どのくらいかかりますか？','ゆっくり走ってください。','仁川空港までお願いします。','仁川空港第1ターミナルまでお願いします。','仁川空港第2ターミナルまでお願いします。','金浦空港までお願いします。','いちばん近い地下鉄の駅までお願いします。']},
+};
+const LANGS = [['en','EN'],['zh','中文'],['ja','日本語']];
+let LANG = new URLSearchParams(location.search).get('lang') || store.get('lang', null) || (/^zh/i.test(navigator.language) ? 'zh' : /^ja/i.test(navigator.language) ? 'ja' : 'en');
+if (LANG !== 'en' && !I18N[LANG]) LANG = 'en';
+const X = I18N[LANG] || null;
+document.documentElement.lang = LANG === 'zh' ? 'zh-Hans' : LANG;
+if (X){
+  document.querySelectorAll('[data-i]').forEach(e => { if (X[e.dataset.i]) e.textContent = X[e.dataset.i] });
+  document.querySelectorAll('[data-ih]').forEach(e => { if (X[e.dataset.ih]) e.innerHTML = X[e.dataset.ih] });
+  document.querySelectorAll('nav button').forEach((b,k) => b.textContent = X.tabs[k]);
+  SYM.forEach(x => { if (X.sym[x[0]]) x[1] = X.sym[x[0]] }); INFO.forEach(x => { if (X.info[x[0]]) x[1] = X.info[x[0]] });
+  PQ.forEach((x,k) => { if (X.pq[k]) x[1] = X.pq[k] }); TQ.forEach((x,k) => { if (X.tq[k]) x[1] = X.tq[k] });
+}
+const W = X || {have:'I have: ', also:' Also: ', rec:' Please recommend something suitable. Thank you!', taxi:'Please take me to this address. Thank you!',
+  sos:'I feel very sick. Please call 119 (ambulance). I need to go to the nearest emergency room. Please help me.', sep:', ', end:'.'};
+document.getElementById('langs').innerHTML = LANGS.map(([k,n]) => k===LANG ? `<b>${n}</b>` : `<a href="?lang=${k}" data-l="${k}">${n}</a>`).join(' · ');
+document.getElementById('langs').addEventListener('click', e => { const k = e.target.dataset && e.target.dataset.l; if (k) store.set('lang', k) });
 const TABS = ['pharm','taxi','about'];
 function openTab(t){ document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===t))); TABS.forEach(x=>$('#p-'+x).hidden = x!==t); store.set('tab',t) }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
@@ -187,7 +236,7 @@ addEventListener('resize', () => { if (!$('#show').hidden) fit() });
 function hide(){ $('#show').hidden = true; try{ lock && lock.release() }catch(e){} lock = null }
 $('#close').addEventListener('click', hide); document.addEventListener('keydown', e => { if (e.key==='Escape') hide() });
 $('#sos').addEventListener('click', () => show('Emergency', `<p class="say"><b>몸이 많이 아파요.</b></p><p class="say"><b>119에 전화해 주세요.</b></p><p class="say">가까운 병원 응급실로 가야 해요.</p><p class="thanks">도와주세요!</p>`,
-  'I feel very sick. Please call 119 (ambulance). I need to go to the nearest emergency room. Please help me.'));
+  W.sos));
 
 // 약국
 let sym = new Set(store.get('sym', [])), info = new Set(store.get('info', []));
@@ -200,7 +249,7 @@ $('#showPharm').addEventListener('click', () => {
   const s = SYM.filter(x => sym.has(x[0])), i = INFO.filter(x => info.has(x[0]));
   let h = s.map(x => `<p class="say">${kb(x[2])}</p>`).join('') + i.map(x => `<p class="say">${kb(x[2])}</p>`).join('');
   h += `<p class="say">맞는 약을 추천해 주세요.</p><p class="thanks">감사합니다!</p>`;
-  show('Pharmacy', h, 'I have: ' + s.map(x=>x[1]).join(', ') + '.' + (i.length ? ' Also: ' + i.map(x=>x[1]).join(', ') + '.' : '') + ' Please recommend something suitable. Thank you!');
+  show('Pharmacy', h, W.have + s.map(x=>x[1]).join(W.sep) + W.end + (i.length ? W.also + i.map(x=>x[1]).join(W.sep) + W.end : '') + W.rec);
 });
 PQ.forEach(([ko,en],k) => { const b = document.createElement('button'); b.className='ask'; b.id='pq-'+k; b.innerHTML = `<b>${esc(ko)}</b><span>${esc(en)}</span>`;
   b.addEventListener('click', () => show('Question', `<p class="say">${esc(ko)}</p>`, en)); $('#pq').appendChild(b) });
@@ -209,7 +258,7 @@ PQ.forEach(([ko,en],k) => { const b = document.createElement('button'); b.classN
 const addr = $('#addr'); addr.value = store.get('addr', ''); $('#showTaxi').disabled = !addr.value.trim();
 addr.addEventListener('input', () => { store.set('addr', addr.value); $('#showTaxi').disabled = !addr.value.trim() });
 $('#showTaxi').addEventListener('click', () => show('Taxi', `<p class="say"><b>이 주소로 가 주세요.</b></p><p class="addr">${esc(addr.value.trim())}</p><p class="thanks">감사합니다!</p>`,
-  'Please take me to this address. Thank you!'));
+  W.taxi));
 TQ.forEach(([ko,en],k) => { const b = document.createElement('button'); b.className='ask'; b.id='tq-'+k; b.innerHTML = `<b>${esc(ko)}</b><span>${esc(en)}</span>`;
   b.addEventListener('click', () => show('Taxi', `<p class="say">${esc(ko)}</p>`, en)); $('#tq').appendChild(b) });
 { const t = store.get('tab','pharm'); openTab(TABS.includes(t) ? t : 'pharm') }
