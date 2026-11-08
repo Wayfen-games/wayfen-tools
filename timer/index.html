@@ -112,7 +112,9 @@ function applyLang(){ document.documentElement.lang = L; document.querySelectorA
   document.getElementById('next').setAttribute('aria-label', T[L].next); }
 const TRACKS = [
   ["bookshop_afternoon","Bookshop Afternoon"],["hearthside","Hearthside"],["cocoa_shop","Cocoa Shop"],
-  ["frosted_glass","Frosted Glass"],["snow_dawn","Snow Dawn"],["sleepy_autumn","Sleepy Autumn"]];
+  ["frosted_glass","Frosted Glass"],["snow_dawn","Snow Dawn"],["sleepy_autumn","Sleepy Autumn"],
+  ["first_snowfall","First Snowfall"],["footprints_home","Footprints Home"],["winter_market","Winter Market"],
+  ["morning_shovel","Morning Shovel"],["snowbound","Snowbound"],["snow_village","Snow Village"]];
 const $ = s => document.querySelector(s);
 const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const aud = $('#aud'); const R = 92, C = 2 * Math.PI * R; $('#prog').style.strokeDasharray = C;
