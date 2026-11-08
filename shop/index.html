@@ -245,7 +245,7 @@ const QR_BASE = 'https://wayfen-games.github.io/wayfen-tools/m/';
 $('#makeQR').addEventListener('click', () => {
   $('#qrImg').innerHTML = ''; $('#qrSave').hidden = true; $('#qrSave').removeAttribute('href');
   const items = $('#menuIn').value.split('\n').map(s=>s.trim()).filter(Boolean).map(line => { const {pm, r, marks} = parseLine(line);
-    const k = keyOf(r); return {id: k && DATA.qrIds[k] != null ? String(DATA.qrIds[k]) : '~' + encodeURIComponent(r), price: pm ? Number(pm[2].replace(/,/g,'')) : 0, marks, known: !!(k && DATA.qrIds[k] != null)} });
+    const k = keyOf(r); return {id: k && DATA.qrIds[k] != null ? String(DATA.qrIds[k]) : '~' + encodeURIComponent(r.replace(/~/g,'-')), price: pm ? Number(pm[2].replace(/,/g,'')) : 0, marks, known: !!(k && DATA.qrIds[k] != null)} });
   const url = QR_BASE + '#1;' + encodeURIComponent($('#shopName').value.trim()) + ';' + items.map(x => x.id + '.' + x.price + '.' + x.marks).join(',');
   const miss = items.filter(x => !x.known).length, noPrice = items.filter(x => !x.price).length;
   $('#qrOpen').href = url; $('#qrBox').hidden = false;

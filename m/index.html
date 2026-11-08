@@ -37,12 +37,12 @@ const T = {
 const LBL = {en:'EN', zh:'中文', ja:'日本語', ko:'한국어'};
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const dec = s => { try { return decodeURIComponent(s) } catch(e) { return '' } };
-// 주소 형식(바꾸지 말 것): #1;가게이름;번호.가격.표시,~이름.가격.표시
+// 주소 형식(바꾸지 말 것): #1;가게이름;번호.가격.표시,~이름[~영어~중국어~일본어].가격.표시
 function parse(h){
   const p = h.split(';'); if (p[0] !== '1' || p.length < 3) return null;
   const items = p.slice(2).join(';').split(',').filter(Boolean).map(s => {
     const a = s.split('.'); const marks = (a.pop() || '').replace(/[^PBSH]/g, ''); const price = Number(a.pop()); const id = a.join('.');
-    if (id[0] === '~') return {ko: dec(id.slice(1)), e: null, price, marks};
+    if (id[0] === '~') { const t = id.slice(1).split('~').map(dec); return {ko: t[0], e: t.length === 4 && t.every(Boolean) ? t : null, price, marks} }  // ~한국어[~영~중~일] (맞춤 번역)
     const e = /^\d+$/.test(id) && DICT[Number(id)]; return e ? {ko: e[0], e, price, marks} : null }).filter(x => x && x.ko);
   return items.length ? {n: dec(p[1]), items} : null }
 let lang = (/^zh/i.test(navigator.language) ? 'zh' : /^ja/i.test(navigator.language) ? 'ja' : /^ko/i.test(navigator.language) ? 'ko' : 'en');
