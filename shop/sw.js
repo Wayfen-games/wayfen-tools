@@ -9,4 +9,4 @@ self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;
  // 음악·그림 등은 저장본 먼저
  // 자기 도구 저장본에서만 찾음(다른 도구 것과 섞이지 않게). 주소 뒤 ?는 같은 사이트 파일만 무시(글꼴 주소 등은 그대로)
  const same=new URL(e.request.url).origin===location.origin;
- e.respondWith(caches.open(C).then(c=>c.match(e.request,{ignoreSearch:same})).then(r=>r||fetch(e.request).then(res=>{if(res.ok||(res.type==='opaque'&&/fonts\.googleapis\.com/.test(e.request.url))){const cp=res.clone();caches.open(C).then(c=>c.put(e.request,cp))}return res})))});
+ e.respondWith(caches.open(C).then(c=>c.match(e.request,{ignoreSearch:same})).then(r=>r||fetch(e.request).then(res=>{if(res.ok||(res.type==='opaque'&&e.request.url.includes('fonts.googleapis.com'))){const cp=res.clone();caches.open(C).then(c=>c.put(e.request,cp))}return res})))});
