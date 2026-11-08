@@ -102,6 +102,8 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid 
   <div class="grid"><label>어느 달<input id="month" type="month"></label>
   <label>&nbsp;<button class="btn" id="saveMonth" style="padding:9px">이 달 순수익 저장</button></label></div>
   <div id="hist"></div>
+  <button class="btn" id="csv" style="padding:9px;margin-top:8px" hidden>엑셀용 파일(CSV)로 저장</button>
+  <p class="sub" style="margin:6px 0 0">세금 신고 때 참고용 기록이에요. 실제 신고 금액은 홈택스·세무 전문가에게 확인하세요.</p>
 </div>
 
 <div class="note">
@@ -199,13 +201,21 @@ function drawHist(){
 $('#saveMonth').addEventListener('click', () => { const m = $('#month').value; if (!/^\d{4}-\d{2}$/.test(m)) return;
   if (example){ $('#saveMonth').textContent = '예시 값이라 저장 안 했어요. 내 숫자를 넣어 주세요'; setTimeout(() => $('#saveMonth').textContent = '이 달 순수익 저장', 2500); return }
   hist = hist.filter(x => x.m !== m); hist.push({m, net: Math.round(curNet()), hours: rows.reduce((s,r)=>s+num(r.hours),0)});
-  hist = hist.sort((a,b)=>a.m<b.m?-1:1).slice(-24); store.set('hist', hist); drawHist();
+  hist = hist.sort((a,b)=>a.m<b.m?-1:1).slice(-24); store.set('hist', hist); drawHist(); syncCsv();
   $('#saveMonth').textContent = '저장했어요'; setTimeout(() => $('#saveMonth').textContent = '이 달 순수익 저장', 1800) });
 // 지우기는 두 번 눌러야 함(폰에서 잘못 누르기 방지)
 $('#hist').addEventListener('click', e => { const b = e.target, m = b.dataset && b.dataset.m; if (!m) return;
   if (b.dataset.armed !== '1'){ b.dataset.armed = '1'; b.textContent = '한 번 더 누르면 지워요'; setTimeout(() => { if (b.isConnected){ b.dataset.armed = ''; b.textContent = '×' } }, 3000); return }
-  hist = hist.filter(x => x.m !== m); store.set('hist', hist); drawHist() });
+  hist = hist.filter(x => x.m !== m); store.set('hist', hist); drawHist(); syncCsv() });
 drawHist();
+// 월별 기록 CSV 내려받기(이 기기에서 만들어 바로 저장, 서버로 보내지 않음)
+function syncCsv(){ $('#csv').hidden = !hist.length }
+$('#csv').addEventListener('click', () => {
+  const rowsCsv = [['월','순수익(원)','쓴 시간','시간당 순수익(원)']].concat(hist.slice().sort((a,b)=>a.m<b.m?-1:1).map(x => [x.m.replace('-', '년 ') + '월', x.net, Math.round((x.hours || 0) * 100) / 100, x.hours ? Math.round(x.net / x.hours) : '']));
+  const csv = String.fromCharCode(0xFEFF) + rowsCsv.map(r => r.join(',')).join(String.fromCharCode(13, 10));
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv;charset=utf-8'})); a.download = 'n잡_순수익_월별.csv';
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove() }, 500) });
+syncCsv();
 $('#add').addEventListener('click', () => { rows.push({name:'새 수익원', sales:0, fee:0, ad:0, cost:0, hours:0}); touched(); draw() });
 ['#goal','#fixed'].forEach(s => $(s).addEventListener('input', calc));
 draw();
