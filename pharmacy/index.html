@@ -71,7 +71,7 @@ textarea{width:100%;min-height:96px;font:16px/1.5 var(--f-ko);padding:12px;borde
 
 <div class="wrap">
 <header>
-  <h1>Korea Pharmacy, Taxi &amp; Shopping Cards</h1>
+  <h1 data-i="h0">Korea Pharmacy, Taxi &amp; Shopping Cards</h1>
   <p class="sub" data-i="sub">Pick what you need, then hand your phone to the pharmacist or taxi driver. Big Korean for them, a small English line for you.</p>
   <p class="langs" id="langs"></p>
   <button class="sharebtn" id="share" data-i="share">Share with your travel buddy</button>
@@ -204,7 +204,7 @@ const kb = s => esc(s).replace(/&lt;b&gt;/g,'<b>').replace(/&lt;\/b&gt;/g,'</b>'
 const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 // 손님 화면 언어(중 간체·번체·일·인니·베트남·태국). 약사·기사에게 보여 주는 한국어는 그대로. [번역: Claude, 원어민 검수 전]
 const I18N = {
- zh: {sub:'选好需要的内容，把手机递给药剂师或出租车司机。大字韩语给对方看，下面的小字是给您看的说明。',
+ zh: {h0:'韩国药店·出租车·购物卡片', sub:'选好需要的内容，把手机递给药剂师或出租车司机。大字韩语给对方看，下面的小字是给您看的说明。',
   share:'分享给同行的朋友', copied:'已复制链接', tabs:['药店','出租车','购物','须知'], titles:{Pharmacy:'药店',Question:'提问',Taxi:'出租车',Emergency:'紧急',Shopping:'购物'}, h5:'购物用语',
   taxfree:'<b>退税：</b>认准“Tax Free”或“Tax Refund”标志，出示护照。很多店可以当场退税，每笔不到₩1,000,000，每次旅行合计最多₩5,000,000；否则可在机场自助机办理。最低消费通常为每张收据₩15,000，请向店员确认。（2024年起实施的规定，请确认最新规定。）',
   sq:['可以退税吗？','可以当场退税吗？','这是我的护照。','这个有别的尺码吗？','有别的颜色吗？','可以试穿吗？','可以试一下试用装吗？','多少钱？','我用卡付款。','可以包装成礼物吗？','请给我一个袋子。','可以换货或退款吗？','请给我收据。','我只是看看。'], h1:'1. 哪里不舒服？', h2:'2. 关于您（可选）', showPharm:'给药剂师看', h3:'可以指着问的问题',
@@ -220,7 +220,7 @@ const I18N = {
   info:{child:'给孩子吃的药（孩子___岁，请告诉药剂师年龄）',pregnant:'怀孕中',breast:'哺乳期',meds:'正在服用其他药',nodrowsy:'请给不嗜睡的药',penicillin:'青霉素过敏',aspirin:'阿司匹林过敏',ibuprofen:'布洛芬过敏'},
   pq:['一天吃几次，每次几粒？','饭前吃还是饭后吃？','吃这个药会犯困吗？','这个药需要处方吗？','最近的诊所或医院在哪里？','附近有开门的药店吗？'],
   tq:['请在这里停车。','我用卡付款。','请给我收据。','请打开后备箱。','需要多长时间？','请开慢一点。','请去仁川机场。','请去仁川机场第1航站楼。','请去仁川机场第2航站楼。','请去金浦机场。','请去最近的地铁站。']},
- id: {sub:'Pilih yang Anda perlukan, lalu berikan ponsel ke apoteker atau sopir taksi. Tulisan bahasa Korea yang besar untuk mereka, keterangan kecil untuk Anda.',
+ id: {h0:'Kartu Apotek, Taksi & Belanja Korea', sub:'Pilih yang Anda perlukan, lalu berikan ponsel ke apoteker atau sopir taksi. Tulisan bahasa Korea yang besar untuk mereka, keterangan kecil untuk Anda.',
   share:'Bagikan ke teman perjalanan', copied:'Tautan disalin', tabs:['Apotek','Taksi','Belanja','Info'], titles:{Pharmacy:'Apotek',Question:'Pertanyaan',Taxi:'Taksi',Emergency:'Darurat',Shopping:'Belanja'}, h5:'Kalimat belanja',
   taxfree:'<b>Pengembalian pajak:</b> cari tanda “Tax Free” atau “Tax Refund” dan tunjukkan paspor. Banyak toko langsung mengembalikan pajak untuk pembelian di bawah ₩1.000.000 per struk, maksimal ₩5.000.000 per perjalanan; jika tidak, urus di kios bandara. Minimum biasanya ₩15.000 per struk, tetapi tanyakan ke toko. (Aturan sejak 2024; cek aturan terbaru.)',
   sq:['Bisa tax refund di sini?','Bisa langsung dapat refund pajak di sini?','Ini paspor saya.','Ada ukuran lain?','Ada warna lain?','Boleh saya coba pakai?','Boleh coba testernya?','Berapa harganya?','Saya bayar pakai kartu.','Bisa dibungkus kado?','Minta kantong belanja.','Bisa ditukar atau dikembalikan?','Minta struknya.','Saya cuma lihat-lihat.'], h1:'1. Apa keluhan Anda?', h2:'2. Tentang Anda (opsional)', showPharm:'Tunjukkan ke apoteker', h3:'Pertanyaan yang bisa ditunjuk',
@@ -236,7 +236,7 @@ const I18N = {
   info:{child:'obat untuk anak (umur ___ tahun; beri tahu apoteker umurnya)',pregnant:'sedang hamil',breast:'sedang menyusui',meds:'sedang minum obat lain',nodrowsy:'minta obat yang tidak membuat mengantuk',penicillin:'alergi penisilin',aspirin:'alergi aspirin',ibuprofen:'alergi ibuprofen'},
   pq:['Diminum berapa kali sehari, berapa tablet sekali minum?','Diminum sebelum atau sesudah makan?','Apakah obat ini membuat mengantuk?','Apakah obat ini perlu resep?','Di mana klinik atau rumah sakit terdekat?','Ada apotek yang buka di dekat sini?'],
   tq:['Tolong berhenti di sini.','Saya bayar pakai kartu.','Minta struknya.','Tolong buka bagasinya.','Berapa lama perjalanannya?','Tolong pelan-pelan.','Ke Bandara Incheon.','Ke Bandara Incheon, Terminal 1.','Ke Bandara Incheon, Terminal 2.','Ke Bandara Gimpo.','Ke stasiun subway/MRT terdekat.']},
- tw: {sub:'選好需要的內容，把手機遞給藥師或計程車司機。大字韓文給對方看，下面的小字是給您看的說明。',
+ tw: {h0:'韓國藥局・計程車・購物卡片', sub:'選好需要的內容，把手機遞給藥師或計程車司機。大字韓文給對方看，下面的小字是給您看的說明。',
   share:'分享給同行的朋友', copied:'已複製連結', tabs:['藥局','計程車','購物','須知'], titles:{Pharmacy:'藥局',Question:'提問',Taxi:'計程車',Emergency:'緊急',Shopping:'購物'}, h5:'購物用語',
   taxfree:'<b>退稅：</b>認明「Tax Free」或「Tax Refund」標誌，出示護照。很多店可以當場退稅，每張收據未滿₩1,000,000，每次旅行合計最多₩5,000,000；否則可在機場自助機辦理。最低消費通常為每張收據₩15,000，請向店員確認。（2024年起實施的規定，請確認最新規定。）',
   sq:['可以退稅嗎？','可以當場退稅嗎？','這是我的護照。','這個有別的尺寸嗎？','有別的顏色嗎？','可以試穿嗎？','可以用試用品嗎？','多少錢？','我要刷卡。','可以包裝成禮物嗎？','請給我一個袋子。','可以換貨或退款嗎？','請給我收據。','我只是看看。'], h1:'1. 哪裡不舒服？', h2:'2. 關於您（選填）', showPharm:'給藥師看', h3:'可以指著問的問題',
@@ -252,7 +252,7 @@ const I18N = {
   info:{child:'給小孩吃的藥（小孩___歲，請告訴藥師年齡）',pregnant:'懷孕中',breast:'哺乳中',meds:'正在服用其他藥',nodrowsy:'請給不會嗜睡的藥',penicillin:'盤尼西林過敏',aspirin:'阿斯匹靈過敏',ibuprofen:'布洛芬過敏'},
   pq:['一天吃幾次，每次幾顆？','飯前吃還是飯後吃？','吃這個藥會想睡嗎？','這個藥需要處方箋嗎？','最近的診所或醫院在哪裡？','附近有開門的藥局嗎？'],
   tq:['請在這裡停車。','我要刷卡。','請給我收據。','請打開後車廂。','需要多久？','請開慢一點。','請到仁川機場。','請到仁川機場第1航廈。','請到仁川機場第2航廈。','請到金浦機場。','請到最近的捷運站（地鐵站）。']},
- vi: {sub:'Chọn những gì bạn cần rồi đưa điện thoại cho dược sĩ hoặc tài xế taxi. Chữ tiếng Hàn lớn dành cho họ, dòng chữ nhỏ là giải thích cho bạn.',
+ vi: {h0:'Thẻ nhà thuốc, taxi & mua sắm ở Hàn Quốc', sub:'Chọn những gì bạn cần rồi đưa điện thoại cho dược sĩ hoặc tài xế taxi. Chữ tiếng Hàn lớn dành cho họ, dòng chữ nhỏ là giải thích cho bạn.',
   share:'Chia sẻ cho bạn đồng hành', copied:'Đã sao chép liên kết', tabs:['Nhà thuốc','Taxi','Mua sắm','Thông tin'], titles:{Pharmacy:'Nhà thuốc',Question:'Câu hỏi',Taxi:'Taxi',Emergency:'Khẩn cấp',Shopping:'Mua sắm'}, h5:'Câu nói khi mua sắm',
   taxfree:'<b>Hoàn thuế:</b> tìm biển “Tax Free” hoặc “Tax Refund” và xuất trình hộ chiếu. Nhiều cửa hàng hoàn thuế ngay cho hóa đơn dưới ₩1.000.000, tối đa ₩5.000.000 mỗi chuyến đi; nếu không, làm thủ tục tại máy kiosk ở sân bay. Mức tối thiểu thường là ₩15.000 mỗi hóa đơn, nhưng hãy hỏi cửa hàng. (Quy định từ năm 2024; hãy kiểm tra quy định mới nhất.)',
   sq:['Có hoàn thuế không?','Có hoàn thuế ngay tại đây không?','Đây là hộ chiếu của tôi.','Có cỡ khác không?','Có màu khác không?','Tôi mặc thử được không?','Tôi dùng thử được không?','Bao nhiêu tiền?','Tôi trả bằng thẻ.','Gói quà giúp tôi được không?','Cho tôi một cái túi.','Có đổi hoặc trả hàng được không?','Cho tôi hóa đơn.','Tôi chỉ xem thôi.'], h1:'1. Bạn bị làm sao?', h2:'2. Về bạn (không bắt buộc)', showPharm:'Cho dược sĩ xem', h3:'Chỉ vào câu hỏi để hỏi',
@@ -268,7 +268,7 @@ const I18N = {
   info:{child:'thuốc cho trẻ em (bé ___ tuổi; hãy báo tuổi cho dược sĩ)',pregnant:'đang mang thai',breast:'đang cho con bú',meds:'đang dùng thuốc khác',nodrowsy:'xin thuốc không gây buồn ngủ',penicillin:'dị ứng penicillin',aspirin:'dị ứng aspirin',ibuprofen:'dị ứng ibuprofen'},
   pq:['Một ngày uống mấy lần, mỗi lần mấy viên?','Uống trước hay sau khi ăn?','Thuốc này có gây buồn ngủ không?','Thuốc này có cần đơn thuốc không?','Phòng khám hoặc bệnh viện gần nhất ở đâu?','Gần đây có nhà thuốc nào đang mở cửa không?'],
   tq:['Xin dừng ở đây.','Tôi trả bằng thẻ.','Cho tôi hóa đơn.','Xin mở cốp xe giúp tôi.','Mất bao lâu?','Xin lái chậm thôi.','Đến sân bay Incheon.','Đến sân bay Incheon, nhà ga số 1.','Đến sân bay Incheon, nhà ga số 2.','Đến sân bay Gimpo.','Đến ga tàu điện ngầm gần nhất.']},
- th: {sub:'เลือกสิ่งที่ต้องการ แล้วยื่นโทรศัพท์ให้เภสัชกรหรือคนขับแท็กซี่ดู ตัวอักษรเกาหลีตัวใหญ่สำหรับพวกเขา ข้อความเล็กด้านล่างเป็นคำอธิบายสำหรับคุณ',
+ th: {h0:'การ์ดร้านขายยา แท็กซี่ และช้อปปิ้งในเกาหลี', sub:'เลือกสิ่งที่ต้องการ แล้วยื่นโทรศัพท์ให้เภสัชกรหรือคนขับแท็กซี่ดู ตัวอักษรเกาหลีตัวใหญ่สำหรับพวกเขา ข้อความเล็กด้านล่างเป็นคำอธิบายสำหรับคุณ',
   share:'แชร์ให้เพื่อนร่วมทริป', copied:'คัดลอกลิงก์แล้ว', tabs:['ร้านขายยา','แท็กซี่','ช้อปปิ้ง','ข้อมูล'], titles:{Pharmacy:'ร้านขายยา',Question:'คำถาม',Taxi:'แท็กซี่',Emergency:'ฉุกเฉิน',Shopping:'ช้อปปิ้ง'}, h5:'ประโยคตอนช้อปปิ้ง',
   taxfree:'<b>คืนภาษี:</b> มองหาป้าย “Tax Free” หรือ “Tax Refund” แล้วแสดงพาสปอร์ต หลายร้านคืนภาษีได้ทันทีสำหรับใบเสร็จที่ต่ำกว่า ₩1,000,000 รวมไม่เกิน ₩5,000,000 ต่อทริป ถ้าไม่ได้ให้ไปทำที่ตู้คีออสก์ในสนามบิน ยอดขั้นต่ำมักเป็น ₩15,000 ต่อใบเสร็จ แต่ควรถามร้าน (กฎตั้งแต่ปี 2024 โปรดตรวจสอบกฎล่าสุด)',
   sq:['คืนภาษีได้ไหม','คืนภาษีที่นี่ได้เลยไหม','นี่คือพาสปอร์ตของฉัน','มีไซซ์อื่นไหม','มีสีอื่นไหม','ขอลองใส่ได้ไหม','ขอลองเทสเตอร์ได้ไหม','ราคาเท่าไร','จ่ายด้วยบัตร','ช่วยห่อของขวัญได้ไหม','ขอถุงหนึ่งใบ','เปลี่ยนหรือคืนสินค้าได้ไหม','ขอใบเสร็จ','แค่ดูเฉยๆ'], h1:'1. ไม่สบายตรงไหน', h2:'2. เกี่ยวกับคุณ (ไม่บังคับ)', showPharm:'ให้เภสัชกรดู', h3:'คำถามที่ชี้ให้ดูได้',
@@ -284,7 +284,7 @@ const I18N = {
   info:{child:'ยาสำหรับเด็ก (อายุ ___ ปี กรุณาบอกอายุให้เภสัชกร)',pregnant:'กำลังตั้งครรภ์',breast:'กำลังให้นมลูก',meds:'กำลังทานยาอื่นอยู่',nodrowsy:'ขอยาที่ไม่ทำให้ง่วง',penicillin:'แพ้ยาเพนิซิลลิน',aspirin:'แพ้ยาแอสไพริน',ibuprofen:'แพ้ยาไอบูโพรเฟน'},
   pq:['ทานวันละกี่ครั้ง ครั้งละกี่เม็ด','ทานก่อนหรือหลังอาหาร','ยานี้ทำให้ง่วงไหม','ยานี้ต้องมีใบสั่งยาไหม','คลินิกหรือโรงพยาบาลที่ใกล้ที่สุดอยู่ที่ไหน','แถวนี้มีร้านขายยาที่เปิดอยู่ไหม'],
   tq:['จอดตรงนี้','จ่ายด้วยบัตร','ขอใบเสร็จ','ช่วยเปิดท้ายรถหน่อย','ใช้เวลานานแค่ไหน','ขับช้าๆ หน่อย','ไปสนามบินอินชอน','ไปสนามบินอินชอน อาคารผู้โดยสาร 1','ไปสนามบินอินชอน อาคารผู้โดยสาร 2','ไปสนามบินกิมโป','ไปสถานีรถไฟใต้ดินที่ใกล้ที่สุด']},
- ja: {sub:'必要なものを選んで、スマホを薬剤師さんやタクシーの運転手さんに見せてください。大きな韓国語は相手用、下の小さな文字はあなた用の説明です。',
+ ja: {h0:'韓国の薬局・タクシー・買い物カード', sub:'必要なものを選んで、スマホを薬剤師さんやタクシーの運転手さんに見せてください。大きな韓国語は相手用、下の小さな文字はあなた用の説明です。',
   share:'旅の仲間にシェア', copied:'リンクをコピーしました', tabs:['薬局','タクシー','ショッピング','知っておくこと'], titles:{Pharmacy:'薬局',Question:'質問',Taxi:'タクシー',Emergency:'緊急',Shopping:'ショッピング'}, h5:'買い物のフレーズ',
   taxfree:'<b>免税（タックスリファンド）：</b>「Tax Free」「Tax Refund」の表示がある店でパスポートを見せてください。多くの店でその場で還付され、1回の購入につき₩1,000,000未満、旅行全体で最大₩5,000,000までです。それ以外は空港のキオスクで手続きできます。最低購入金額はふつうレシート1枚₩15,000ですが、お店で確認してください。（2024年からの制度です。最新の規定をご確認ください。）',
   sq:['免税（タックスリファンド）できますか？','今すぐ還付してもらえますか？','パスポートはこちらです。','これ、ほかのサイズはありますか？','ほかの色はありますか？','試着してもいいですか？','テスターを試してもいいですか？','いくらですか？','カードで払います。','ギフト包装できますか？','袋を一つください。','交換や返金はできますか？','レシートをください。','見ているだけです。'], h1:'1. どんな症状ですか？', h2:'2. あなたについて（任意）', showPharm:'薬剤師さんに見せる', h3:'指さして聞ける質問',
