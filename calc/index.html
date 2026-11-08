@@ -185,17 +185,24 @@ function calc(){
 let hist = store.get('hist', []);
 const now = new Date(); $('#month').value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
 function curNet(){ return rows.reduce((s,r)=>s+netOf(r),0) - num($('#fixed').value) }
+function monthsBetween(a, b){ const [y1,m1] = a.split('-').map(Number), [y2,m2] = b.split('-').map(Number); return (y2-y1)*12 + (m2-m1) }
 function drawHist(){
   const h = hist.slice().sort((a,b)=>a.m<b.m?-1:1).slice(-12);
-  if (!h.length){ $('#hist').innerHTML = '<span class="sub">매달 말에 저장해 두면 순수익이 늘고 있는지 한눈에 보여요.</span>'; return }
+  if (!h.length){ $('#hist').innerHTML = '<span class="sub">매달 말에 저장해 두면 순수익이 늘고 있는지 한눈에 보여요. (최근 12달까지 보여요)</span>'; return }
   const max = Math.max(1, ...h.map(x=>Math.abs(x.net)));
   $('#hist').innerHTML = h.map((x,i) => { const prev = i ? h[i-1].net : null, d = prev === null ? '' : (x.net-prev >= 0 ? '▲ ' : '▼ ') + won(Math.abs(x.net-prev));
-    return `<div class="r"><span>${x.m.replace('-','.')}</span><span class="t"><i style="width:${Math.max(0,x.net)/max*100}%"></i></span><span class="v ${x.net<0?'neg':''}">${won(x.net)} <small class="sub">${d}</small> <button class="x" data-m="${x.m}" aria-label="${x.m} 기록 지우기">×</button></span></div>` }).join('');
+    const gap = i ? monthsBetween(h[i-1].m, x.m) : 0; const dd = prev === null ? '' : (x.net === prev ? '변동 없음' : d + (gap > 1 ? ` (${h[i-1].m.slice(5)}월 대비)` : ''));
+    return `<div class="r"><span>${x.m.replace('-','.')}</span><span class="t"><i style="width:${Math.max(0,x.net)/max*100}%"></i></span><span class="v ${x.net<0?'neg':''}">${won(x.net)} <small class="sub">${dd}</small> <button class="x" data-m="${x.m}" aria-label="${x.m} 기록 지우기">×</button></span></div>` }).join('');
 }
-$('#saveMonth').addEventListener('click', () => { const m = $('#month').value; if (!m) return;
-  hist = hist.filter(x => x.m !== m); hist.push({m, net: Math.round(curNet()), hours: rows.reduce((s,r)=>s+num(r.hours),0)}); store.set('hist', hist); drawHist();
-  $('#saveMonth').textContent = example ? '저장했어요 (예시 값이에요)' : '저장했어요'; setTimeout(() => $('#saveMonth').textContent = '이 달 순수익 저장', 1800) });
-$('#hist').addEventListener('click', e => { const m = e.target.dataset && e.target.dataset.m; if (!m) return; hist = hist.filter(x => x.m !== m); store.set('hist', hist); drawHist() });
+$('#saveMonth').addEventListener('click', () => { const m = $('#month').value; if (!/^\d{4}-\d{2}$/.test(m)) return;
+  if (example){ $('#saveMonth').textContent = '예시 값이라 저장 안 했어요. 내 숫자를 넣어 주세요'; setTimeout(() => $('#saveMonth').textContent = '이 달 순수익 저장', 2500); return }
+  hist = hist.filter(x => x.m !== m); hist.push({m, net: Math.round(curNet()), hours: rows.reduce((s,r)=>s+num(r.hours),0)});
+  hist = hist.sort((a,b)=>a.m<b.m?-1:1).slice(-24); store.set('hist', hist); drawHist();
+  $('#saveMonth').textContent = '저장했어요'; setTimeout(() => $('#saveMonth').textContent = '이 달 순수익 저장', 1800) });
+// 지우기는 두 번 눌러야 함(폰에서 잘못 누르기 방지)
+$('#hist').addEventListener('click', e => { const b = e.target, m = b.dataset && b.dataset.m; if (!m) return;
+  if (b.dataset.armed !== '1'){ b.dataset.armed = '1'; b.textContent = '한 번 더 누르면 지워요'; setTimeout(() => { if (b.isConnected){ b.dataset.armed = ''; b.textContent = '×' } }, 3000); return }
+  hist = hist.filter(x => x.m !== m); store.set('hist', hist); drawHist() });
 drawHist();
 $('#add').addEventListener('click', () => { rows.push({name:'새 수익원', sales:0, fee:0, ad:0, cost:0, hours:0}); touched(); draw() });
 ['#goal','#fixed'].forEach(s => $(s).addEventListener('input', calc));
