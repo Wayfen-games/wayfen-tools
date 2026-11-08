@@ -388,7 +388,9 @@ function replyShow(i){ const r = REP[rCtx][i];
   $('#showTitle').textContent = RU[0]; $('#showBody').innerHTML = `<p class="ans">${esc(tr(r))}</p><p class="ansko" lang="ko">${esc(r.ko)}</p>`;
   $('#showEn').textContent = RU[3]; $('#speak').hidden = true; setReply('answer'); fit() }
 $('#showBody').addEventListener('click', e => { const t = e.target.closest && e.target.closest('button'); if (!t) return;
-  if (t.dataset.r) replyShow(+t.dataset.r); else if (t.dataset.dose) doseForm(); else if (t.dataset.g){ const g = +t.dataset.g, o = +t.dataset.o; dsel[g] = dsel[g] === o ? null : o; doseForm() } else if (t.dataset.doseok) doseShow() });
+  if (t.dataset.r) replyShow(+t.dataset.r); else if (t.dataset.dose) doseForm(); else if (t.dataset.g){ const g = +t.dataset.g, o = +t.dataset.o; dsel[g] = dsel[g] === o ? null : o;
+    const NEED = DOSE[2][1].findIndex(x => x.ko === '아플 때만');  // '아플 때만'과 '하루에 ○번'은 같이 못 고름
+    if (g === 2 && dsel[2] === NEED) dsel[0] = null; if (g === 0 && dsel[0] !== null && dsel[2] === NEED) dsel[2] = null; doseForm() } else if (t.dataset.doseok) doseShow() });
 $('#rMain').addEventListener('click', () => { if (rMode === 'card') replyList(); else if (lastShow) show(...lastShow) });
 $('#rAlt').addEventListener('click', replyList);
 // 안드로이드 뒤로가기: 큰 화면만 닫음(페이지를 떠나지 않게)

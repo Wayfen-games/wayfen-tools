@@ -39,7 +39,9 @@ body.has-bar{padding-bottom:90px}
 .sheet .req{font:800 24px/1.4 "Apple SD Gothic Neo","Malgun Gothic",system-ui;color:#b3261e;margin:0}
 .sheet .opts{display:flex;flex-wrap:wrap;gap:8px;border-top:1px solid #eee;padding-top:10px}
 .sheet .opts label{display:flex;align-items:center;gap:6px;border:1px solid #d6d6d6;border-radius:999px;padding:8px 12px;font:600 15px system-ui}
-.sheet .small{font:13px/1.4 system-ui;color:#5a616c;margin:0}
+.sheet .small{font:15px/1.4 system-ui;color:#5a616c;margin:0}
+.sheet{grid-template-rows:auto 1fr auto auto} .sbar{padding-top:8px} .sbar button{width:100%;border:2px solid #1f6f5c;background:#e9f5f1;color:#0f3d33;font:800 17px system-ui;border-radius:12px;padding:12px}
+.sheet .sa{display:block;width:100%;text-align:left;border:1px solid #d6d6d6;background:#fafafa;color:#111;font:700 18px/1.35 "Apple SD Gothic Neo","Malgun Gothic",system-ui;border-radius:12px;padding:10px 12px;margin:0 0 8px;cursor:pointer}
 </style></head>
 <body><main id="m"></main>
 <script>
@@ -99,6 +101,10 @@ function render(){
 }
 // 직원에게 보여 줄 한국어 주문 화면 (가게 서버 없음: 이 폰 화면 안에서만)
 let cur = null; const qty = {}; const opt = {less:false, nosp:false, nopork:false};
+const SA = [{"ko": "네, 주문 받았어요. 잠시만 기다려 주세요.", "en": "Got it. Your order is in. Please wait a moment.", "zh": "好的，已经下单了，请稍等。", "ja": "ご注文承りました。少々お待ちください。", "id": "Baik, pesanan sudah diterima. Mohon tunggu sebentar.", "vi": "Vâng, đã nhận món. Xin chờ một chút.", "th": "รับออเดอร์แล้ว รอสักครู่"}, {"ko": "네, 빼 드릴게요.", "en": "Yes, we'll leave it out.", "zh": "好的，我们不放。", "ja": "はい、抜いてお作りします。", "id": "Baik, kami tidak memakainya.", "vi": "Vâng, chúng tôi sẽ bỏ ra.", "th": "ได้ จะไม่ใส่ให้"}, {"ko": "덜 맵게 해 드릴게요.", "en": "We'll make it less spicy.", "zh": "我们做得少辣一点。", "ja": "辛さ控えめにします。", "id": "Kami buat kurang pedas.", "vi": "Chúng tôi sẽ làm ít cay.", "th": "จะทำให้เผ็ดน้อยลง"}, {"ko": "이 메뉴는 원래 돼지고기 요리라서 뺄 수 없어요.", "en": "This dish is made with pork, so we can't leave it out.", "zh": "这道菜本来就是猪肉做的，没办法不放。", "ja": "この料理はもともと豚肉料理なので、抜けません。", "id": "Menu ini memang masakan babi, jadi tidak bisa dihilangkan.", "vi": "Món này vốn là món thịt heo nên không bỏ được.", "th": "เมนูนี้เป็นอาหารหมูอยู่แล้ว เอาออกไม่ได้"}, {"ko": "이 메뉴는 지금 안 돼요. 다른 걸 골라 주세요.", "en": "This dish isn't available now. Please choose another.", "zh": "这道菜现在没有，请换一道。", "ja": "このメニューは今できません。別のものを選んでください。", "id": "Menu ini sedang tidak ada. Silakan pilih yang lain.", "vi": "Món này hiện không có. Vui lòng chọn món khác.", "th": "เมนูนี้ตอนนี้ไม่มี กรุณาเลือกอย่างอื่น"}, {"ko": "확실하지 않아요. 주방에 확인할게요.", "en": "I'm not sure. I'll check with the kitchen.", "zh": "我不确定，我去问一下厨房。", "ja": "わかりません。厨房に確認します。", "id": "Saya tidak yakin. Saya tanyakan ke dapur.", "vi": "Tôi không chắc. Tôi sẽ hỏi nhà bếp.", "th": "ไม่แน่ใจ จะไปถามครัวก่อน"}, {"ko": "잠시만요.", "en": "One moment, please.", "zh": "请稍等。", "ja": "少々お待ちください。", "id": "Mohon tunggu sebentar.", "vi": "Xin chờ một chút.", "th": "รอสักครู่"}], SUI = {"en": "Staff's answer", "zh": "店员的回答", "ja": "店員さんの答え", "id": "Jawaban staf", "vi": "Câu trả lời của nhân viên", "th": "คำตอบของพนักงาน", "ko": "직원 답"}, PWARN = {"en": "contains pork", "zh": "含猪肉", "ja": "豚肉入り", "id": "mengandung babi", "vi": "có thịt heo", "th": "มีหมู", "ko": "돼지고기 들어감"};
+// 뒤로가기: 주문 화면만 닫음(담은 것 유지)
+let pushed = false; addEventListener('popstate', () => { const sh = document.getElementById('sheet'); if (sh && !sh.hidden){ pushed = false; sh.hidden = true } });
+function closeSheet(){ const sh = document.getElementById('sheet'); if (pushed){ pushed = false; try{ history.back() }catch(e){} } sh.hidden = true }
 const KO_OPT = {less:'덜 맵게 해 주세요.', nosp:'맵지 않게 해 주세요.', nopork:'돼지고기는 빼 주세요.'};
 function showOrder(){
   const t = T[lang]; let sh = document.getElementById('sheet');
@@ -106,13 +112,19 @@ function showOrder(){
   const rows = cur.items.map((x,i) => [x,i]).filter(([x,i]) => qty[i]);
   const noPrice = rows.some(([x]) => !(Number.isFinite(x.price) && x.price > 0));
   const total = noPrice ? 0 : rows.reduce((a,[x,i]) => a + x.price * qty[i], 0);
-  const reqs = Object.keys(opt).filter(k => opt[k]).map(k => `<p class="req">${KO_OPT[k]}</p>`).join('');
+  const reqs = Object.keys(opt).filter(k => opt[k]).map(k => `<p class="req">${KO_OPT[k]}</p>`).join('')
+    + (opt.nopork ? rows.filter(([x]) => x.marks.includes('P')).map(([x,i]) => `<p class="req">⚠ ${i+1}. ${esc(x.ko)}: ${PWARN.ko} (${esc(PWARN[lang] || PWARN.en)})</p>`).join('') : '');
   sh.innerHTML = `<div class="top"><span>${t.title}</span><button id="shClose">${t.close}</button></div>
     <div class="body"><p class="say">주문할게요.</p><ul class="ol">${rows.map(([x,i]) => `<li>${i+1}. ${esc(x.ko)} <b>${qty[i]}개</b></li>`).join('')}</ul>${reqs}
     ${total ? `<p class="small">${lang==='ko' ? '' : t.tot + ' / '}합계 ₩${total.toLocaleString('ko-KR')}</p>` : ''}<p class="say">감사합니다!</p></div>
     <div class="opts">${Object.keys(opt).map(k => `<label><input type="checkbox" data-o="${k}" ${opt[k]?'checked':''}> ${t[k]}</label>`).join('')}</div>`;
+  sh.insertAdjacentHTML('beforeend', `<div class="sbar"><button id="saBtn">👉 직원분: 여기를 눌러 답해 주세요</button></div>`);
+  if (!pushed){ try{ history.pushState({sheet:1}, ''); pushed = true }catch(e){} }
   sh.hidden = false;
-  document.getElementById('shClose').onclick = () => { sh.hidden = true };
+  document.getElementById('shClose').onclick = closeSheet;
+  document.getElementById('saBtn').onclick = () => { const b = sh.querySelector('.body'); sh.querySelector('.opts').hidden = true; document.getElementById('saBtn').textContent = '↩'; document.getElementById('saBtn').onclick = showOrder; b.innerHTML = '<p class="small">직원분: 손님께 드릴 답을 눌러 주세요</p>' + SA.map((a,i) => `<button class="sa" data-a="${i}">${esc(a.ko)}</button>`).join('');
+    b.querySelectorAll('[data-a]').forEach(x => x.onclick = () => { const a = SA[+x.dataset.a]; b.innerHTML = `<p class="small">${esc(SUI[lang] || SUI.en)}</p><p class="say">${esc(a[lang] || a.en)}</p><p class="small" lang="ko">${esc(a.ko)}</p>`;
+      document.getElementById('saBtn').textContent = '↩'; document.getElementById('saBtn').onclick = showOrder }) };
   sh.querySelectorAll('[data-o]').forEach(c => c.onchange = () => { opt[c.dataset.o] = c.checked; if (c.dataset.o==='less' && c.checked) opt.nosp = false; if (c.dataset.o==='nosp' && c.checked) opt.less = false; showOrder() });
 }
 addEventListener('hashchange', render); render();
