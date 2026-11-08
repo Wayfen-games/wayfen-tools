@@ -95,6 +95,13 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid 
 <h2>목표까지</h2>
 <div class="bar" id="toGoal"></div>
 
+<h2>월별 기록</h2>
+<div class="bar">
+  <div class="grid"><label>어느 달<input id="month" type="month"></label>
+  <label>&nbsp;<button class="btn" id="saveMonth" style="padding:9px">이 달 순수익 저장</button></label></div>
+  <div id="hist"></div>
+</div>
+
 <div class="note">
   <b>알아 두기.</b> 순수익은 세금을 빼기 전 금액이에요. 플랫폼 수수료는 직접 고칠 수 있는 예시 값이에요(2026년 11월, 공식 표 확인 전). 3.3%는 미리 떼는 세금이라 5월 종합소득세 신고 때 돌려받거나 더 낼 수 있어요. 정확한 세금은 홈택스나 세무사에게 확인하세요. 입력한 숫자는 이 기기에만 저장돼요.
 </div>
@@ -174,6 +181,22 @@ function calc(){
   $('#exTag').hidden = !example;
   store.set('goal', $('#goal').value); store.set('fixed', $('#fixed').value);
 }
+// 월별 기록: 이 기기에만 저장. 같은 달은 덮어씀
+let hist = store.get('hist', []);
+const now = new Date(); $('#month').value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+function curNet(){ return rows.reduce((s,r)=>s+netOf(r),0) - num($('#fixed').value) }
+function drawHist(){
+  const h = hist.slice().sort((a,b)=>a.m<b.m?-1:1).slice(-12);
+  if (!h.length){ $('#hist').innerHTML = '<span class="sub">매달 말에 저장해 두면 순수익이 늘고 있는지 한눈에 보여요.</span>'; return }
+  const max = Math.max(1, ...h.map(x=>Math.abs(x.net)));
+  $('#hist').innerHTML = h.map((x,i) => { const prev = i ? h[i-1].net : null, d = prev === null ? '' : (x.net-prev >= 0 ? '▲ ' : '▼ ') + won(Math.abs(x.net-prev));
+    return `<div class="r"><span>${x.m.replace('-','.')}</span><span class="t"><i style="width:${Math.max(0,x.net)/max*100}%"></i></span><span class="v ${x.net<0?'neg':''}">${won(x.net)} <small class="sub">${d}</small> <button class="x" data-m="${x.m}" aria-label="${x.m} 기록 지우기">×</button></span></div>` }).join('');
+}
+$('#saveMonth').addEventListener('click', () => { const m = $('#month').value; if (!m) return;
+  hist = hist.filter(x => x.m !== m); hist.push({m, net: Math.round(curNet()), hours: rows.reduce((s,r)=>s+num(r.hours),0)}); store.set('hist', hist); drawHist();
+  $('#saveMonth').textContent = example ? '저장했어요 (예시 값이에요)' : '저장했어요'; setTimeout(() => $('#saveMonth').textContent = '이 달 순수익 저장', 1800) });
+$('#hist').addEventListener('click', e => { const m = e.target.dataset && e.target.dataset.m; if (!m) return; hist = hist.filter(x => x.m !== m); store.set('hist', hist); drawHist() });
+drawHist();
 $('#add').addEventListener('click', () => { rows.push({name:'새 수익원', sales:0, fee:0, ad:0, cost:0, hours:0}); touched(); draw() });
 ['#goal','#fixed'].forEach(s => $(s).addEventListener('input', calc));
 draw();

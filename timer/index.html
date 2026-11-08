@@ -94,6 +94,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   <div class="foot">
     <span>Music by Wayfen Sounds.</span>
     <span><span data-t="more">More long mixes on YouTube:</span> <a href="https://www.youtube.com/@WayfenSounds" target="_blank" rel="noopener">Wayfen Sounds</a></span>
+    <span><span data-t="stream">Listen anywhere:</span> <a href="https://open.spotify.com/artist/6rmPB6j6p68z4COHetx3Wj" target="_blank" rel="noopener">Spotify</a> · <a href="https://music.apple.com/kr/artist/wayfen-sounds/6815644180" target="_blank" rel="noopener">Apple Music</a></span>
   </div>
 </div>
 <audio id="aud" preload="auto"></audio>
@@ -101,9 +102,9 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 <script>
 // 언어: ?lang=ko|en > 저장값 > 폰 언어
 const T = {
-  en: {title:'Wayfen Study Timer', sub:'lofi focus timer', vol:'Music volume', rest:'Keep music on during breaks', more:'More long mixes on YouTube:',
+  en: {title:'Wayfen Study Timer', sub:'lofi focus timer', vol:'Music volume', rest:'Keep music on during breaks', more:'More long mixes on YouTube:', stream:'Listen anywhere:',
        focus:'Focus', brk:'Break', sess:n=>`${n} session${n===1?'':'s'} today`, start:'Start', pause:'Pause', reset:'Reset timer', skip:'Skip to next phase', next:'Next song'},
-  ko: {title:'Wayfen 공부 타이머', sub:'로파이 집중 타이머', vol:'음악 소리', rest:'쉬는 시간에도 음악 켜 두기', more:'더 긴 믹스는 유튜브에서:',
+  ko: {title:'Wayfen 공부 타이머', sub:'로파이 집중 타이머', vol:'음악 소리', rest:'쉬는 시간에도 음악 켜 두기', more:'더 긴 믹스는 유튜브에서:', stream:'음원 사이트에서 듣기:',
        focus:'집중', brk:'휴식', sess:n=>`오늘 ${n}번 완료`, start:'시작', pause:'일시정지', reset:'처음으로', skip:'다음 단계로', next:'다음 곡'}};
 let L = (new URLSearchParams(location.search).get('lang')) || (()=>{try{return localStorage.getItem('lang')}catch(e){return null}})() || ((navigator.language||'').toLowerCase().startsWith('ko') ? 'ko' : 'en');
 if (!T[L]) L = 'en';

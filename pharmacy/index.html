@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Korea Pharmacy & Taxi Cards</title>
-<meta name="description" content="Free show-the-staff cards for Korea: describe symptoms at a pharmacy and show your address to a taxi driver in Korean.">
+<meta name="description" content="Free show-the-staff cards for Korea: describe symptoms at a pharmacy, show your address to a taxi driver, and ask about tax refunds and sizes when shopping, in Korean.">
 <meta property="og:title" content="Korea Pharmacy & Taxi Cards">
-<meta property="og:description" content="Free show-the-staff cards for Korea: describe symptoms at a pharmacy and show your address to a taxi driver in Korean.">
+<meta property="og:description" content="Free show-the-staff cards for Korea: describe symptoms at a pharmacy, show your address to a taxi driver, and ask about tax refunds and sizes when shopping, in Korean.">
 <meta name="theme-color" content="#1f5f73">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
@@ -69,7 +69,7 @@ textarea{width:100%;min-height:96px;font:16px/1.5 var(--f-ko);padding:12px;borde
 
 <div class="wrap">
 <header>
-  <h1>Korea Pharmacy &amp; Taxi Cards</h1>
+  <h1>Korea Pharmacy, Taxi &amp; Shopping Cards</h1>
   <p class="sub" data-i="sub">Pick what you need, then hand your phone to the pharmacist or taxi driver. Big Korean for them, a small English line for you.</p>
   <p class="langs" id="langs"></p>
   <button class="sharebtn" id="share" data-i="share">Share with your travel buddy</button>
@@ -77,6 +77,7 @@ textarea{width:100%;min-height:96px;font:16px/1.5 var(--f-ko);padding:12px;borde
 <nav role="tablist" aria-label="Sections">
   <button id="t-pharm" role="tab" aria-selected="true" data-tab="pharm">Pharmacy</button>
   <button id="t-taxi" role="tab" aria-selected="false" data-tab="taxi">Taxi</button>
+  <button id="t-shop" role="tab" aria-selected="false" data-tab="shop">Shopping</button>
   <button id="t-about" role="tab" aria-selected="false" data-tab="about">Good to know</button>
 </nav>
 
@@ -96,6 +97,12 @@ textarea{width:100%;min-height:96px;font:16px/1.5 var(--f-ko);padding:12px;borde
   <button class="primary" id="showTaxi" disabled data-i="showTaxi">Show the driver</button>
   <h2 data-i="h4">Phrases for the ride</h2>
   <div id="tq" style="display:grid;gap:8px"></div>
+</section>
+
+<section id="p-shop" role="tabpanel" hidden>
+  <div class="tip"><p data-ih="taxfree"><b>Tax refund:</b> look for a “Tax Free” or “Tax Refund” sign and show your passport. Many stores refund the tax on the spot, up to ₩1,000,000 per receipt and ₩5,000,000 per trip; otherwise claim it at the airport kiosk. The minimum purchase differs by store, so ask. (Rules in place since 2024; check current rules.)</p></div>
+  <h2 data-i="h5">Phrases for shopping</h2>
+  <div id="sq" style="display:grid;gap:8px"></div>
 </section>
 
 <section id="p-about" role="tabpanel" hidden>
@@ -159,6 +166,22 @@ const PQ = [
   ["가까운 병원이 어디예요?","Where is the nearest clinic or hospital?"],
   ["근처에 문 연 약국이 있어요?","Is there a pharmacy open nearby?"],
 ];
+const SQ = [
+  ["택스 리펀드 돼요?","Can I get a tax refund here?"],
+  ["지금 바로 환급받을 수 있어요?","Can I get the refund right now?"],
+  ["여권 여기 있어요.","Here is my passport."],
+  ["이거 다른 사이즈 있어요?","Do you have this in another size?"],
+  ["다른 색도 있어요?","Do you have other colors?"],
+  ["입어 봐도 돼요?","Can I try it on?"],
+  ["테스터 써 봐도 돼요?","Can I try the tester?"],
+  ["얼마예요?","How much is it?"],
+  ["카드로 할게요.","I'll pay by card."],
+  ["선물 포장 돼요?","Can you gift-wrap it?"],
+  ["봉투 하나 주세요.","Can I have a bag, please?"],
+  ["교환이나 환불 돼요?","Can I exchange it or get a refund?"],
+  ["영수증 주세요.","Receipt, please."],
+  ["그냥 구경하고 있어요.","I'm just looking."],
+];
 const TQ = [
   ["여기서 세워 주세요.","Please stop here."],
   ["카드로 낼게요.","I'll pay by card."],
@@ -179,7 +202,9 @@ const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(
 // 손님 화면 언어(중·일). 약사·기사에게 보여 주는 한국어는 그대로. [번역: Claude, 원어민 검수 전]
 const I18N = {
  zh: {sub:'选好需要的内容，把手机递给药剂师或出租车司机。大字韩语给对方看，下面的小字是给您看的说明。',
-  share:'分享给同行的朋友', copied:'已复制链接', tabs:['药店','出租车','须知'], titles:{Pharmacy:'药店',Question:'提问',Taxi:'出租车',Emergency:'紧急'}, h1:'1. 哪里不舒服？', h2:'2. 关于您（可选）', showPharm:'给药剂师看', h3:'可以指着问的问题',
+  share:'分享给同行的朋友', copied:'已复制链接', tabs:['药店','出租车','购物','须知'], titles:{Pharmacy:'药店',Question:'提问',Taxi:'出租车',Emergency:'紧急',Shopping:'购物'}, h5:'购物用语',
+  taxfree:'<b>退税：</b>认准“Tax Free”或“Tax Refund”标志，出示护照。很多店可以当场退税，每张收据最多₩1,000,000，每次旅行合计最多₩5,000,000；否则可在机场自助机办理。最低消费金额各店不同，请询问店员。（2024年起实施的规定，请确认最新规定。）',
+  sq:['可以退税吗？','可以现在马上退税吗？','这是我的护照。','这个有别的尺码吗？','有别的颜色吗？','可以试穿吗？','可以试用试用装吗？','多少钱？','我用卡付款。','可以包装成礼物吗？','请给我一个袋子。','可以换货或退款吗？','请给我收据。','我只是看看。'], h1:'1. 哪里不舒服？', h2:'2. 关于您（可选）', showPharm:'给药剂师看', h3:'可以指着问的问题',
   taxiHint:'粘贴酒店或目的地的韩语地址（可从预订信息或地图应用复制）。只保存在这部手机上。', showTaxi:'给司机看', h4:'乘车用语', close:'关闭',
   ab1:'<b>药店</b>韩语叫 약국 (yak-guk)。请找写着 <b>약</b> 的绿色或红色招牌。很多药店晚上和周日不营业。',
   ab2:'<b>24小时便利店</b>在药店关门时出售少数常用药：退烧止痛药、感冒药、消化药和止痛贴。不卖止泻药（截至2026年11月）。',
@@ -193,7 +218,9 @@ const I18N = {
   pq:['一天吃几次，每次几粒？','饭前吃还是饭后吃？','吃这个药会犯困吗？','这个药需要处方吗？','最近的诊所或医院在哪里？','附近有开门的药店吗？'],
   tq:['请在这里停车。','我用卡付款。','请给我收据。','请打开后备箱。','需要多长时间？','请开慢一点。','请去仁川机场。','请去仁川机场第1航站楼。','请去仁川机场第2航站楼。','请去金浦机场。','请去最近的地铁站。']},
  ja: {sub:'必要なものを選んで、スマホを薬剤師さんやタクシーの運転手さんに見せてください。大きな韓国語は相手用、下の小さな文字はあなた用の説明です。',
-  share:'旅の仲間にシェア', copied:'リンクをコピーしました', tabs:['薬局','タクシー','知っておくこと'], titles:{Pharmacy:'薬局',Question:'質問',Taxi:'タクシー',Emergency:'緊急'}, h1:'1. どんな症状ですか？', h2:'2. あなたについて（任意）', showPharm:'薬剤師さんに見せる', h3:'指さして聞ける質問',
+  share:'旅の仲間にシェア', copied:'リンクをコピーしました', tabs:['薬局','タクシー','ショッピング','知っておくこと'], titles:{Pharmacy:'薬局',Question:'質問',Taxi:'タクシー',Emergency:'緊急',Shopping:'ショッピング'}, h5:'買い物のフレーズ',
+  taxfree:'<b>免税（タックスリファンド）：</b>「Tax Free」「Tax Refund」の表示がある店でパスポートを見せてください。多くの店でその場で還付され、レシート1枚あたり最大₩1,000,000、旅行全体で最大₩5,000,000です。それ以外は空港のキオスクで手続きできます。最低購入金額は店によって違うので確認してください。（2024年からの制度です。最新の規定をご確認ください。）',
+  sq:['免税（タックスリファンド）できますか？','今すぐ還付してもらえますか？','パスポートはこちらです。','これの別のサイズはありますか？','ほかの色はありますか？','試着してもいいですか？','テスターを試してもいいですか？','いくらですか？','カードで払います。','ギフト包装できますか？','袋を一つください。','交換や返金はできますか？','レシートをください。','見ているだけです。'], h1:'1. どんな症状ですか？', h2:'2. あなたについて（任意）', showPharm:'薬剤師さんに見せる', h3:'指さして聞ける質問',
   taxiHint:'ホテルや目的地の韓国語の住所を貼り付けてください（予約情報や地図アプリからコピー）。このスマホにだけ保存されます。', showTaxi:'運転手さんに見せる', h4:'乗車中のフレーズ', close:'閉じる',
   ab1:'<b>薬局</b>は韓国語で 약국（ヤックク）。<b>약</b> と書かれた緑か赤の看板が目印です。夜や日曜は閉まる店が多いです。',
   ab2:'<b>24時間営業のコンビニ</b>では、薬局が閉まっている時間に一部の常備薬を買えます（解熱鎮痛薬、かぜ薬、胃腸薬、湿布）。下痢止めは売っていません（2026年11月時点）。',
@@ -217,7 +244,7 @@ if (X){
   document.querySelectorAll('[data-ih]').forEach(e => { if (X[e.dataset.ih]) e.innerHTML = X[e.dataset.ih] });
   document.querySelectorAll('nav button').forEach((b,k) => b.textContent = X.tabs[k]);
   SYM.forEach(x => { if (X.sym[x[0]]) x[1] = X.sym[x[0]] }); INFO.forEach(x => { if (X.info[x[0]]) x[1] = X.info[x[0]] });
-  PQ.forEach((x,k) => { if (X.pq[k]) x[1] = X.pq[k] }); TQ.forEach((x,k) => { if (X.tq[k]) x[1] = X.tq[k] });
+  PQ.forEach((x,k) => { if (X.pq[k]) x[1] = X.pq[k] }); TQ.forEach((x,k) => { if (X.tq[k]) x[1] = X.tq[k] }); SQ.forEach((x,k) => { if (X.sq && X.sq[k]) x[1] = X.sq[k] });
 }
 const W = X || {have:'I have: ', also:' Also: ', rec:' Please recommend something suitable. Thank you!', taxi:'Please take me to this address. Thank you!',
   sos:'I feel very sick. Please call 119 (ambulance). I need to go to the nearest emergency room. Please help me.', sep:', ', end:'.'};
@@ -227,7 +254,7 @@ const SH = X || {share:'Share with your travel buddy', copied:'Link copied'};
 document.getElementById('share').addEventListener('click', async () => { const b = document.getElementById('share'), url = location.origin + location.pathname + (LANG !== 'en' ? '?lang=' + LANG : '');
   try { if (navigator.share) { await navigator.share({title: document.title, url}); return } } catch(e) { if (e && e.name === 'AbortError') return }
   try { await navigator.clipboard.writeText(url); b.textContent = SH.copied; setTimeout(() => b.textContent = SH.share, 2000) } catch(e) {} });
-const TABS = ['pharm','taxi','about'];
+const TABS = ['pharm','taxi','shop','about'];
 function openTab(t){ document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===t))); TABS.forEach(x=>$('#p-'+x).hidden = x!==t); store.set('tab',t) }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
 
@@ -272,6 +299,8 @@ const addr = $('#addr'); addr.value = store.get('addr', ''); $('#showTaxi').disa
 addr.addEventListener('input', () => { store.set('addr', addr.value); $('#showTaxi').disabled = !addr.value.trim() });
 $('#showTaxi').addEventListener('click', () => show('Taxi', `<p class="say"><b>이 주소로 가 주세요.</b></p><p class="addr">${esc(addr.value.trim())}</p><p class="thanks">감사합니다!</p>`,
   W.taxi, ['taxi','thanks']));
+SQ.forEach(([ko,en],k) => { const b = document.createElement('button'); b.className='ask'; b.id='sq-'+k; b.innerHTML = `<b>${esc(ko)}</b><span>${esc(en)}</span>`;
+  b.addEventListener('click', () => show('Shopping', `<p class="say">${esc(ko)}</p>`, en, ['sq' + k])); $('#sq').appendChild(b) });
 TQ.forEach(([ko,en],k) => { const b = document.createElement('button'); b.className='ask'; b.id='tq-'+k; b.innerHTML = `<b>${esc(ko)}</b><span>${esc(en)}</span>`;
   b.addEventListener('click', () => show('Taxi', `<p class="say">${esc(ko)}</p>`, en, ['tq' + k])); $('#tq').appendChild(b) });
 { const t = store.get('tab','pharm'); openTab(TABS.includes(t) ? t : 'pharm') }
