@@ -12,7 +12,7 @@
 <link rel="canonical" href="https://wayfen-games.github.io/wayfen-tools/shop/">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "우리 가게 외국어 안내", "description": "외국인 손님에게 영어·중국어·일본어로 보여 주고, 가게 안내판·메뉴 번역·QR 메뉴·약국 복용 안내를 무료로 만드는 사장님용 도구.", "url": "https://wayfen-games.github.io/wayfen-tools/shop/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": ["ko", "en", "zh-Hans", "ja", "id", "vi", "th"], "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 <link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-title" content="가게 외국어">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)} body{margin:0} img{max-width:100%} [hidden]{display:none!important}</style>
 <script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script>
 </head>
@@ -30,7 +30,7 @@
   --bg:#161412; --surface:#211e1b; --ink:#efe9e2; --muted:#a59d93; --line:#37322c; --brand:#e0876c; --brand-ink:#1d0f0a; --soft:#2c211c; --ok:#7fc3a0; --warn:#f0936d; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#161412; --surface:#211e1b; --ink:#efe9e2; --muted:#a59d93; --line:#37322c; --brand:#e0876c; --brand-ink:#1d0f0a; --soft:#2c211c; --ok:#7fc3a0; --warn:#f0936d; color-scheme:dark}
-*{box-sizing:border-box} [hidden]{display:none!important}
+*{box-sizing:border-box} [hidden]{display:none!important} input,select,textarea{font-size:16px} #signs .fill{grid-column:1/-1}
 body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-ko);margin:0;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 32px}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
@@ -56,7 +56,7 @@ h2{font:700 15px var(--f-ko);margin:10px 0 0;color:var(--muted)}
 .sign:has(input:checked){border-color:var(--brand);background:var(--soft)}
 .fill{display:grid;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
 .fill label{display:grid;gap:4px;font-size:13px;font-weight:700}
-.fill input{font:15px var(--f-ko);padding:9px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.fill input{font:16px var(--f-ko);padding:9px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
 .sheet{background:#fff;color:#1d1b18;border:1px solid var(--line);border-radius:10px;padding:18px 16px;display:grid;gap:10px;aspect-ratio:1.414/1;align-content:center;overflow:hidden}
 .sheet .ko{font:900 clamp(20px,6vw,34px)/1.25 var(--f-ko)}
 .sheet .en{font:700 clamp(14px,4vw,22px)/1.3 var(--f-ko)}
@@ -243,7 +243,10 @@ let langs = new Set(store.get('langs',['en','zh','ja'])), picked = new Set(store
 LANGS.forEach(([k,n]) => { const l=document.createElement('label'); l.className='chip'; l.innerHTML=`<input type="checkbox" id="lg-${k}"${langs.has(k)?' checked':''}> ${n}`;
   l.querySelector('input').addEventListener('change',e=>{e.target.checked?langs.add(k):langs.delete(k); store.set('langs',[...langs]); render()}); $('#langs').appendChild(l) });
 DATA.signs.forEach(s => { const l=document.createElement('label'); l.className='sign'; l.innerHTML=`<input type="checkbox" id="sg-${s.id}"${picked.has(s.id)?' checked':''}><span>${esc(s.ko.replace(/___/g,'○○'))}</span>`;
-  l.querySelector('input').addEventListener('change',e=>{e.target.checked?picked.add(s.id):picked.delete(s.id); store.set('signs',[...picked]); render()}); $('#signs').appendChild(l) });
+  l.querySelector('input').addEventListener('change',e=>{e.target.checked?picked.add(s.id):picked.delete(s.id); store.set('signs',[...picked]); render();
+    // 빈칸 있는 안내를 고르면 그 줄 바로 밑에 입력칸을 옮겨 붙이고 바로 쓰게 함
+    if (!e.target.checked && s.blank){ const rest = [...document.querySelectorAll('#signs label.sign')].filter(x => x.querySelector('input').checked && DATA.signs.find(z => 'sg-' + z.id === x.querySelector('input').id).blank); if (rest.length) rest[rest.length-1].after($('#fill')) }
+    if (e.target.checked && s.blank){ l.after($('#fill')); const inp = document.getElementById(`f-${s.id}-0`); if (inp){ inp.scrollIntoView({block:'center'}); inp.focus() } } }); $('#signs').appendChild(l) });
 function blanks(s){ return (s.ko.match(/___/g)||[]).length }
 function fillText(t, vals){ let i=0; return t.replace(/___/g, () => { const v = (vals||[])[i++]; return v ? v : '____' }) }
 function render(){
@@ -251,7 +254,7 @@ function render(){
   // 빈칸 입력
   const f = $('#fill'); const need = sel.filter(s => s.blank); f.hidden = !need.length; f.innerHTML = need.length ? '<b>빈칸 채우기</b>' : '';
   need.forEach(s => { for (let i=0;i<blanks(s);i++){ const id=`f-${s.id}-${i}`; const lab=document.createElement('label');
-    lab.innerHTML = `${esc(s.ko.replace(/___/g,'○○'))} — ${i+1}번째 칸<input id="${id}" value="${esc((fills[s.id]||[])[i]||'')}" placeholder="예: ${esc(((DATA.examples||{})[s.id]||[])[i]||'')}">`;
+    lab.innerHTML = `${esc(s.ko.replace(/___/g,'○○'))}${blanks(s) > 1 ? ` — ${i+1}번째 칸` : ''}<input id="${id}" value="${esc((fills[s.id]||[])[i]||'')}" placeholder="예: ${esc(((DATA.examples||{})[s.id]||[])[i]||'')}">`;
     lab.querySelector('input').addEventListener('input', e => { fills[s.id] = fills[s.id]||[]; fills[s.id][i] = e.target.value; store.set('fills',fills); drawSheets() });
     f.appendChild(lab) } });
   drawSheets();

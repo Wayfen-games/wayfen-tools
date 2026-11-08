@@ -16,11 +16,12 @@ main{max-width:680px;margin:0 auto} h1{font-size:28px;line-height:1.25;margin:8p
 p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font-size:20px;font-weight:700}
 .card{background:var(--box);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
 .card small{display:block;color:var(--muted);font-size:14px} .cta{display:inline-block;background:var(--accent);color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:700;margin:12px 0}
-@media (prefers-color-scheme:dark){.cta{color:#0b1a1f}} nav a{font-size:14px} footer{margin-top:40px;font-size:14px;color:var(--muted)}
+@media (prefers-color-scheme:dark){.cta{color:#0b1a1f}} nav a{font-size:14px} .toprow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 8px} .cta2{font-weight:700;font-size:15px} .sharebtn{font:600 14px system-ui;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--box);color:var(--ink);cursor:pointer} .chart thead th,.chart .hr th{font-size:13px} footer{margin-top:40px;font-size:14px;color:var(--muted)}
 .tw{overflow-x:auto;margin:12px 0} .chart{border-collapse:collapse;font-size:14px;min-width:640px} .chart th,.chart td{border:1px solid var(--line);padding:6px;text-align:center} .chart tbody th{text-align:left;font-weight:600;min-width:150px;position:sticky;left:0;background:var(--bg)} .chart thead th:first-child{position:sticky;left:0;z-index:1} .chart tbody th small{display:block;font-weight:400;color:var(--muted);font-size:12px} .chart thead th,.chart .hr th{background:var(--box);font-size:12px;text-align:center}</style></head>
 <body><main>
 <nav><a href="../../">全部工具</a> · <a href="../taxi-in-korea/" hreflang="en" lang="en">English</a> · <a href="../taxi-in-korea-ja/" hreflang="ja" lang="ja">日本語</a> · <a href="../taxi-in-korea-zh/" hreflang="zh-Hans" lang="zh-Hans">简体中文</a></nav>
 <h1>在韓國搭計程車：給司機看韓文地址就好（免費卡片）</h1>
+<p class="toprow"><a class="cta2" href="../../pharmacy/?lang=tw#tab=taxi">打開免費工具 →</a> <button class="sharebtn" type="button" onclick="(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(u);this.textContent='✓'}catch(e){}})()">分享</button></p>
 <p class="lead">韓國很多計程車司機看不懂英文地址，飯店的英文名和韓文名也常常不一樣。最穩妥的方法是直接給司機看韓文地址。</p>
 <h2>上車前</h2>
 <ul><li>從訂房資訊或地圖App（Naver Map、Kakao Map 會顯示韓文）複製飯店的韓文地址。</li>
@@ -38,6 +39,6 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <li>深夜車資會變貴。</li>
 <li>仁川機場有兩個航廈，上車前請確認您的航空公司在哪個航廈。</li>
 <li>在韓國，Kakao T 等叫車App也很常用。</li></ul>
-<a class="cta" href="../../pharmacy/?lang=tw">打開免費工具：Korea Pharmacy, Taxi &amp; Shopping Cards</a>
+<a class="cta" href="../../pharmacy/?lang=tw#tab=taxi">打開免費工具：Korea Pharmacy, Taxi &amp; Shopping Cards</a>
 <footer>更新 2026-11-08</footer>
 </main></body></html>

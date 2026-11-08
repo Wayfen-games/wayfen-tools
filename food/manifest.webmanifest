@@ -1,6 +1,6 @@
 {
  "name": "Korea Food Cards",
- "short_name": "Food Cards",
+ "short_name": "Korea Food",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
