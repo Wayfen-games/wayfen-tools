@@ -113,7 +113,7 @@ function showOrder(){
   const noPrice = rows.some(([x]) => !(Number.isFinite(x.price) && x.price > 0));
   const total = noPrice ? 0 : rows.reduce((a,[x,i]) => a + x.price * qty[i], 0);
   const reqs = Object.keys(opt).filter(k => opt[k]).map(k => `<p class="req">${KO_OPT[k]}</p>`).join('')
-    + (opt.nopork ? rows.filter(([x]) => x.marks.includes('P')).map(([x,i]) => `<p class="req">⚠ ${i+1}. ${esc(x.ko)}: ${PWARN.ko} (${esc(PWARN[lang] || PWARN.en)})</p>`).join('') : '');
+    + (opt.nopork ? rows.filter(([x]) => x.marks.includes('P')).map(([x,i]) => `<p class="req">⚠ ${i+1}. ${esc(x.ko)}: ${PWARN.ko}${lang === 'ko' ? '' : ' (' + esc(PWARN[lang] || PWARN.en) + ')'}</p>`).join('') : '');
   sh.innerHTML = `<div class="top"><span>${t.title}</span><button id="shClose">${t.close}</button></div>
     <div class="body"><p class="say">주문할게요.</p><ul class="ol">${rows.map(([x,i]) => `<li>${i+1}. ${esc(x.ko)} <b>${qty[i]}개</b></li>`).join('')}</ul>${reqs}
     ${total ? `<p class="small">${lang==='ko' ? '' : t.tot + ' / '}합계 ₩${total.toLocaleString('ko-KR')}</p>` : ''}<p class="say">감사합니다!</p></div>
