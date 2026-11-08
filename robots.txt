@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://wayfen-games.github.io/wayfen-tools/sitemap.xml
