@@ -201,7 +201,7 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const kb = s => esc(s).replace(/&lt;b&gt;/g,'<b>').replace(/&lt;\/b&gt;/g,'</b>').replace(/___/g,'<b>____</b>');
 const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-// 손님 화면 언어(중·일). 약사·기사에게 보여 주는 한국어는 그대로. [번역: Claude, 원어민 검수 전]
+// 손님 화면 언어(중 간체·번체·일·인니·베트남). 약사·기사에게 보여 주는 한국어는 그대로. [번역: Claude, 원어민 검수 전]
 const I18N = {
  zh: {sub:'选好需要的内容，把手机递给药剂师或出租车司机。大字韩语给对方看，下面的小字是给您看的说明。',
   share:'分享给同行的朋友', copied:'已复制链接', tabs:['药店','出租车','购物','须知'], titles:{Pharmacy:'药店',Question:'提问',Taxi:'出租车',Emergency:'紧急',Shopping:'购物'}, h5:'购物用语',
@@ -226,7 +226,7 @@ const I18N = {
   taxiHint:'Tempel alamat hotel atau tujuan dalam bahasa Korea (salin dari info pemesanan atau aplikasi peta). Hanya tersimpan di ponsel ini.', showTaxi:'Tunjukkan ke sopir', h4:'Kalimat di taksi', close:'Tutup',
   ab1:'<b>Apotek</b> dalam bahasa Korea adalah 약국 (yak-guk). Cari papan hijau atau merah bertuliskan <b>약</b>. Banyak apotek tutup malam hari dan hari Minggu.',
   ab2:'<b>Minimarket 24 jam</b> menjual beberapa obat dasar saat apotek tutup: obat demam dan nyeri, obat flu, obat pencernaan, dan koyo. Obat diare tidak dijual (per November 2026).',
-  ab3:'<b>Darurat:</b> 119 (ambulans). <b>Korea Travel Hotline:</b> 1330 bisa membantu menerjemahkan (bahasa Indonesia pukul 08.00–19.00; bahasa Inggris 24 jam).',
+  ab3:'<b>Darurat:</b> 119 (ambulans). <b>Korea Travel Hotline:</b> 1330 bisa membantu menerjemahkan (bahasa Indonesia jam layanan terbatas; bahasa Inggris 24 jam).',
   ab4:'Kartu ini membantu Anda menjelaskan kondisi, bukan saran medis. Jika parah, memburuk, atau Anda ragu, temui dokter atau telepon 119.',
   ab5:'<b>Gratis.</b> Jika bermanfaat, bagikan ke wisatawan lain.',
   have:'Keluhan saya: ', also:'Juga: ', rec:'Tolong rekomendasikan obat yang cocok. Terima kasih!', taxi:'Tolong antar saya ke alamat ini. Terima kasih!',
@@ -251,6 +251,22 @@ const I18N = {
   info:{child:'給小孩吃的藥（小孩___歲，請告訴藥師年齡）',pregnant:'懷孕中',breast:'哺乳中',meds:'正在服用其他藥',nodrowsy:'請給不會嗜睡的藥',penicillin:'盤尼西林過敏',aspirin:'阿斯匹靈過敏',ibuprofen:'布洛芬過敏'},
   pq:['一天吃幾次，每次幾顆？','飯前吃還是飯後吃？','吃這個藥會想睡嗎？','這個藥需要處方箋嗎？','最近的診所或醫院在哪裡？','附近有開門的藥局嗎？'],
   tq:['請在這裡停車。','我要刷卡。','請給我收據。','請打開後車廂。','需要多久？','請開慢一點。','請到仁川機場。','請到仁川機場第1航廈。','請到仁川機場第2航廈。','請到金浦機場。','請到最近的捷運站（地鐵站）。']},
+ vi: {sub:'Chọn những gì bạn cần rồi đưa điện thoại cho dược sĩ hoặc tài xế taxi. Chữ tiếng Hàn lớn dành cho họ, dòng chữ nhỏ là giải thích cho bạn.',
+  share:'Chia sẻ cho bạn đồng hành', copied:'Đã sao chép liên kết', tabs:['Nhà thuốc','Taxi','Mua sắm','Thông tin'], titles:{Pharmacy:'Nhà thuốc',Question:'Câu hỏi',Taxi:'Taxi',Emergency:'Khẩn cấp',Shopping:'Mua sắm'}, h5:'Câu nói khi mua sắm',
+  taxfree:'<b>Hoàn thuế:</b> tìm biển “Tax Free” hoặc “Tax Refund” và xuất trình hộ chiếu. Nhiều cửa hàng hoàn thuế ngay cho hóa đơn dưới ₩1.000.000, tối đa ₩5.000.000 mỗi chuyến đi; nếu không, làm thủ tục tại máy kiosk ở sân bay. Mức tối thiểu thường là ₩15.000 mỗi hóa đơn, nhưng hãy hỏi cửa hàng. (Quy định từ năm 2024; hãy kiểm tra quy định mới nhất.)',
+  sq:['Có hoàn thuế không?','Có hoàn thuế ngay tại đây không?','Đây là hộ chiếu của tôi.','Có cỡ khác không?','Có màu khác không?','Tôi mặc thử được không?','Tôi dùng thử được không?','Bao nhiêu tiền?','Tôi trả bằng thẻ.','Gói quà giúp tôi được không?','Cho tôi một cái túi.','Có đổi hoặc trả hàng được không?','Cho tôi hóa đơn.','Tôi chỉ xem thôi.'], h1:'1. Bạn bị làm sao?', h2:'2. Về bạn (không bắt buộc)', showPharm:'Cho dược sĩ xem', h3:'Chỉ vào câu hỏi để hỏi',
+  taxiHint:'Dán địa chỉ khách sạn hoặc nơi đến bằng tiếng Hàn (sao chép từ thông tin đặt phòng hoặc ứng dụng bản đồ). Chỉ lưu trên điện thoại này.', showTaxi:'Cho tài xế xem', h4:'Câu nói trên taxi', close:'Đóng',
+  ab1:'<b>Nhà thuốc</b> tiếng Hàn là 약국 (yak-guk). Hãy tìm biển màu xanh lá hoặc đỏ có chữ <b>약</b>. Nhiều nhà thuốc đóng cửa buổi tối và Chủ nhật.',
+  ab2:'<b>Cửa hàng tiện lợi 24 giờ</b> bán một số thuốc cơ bản khi nhà thuốc đóng cửa: thuốc hạ sốt giảm đau, thuốc cảm, thuốc tiêu hóa và miếng dán giảm đau. Không bán thuốc trị tiêu chảy (tính đến tháng 11/2026).',
+  ab3:'<b>Khẩn cấp:</b> 119 (xe cấp cứu). <b>Đường dây hỗ trợ du lịch Hàn Quốc:</b> 1330 có thể hỗ trợ phiên dịch (tiếng Việt có giờ phục vụ giới hạn; tiếng Anh 24 giờ).',
+  ab4:'Các thẻ này giúp bạn mô tả tình trạng của mình, không phải lời khuyên y tế. Nếu tình trạng nặng, nặng hơn hoặc bạn không chắc, hãy đi khám bác sĩ hoặc gọi 119.',
+  ab5:'<b>Miễn phí.</b> Nếu thấy hữu ích, hãy chia sẻ cho những du khách khác.',
+  have:'Tôi bị: ', also:'Ngoài ra: ', rec:'Xin hãy tư vấn thuốc phù hợp. Cảm ơn!', taxi:'Xin chở tôi đến địa chỉ này. Cảm ơn!',
+  sos:'Tôi đang rất không khỏe. Xin hãy gọi 119 (xe cấp cứu). Tôi cần đến phòng cấp cứu của bệnh viện gần nhất. Xin hãy giúp tôi.', sep:', ', end:'. ',
+  sym:{headache:'đau đầu',fever:'sốt',cold:'cảm lạnh',cough:'ho',throat:'đau họng',nose:'sổ mũi, nghẹt mũi',indigestion:'khó tiêu, đầy bụng',heartburn:'ợ nóng',diarrhea:'tiêu chảy',constipation:'táo bón',nausea:'buồn nôn',motion:'say xe (cần thuốc chống say)',period:'đau bụng kinh',muscle:'đau cơ (cần miếng dán)',bite:'côn trùng cắn, ngứa',rash:'phát ban, ngứa',allergy:'hắt hơi, ngứa mắt (dị ứng phấn hoa)',eyes:'khô mắt (cần nước mắt nhân tạo)',cut:'vết thương nhỏ (cần băng cá nhân và thuốc mỡ)',burn:'bỏng nhẹ',sunburn:'cháy nắng',hangover:'nôn nao sau khi uống rượu'},
+  info:{child:'thuốc cho trẻ em (bé ___ tuổi; hãy báo tuổi cho dược sĩ)',pregnant:'đang mang thai',breast:'đang cho con bú',meds:'đang dùng thuốc khác',nodrowsy:'xin thuốc không gây buồn ngủ',penicillin:'dị ứng penicillin',aspirin:'dị ứng aspirin',ibuprofen:'dị ứng ibuprofen'},
+  pq:['Một ngày uống mấy lần, mỗi lần mấy viên?','Uống trước hay sau khi ăn?','Thuốc này có gây buồn ngủ không?','Thuốc này có cần đơn thuốc không?','Phòng khám hoặc bệnh viện gần nhất ở đâu?','Gần đây có nhà thuốc nào đang mở cửa không?'],
+  tq:['Xin dừng ở đây.','Tôi trả bằng thẻ.','Cho tôi hóa đơn.','Xin mở cốp xe giúp tôi.','Mất bao lâu?','Xin lái chậm thôi.','Đến sân bay Incheon.','Đến sân bay Incheon, nhà ga số 1.','Đến sân bay Incheon, nhà ga số 2.','Đến sân bay Gimpo.','Đến ga tàu điện ngầm gần nhất.']},
  ja: {sub:'必要なものを選んで、スマホを薬剤師さんやタクシーの運転手さんに見せてください。大きな韓国語は相手用、下の小さな文字はあなた用の説明です。',
   share:'旅の仲間にシェア', copied:'リンクをコピーしました', tabs:['薬局','タクシー','ショッピング','知っておくこと'], titles:{Pharmacy:'薬局',Question:'質問',Taxi:'タクシー',Emergency:'緊急',Shopping:'ショッピング'}, h5:'買い物のフレーズ',
   taxfree:'<b>免税（タックスリファンド）：</b>「Tax Free」「Tax Refund」の表示がある店でパスポートを見せてください。多くの店でその場で還付され、1回の購入につき₩1,000,000未満、旅行全体で最大₩5,000,000までです。それ以外は空港のキオスクで手続きできます。最低購入金額はふつうレシート1枚₩15,000ですが、お店で確認してください。（2024年からの制度です。最新の規定をご確認ください。）',
@@ -268,8 +284,8 @@ const I18N = {
   pq:['1日に何回、何錠ずつ飲みますか？','食前ですか、食後ですか？','この薬を飲むと眠くなりますか？','この薬は処方箋が必要ですか？','いちばん近いクリニックや病院はどこですか？','近くに開いている薬局はありますか？'],
   tq:['ここで止めてください。','カードで払います。','領収書をください。','トランクを開けてください。','どのくらいかかりますか？','ゆっくり運転してください。','仁川空港までお願いします。','仁川空港第1ターミナルまでお願いします。','仁川空港第2ターミナルまでお願いします。','金浦空港までお願いします。','いちばん近い地下鉄の駅までお願いします。']},
 };
-const LANGS = [['en','EN'],['zh','简体中文'],['ja','日本語'],['tw','繁體中文'],['id','Bahasa Indonesia']];
-let LANG = new URLSearchParams(location.search).get('lang') || store.get('lang', null) || (/^zh-(tw|hk|mo|hant)/i.test(navigator.language) ? 'tw' : /^zh/i.test(navigator.language) ? 'zh' : /^ja/i.test(navigator.language) ? 'ja' : /^(id|in|ms)/i.test(navigator.language) ? 'id' : 'en');
+const LANGS = [['en','EN'],['zh','简体中文'],['ja','日本語'],['tw','繁體中文'],['id','Bahasa Indonesia'],['vi','Tiếng Việt']];
+let LANG = new URLSearchParams(location.search).get('lang') || store.get('lang', null) || (/^zh-(tw|hk|mo|hant)/i.test(navigator.language) ? 'tw' : /^zh/i.test(navigator.language) ? 'zh' : /^ja/i.test(navigator.language) ? 'ja' : /^(id|in|ms)/i.test(navigator.language) ? 'id' : /^vi/i.test(navigator.language) ? 'vi' : 'en');
 if (LANG !== 'en' && !I18N[LANG]) LANG = 'en';
 const X = I18N[LANG] || null;
 document.documentElement.lang = LANG === 'zh' ? 'zh-Hans' : LANG === 'tw' ? 'zh-Hant' : LANG;
