@@ -348,7 +348,7 @@ function stopAudio(){ try{ player && player.pause() }catch(e){} player = null }
 async function show(title, html, en, ids, ctx){
   lastShow = [title, html, en, ids, ctx]; rCtx = ctx || null; setReply(ctx ? 'card' : 'none'); $('#sos').hidden = true;
   curClips = (ids || []).map(i => AUD()[i]).filter(Boolean); $('#speak').hidden = !curClips.length;
-  $('#showTitle').textContent = '이 화면을 봐 주세요 · ' + ((X && X.titles && X.titles[title]) || title); $('#showBody').innerHTML = html; $('#showEn').textContent = en; $('#show').hidden = false; fit(); $('#close').focus();
+  $('#showTitle').textContent = '이 화면을 봐 주세요 · ' + ((X && X.titles && X.titles[title]) || title); $('#showBody').innerHTML = html; $('#showEn').textContent = en; if (!histPushed){ try{ history.pushState({sheet:1}, ''); histPushed = true }catch(e){} } $('#show').hidden = false; fit(); $('#close').focus();
   try{ lock && lock.release() }catch(e){} try{ lock = await navigator.wakeLock?.request('screen') }catch(e){ lock = null } }
 function fit(){ const b = $('#showBody'); let lo = 16, hi = Math.min(48, Math.round(innerWidth * 0.09)); b.style.setProperty('--fs', hi + 'px');
   if (b.scrollHeight <= b.clientHeight) return; while (hi - lo > 1){ const m = (lo + hi) >> 1; b.style.setProperty('--fs', m + 'px'); (b.scrollHeight <= b.clientHeight) ? lo = m : hi = m }
@@ -389,7 +389,10 @@ $('#showBody').addEventListener('click', e => { const t = e.target.closest && e.
   if (t.dataset.r) replyShow(+t.dataset.r); else if (t.dataset.dose) doseForm(); else if (t.dataset.g){ const g = +t.dataset.g, o = +t.dataset.o; dsel[g] = dsel[g] === o ? null : o; doseForm() } else if (t.dataset.doseok) doseShow() });
 $('#rMain').addEventListener('click', () => { if (rMode === 'card') replyList(); else if (lastShow) show(...lastShow) });
 $('#rAlt').addEventListener('click', replyList);
-function hide(){ stopAudio(); $('#show').hidden = true; $('#sos').hidden = false; dsel.fill(null); try{ lock && lock.release() }catch(e){} lock = null }
+// 안드로이드 뒤로가기: 큰 화면만 닫음(페이지를 떠나지 않게)
+let histPushed = false;
+addEventListener('popstate', () => { if (!$('#show').hidden){ histPushed = false; hide(true) } });
+function hide(fromPop){ if (fromPop !== true && histPushed){ histPushed = false; try{ history.back() }catch(e){} } stopAudio(); $('#show').hidden = true; $('#sos').hidden = false; dsel.fill(null); try{ lock && lock.release() }catch(e){} lock = null }
 $('#close').addEventListener('click', hide); document.addEventListener('keydown', e => { if (e.key==='Escape') hide() });
 $('#sos').addEventListener('click', () => show('Emergency', `<p class="say"><b>몸이 많이 아파요.</b></p><p class="say"><b>119에 전화해 주세요.</b></p><p class="say">가까운 병원 응급실로 가야 해요.</p><p class="thanks">도와주세요!</p>`,
   W.sos, ['sos','help']));

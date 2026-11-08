@@ -260,7 +260,7 @@ let emMode = false;
 async function show(title, html, en, clips, noReply, emergency){
   lastShow = [title, html, en, clips, noReply, emergency]; emMode = !!emergency;
   $('#showTitle').textContent = '직원분께 보여 드려요 · ' + title;
-  $('#showBody').innerHTML = html; $('#showEn').textContent = en; $('#show').hidden = false;
+  $('#showBody').innerHTML = html; $('#showEn').textContent = en; if (!histPushed){ try{ history.pushState({sheet:1}, ''); histPushed = true }catch(e){} } $('#show').hidden = false;
   setReply(noReply ? 'none' : 'card'); $('#sos').hidden = true;
   curClips = (clips || []).filter(Boolean);
   $('#speak').hidden = !(curClips.length || ('speechSynthesis' in window));
@@ -325,7 +325,10 @@ function replyShow(i){
 $('#showBody').addEventListener('click', e => { const i = e.target.closest && e.target.closest('[data-r]'); if (i) replyShow(+i.dataset.r) });
 $('#rMain').addEventListener('click', () => { if (rMode === 'card') replyList(); else if (lastShow) show(...lastShow) });
 $('#rAlt').addEventListener('click', replyList);
-function hide(){ stopAudio(); $('#show').hidden = true; $('#sos').hidden = false; try{ lock && lock.release() }catch(e){} lock = null }
+// 안드로이드 뒤로가기: 큰 화면만 닫음(페이지를 떠나지 않게)
+let histPushed = false;
+addEventListener('popstate', () => { if (!$('#show').hidden){ histPushed = false; hide(true) } });
+function hide(fromPop){ if (fromPop !== true && histPushed){ histPushed = false; try{ history.back() }catch(e){} } stopAudio(); $('#show').hidden = true; $('#sos').hidden = false; try{ lock && lock.release() }catch(e){} lock = null }
 $('#close').addEventListener('click', hide);
 document.addEventListener('keydown', e => { if(e.key==='Escape') hide() });
 
