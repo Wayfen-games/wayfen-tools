@@ -35,6 +35,7 @@ body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-ui);margin:0;
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .wrap{max-width:560px;margin:0 auto}
 header{padding-block:18px 8px} h1{font:700 22px/1.2 var(--f-ui);margin:0} .sub{color:var(--muted);margin:4px 0 0;font-size:14px}
+.sharebtn{margin-top:8px;border:1px solid var(--brand);background:transparent;color:var(--brand);font:600 13px var(--f-ui);padding:6px 12px;border-radius:999px;cursor:pointer}
 .langs{margin:6px 0 0;font-size:14px;color:var(--muted)} .langs a{color:var(--brand)}
 nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;padding-block:10px;overflow-x:auto}
 nav button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 14px var(--f-ui);padding:9px 14px;border-radius:999px;cursor:pointer}
@@ -71,6 +72,7 @@ textarea{width:100%;min-height:96px;font:16px/1.5 var(--f-ko);padding:12px;borde
   <h1>Korea Pharmacy &amp; Taxi Cards</h1>
   <p class="sub" data-i="sub">Pick what you need, then hand your phone to the pharmacist or taxi driver. Big Korean for them, a small English line for you.</p>
   <p class="langs" id="langs"></p>
+  <button class="sharebtn" id="share" data-i="share">Share with your travel buddy</button>
 </header>
 <nav role="tablist" aria-label="Sections">
   <button id="t-pharm" role="tab" aria-selected="true" data-tab="pharm">Pharmacy</button>
@@ -177,7 +179,7 @@ const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(
 // 손님 화면 언어(중·일). 약사·기사에게 보여 주는 한국어는 그대로. [번역: Claude, 원어민 검수 전]
 const I18N = {
  zh: {sub:'选好需要的内容，把手机递给药剂师或出租车司机。大字韩语给对方看，下面的小字是给您看的说明。',
-  tabs:['药店','出租车','须知'], titles:{Pharmacy:'药店',Question:'提问',Taxi:'出租车',Emergency:'紧急'}, h1:'1. 哪里不舒服？', h2:'2. 关于您（可选）', showPharm:'给药剂师看', h3:'可以指着问的问题',
+  share:'分享给同行的朋友', copied:'已复制链接', tabs:['药店','出租车','须知'], titles:{Pharmacy:'药店',Question:'提问',Taxi:'出租车',Emergency:'紧急'}, h1:'1. 哪里不舒服？', h2:'2. 关于您（可选）', showPharm:'给药剂师看', h3:'可以指着问的问题',
   taxiHint:'粘贴酒店或目的地的韩语地址（可从预订信息或地图应用复制）。只保存在这部手机上。', showTaxi:'给司机看', h4:'乘车用语', close:'关闭',
   ab1:'<b>药店</b>韩语叫 약국 (yak-guk)。请找写着 <b>약</b> 的绿色或红色招牌。很多药店晚上和周日不营业。',
   ab2:'<b>24小时便利店</b>在药店关门时出售少数常用药：退烧止痛药、感冒药、消化药和止痛贴。不卖止泻药（截至2026年11月）。',
@@ -191,7 +193,7 @@ const I18N = {
   pq:['一天吃几次，每次几粒？','饭前吃还是饭后吃？','吃这个药会犯困吗？','这个药需要处方吗？','最近的诊所或医院在哪里？','附近有开门的药店吗？'],
   tq:['请在这里停车。','我用卡付款。','请给我收据。','请打开后备箱。','需要多长时间？','请开慢一点。','请去仁川机场。','请去仁川机场第1航站楼。','请去仁川机场第2航站楼。','请去金浦机场。','请去最近的地铁站。']},
  ja: {sub:'必要なものを選んで、スマホを薬剤師さんやタクシーの運転手さんに見せてください。大きな韓国語は相手用、下の小さな文字はあなた用の説明です。',
-  tabs:['薬局','タクシー','知っておくこと'], titles:{Pharmacy:'薬局',Question:'質問',Taxi:'タクシー',Emergency:'緊急'}, h1:'1. どんな症状ですか？', h2:'2. あなたについて（任意）', showPharm:'薬剤師さんに見せる', h3:'指さして聞ける質問',
+  share:'旅の仲間にシェア', copied:'リンクをコピーしました', tabs:['薬局','タクシー','知っておくこと'], titles:{Pharmacy:'薬局',Question:'質問',Taxi:'タクシー',Emergency:'緊急'}, h1:'1. どんな症状ですか？', h2:'2. あなたについて（任意）', showPharm:'薬剤師さんに見せる', h3:'指さして聞ける質問',
   taxiHint:'ホテルや目的地の韓国語の住所を貼り付けてください（予約情報や地図アプリからコピー）。このスマホにだけ保存されます。', showTaxi:'運転手さんに見せる', h4:'乗車中のフレーズ', close:'閉じる',
   ab1:'<b>薬局</b>は韓国語で 약국（ヤックク）。<b>약</b> と書かれた緑か赤の看板が目印です。夜や日曜は閉まる店が多いです。',
   ab2:'<b>24時間営業のコンビニ</b>では、薬局が閉まっている時間に一部の常備薬を買えます（解熱鎮痛薬、かぜ薬、胃腸薬、湿布）。下痢止めは売っていません（2026年11月時点）。',
@@ -221,6 +223,10 @@ const W = X || {have:'I have: ', also:' Also: ', rec:' Please recommend somethin
   sos:'I feel very sick. Please call 119 (ambulance). I need to go to the nearest emergency room. Please help me.', sep:', ', end:'.'};
 document.getElementById('langs').innerHTML = LANGS.map(([k,n]) => k===LANG ? `<b>${n}</b>` : `<a href="?lang=${k}" data-l="${k}">${n}</a>`).join(' · ');
 document.getElementById('langs').addEventListener('click', e => { const k = e.target.dataset && e.target.dataset.l; if (k) store.set('lang', k) });
+const SH = X || {share:'Share with your travel buddy', copied:'Link copied'};
+document.getElementById('share').addEventListener('click', async () => { const b = document.getElementById('share'), url = location.origin + location.pathname + (LANG !== 'en' ? '?lang=' + LANG : '');
+  try { if (navigator.share) { await navigator.share({title: document.title, url}); return } } catch(e) { if (e && e.name === 'AbortError') return }
+  try { await navigator.clipboard.writeText(url); b.textContent = SH.copied; setTimeout(() => b.textContent = SH.share, 2000) } catch(e) {} });
 const TABS = ['pharm','taxi','about'];
 function openTab(t){ document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===t))); TABS.forEach(x=>$('#p-'+x).hidden = x!==t); store.set('tab',t) }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
