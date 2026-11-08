@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Korea Pharmacy & Taxi Cards</title>
+<meta name="description" content="Free show-the-staff cards for Korea: describe symptoms at a pharmacy and show your address to a taxi driver in Korean.">
+<meta property="og:title" content="Korea Pharmacy & Taxi Cards">
+<meta property="og:description" content="Free show-the-staff cards for Korea: describe symptoms at a pharmacy and show your address to a taxi driver in Korean.">
+<meta name="theme-color" content="#1f5f73">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)} body{margin:0} img{max-width:100%} [hidden]{display:none!important}</style>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script>
+</head>
+<body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;600;700&family=Noto+Sans+KR:wght@400;700;900&display=swap">
+<style>
+/* Layout: 식사 카드와 같은 계열의 폰 도구. 탭(약국/택시/도움), 2열 카드, 누르면 흰 전체 화면에 큰 한국어. */
+:root{
+  --bg:#f2f5f6; --surface:#fff; --ink:#18232a; --muted:#5f6b74; --line:#dce3e7;
+  --brand:#1f5f73; --brand-ink:#fff; --soft:#e4eef1; --warn:#c8102e; --chip:#eaf0f2;
+  --f-ui:"IBM Plex Sans KR","Noto Sans KR",system-ui,sans-serif; --f-ko:"Noto Sans KR","IBM Plex Sans KR",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171b; --surface:#182228; --ink:#e6eef2; --muted:#98a6b0; --line:#28343b; --brand:#6cc0d6; --brand-ink:#0a1a20; --soft:#1d2c33; --warn:#ff6b6b; --chip:#22313a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171b; --surface:#182228; --ink:#e6eef2; --muted:#98a6b0; --line:#28343b; --brand:#6cc0d6; --brand-ink:#0a1a20; --soft:#1d2c33; --warn:#ff6b6b; --chip:#22313a; color-scheme:dark}
+*{box-sizing:border-box} [hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-ui);margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 90px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:560px;margin:0 auto}
+header{padding-block:18px 8px} h1{font:700 22px/1.2 var(--f-ui);margin:0} .sub{color:var(--muted);margin:4px 0 0;font-size:14px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;padding-block:10px;overflow-x:auto}
+nav button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 14px var(--f-ui);padding:9px 14px;border-radius:999px;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+button:focus-visible,label:focus-within,textarea:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+section{display:grid;gap:12px;padding-top:6px}
+h2{font:700 14px var(--f-ui);margin:8px 0 0;color:var(--muted)}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.picks{display:flex;flex-wrap:wrap;gap:8px}
+.pick{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:600;font-size:14px}
+.pick input{accent-color:var(--brand);width:18px;height:18px;margin:0}
+.pick:has(input:checked){background:var(--soft);border-color:var(--brand)}
+.primary{border:0;background:var(--brand);color:var(--brand-ink);font:700 16px var(--f-ui);padding:14px;border-radius:14px;cursor:pointer;width:100%}
+.primary:disabled{opacity:.45;cursor:default}
+.ask{display:grid;gap:2px;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:12px 14px;cursor:pointer;font:inherit}
+.ask b{font:700 18px var(--f-ko)} .ask span{font-size:13px;color:var(--muted)}
+textarea{width:100%;min-height:96px;font:16px/1.5 var(--f-ko);padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.tip{background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:14px;display:grid;gap:8px} .tip p{margin:0;font-size:14px}
+.sos{position:fixed;z-index:25;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 18px);width:58px;height:58px;border-radius:50%;border:0;background:var(--warn);color:#fff;font:900 15px var(--f-ui);box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+.show{position:fixed;inset:0;z-index:20;background:#fff;color:#111418;display:grid;grid-template-rows:auto 1fr auto;
+  padding:calc(env(safe-area-inset-top,0px) + 12px) max(18px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 14px) max(18px,env(safe-area-inset-left,0px))}
+.show .top{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#5a616c;font:600 14px var(--f-ui)}
+.show .close{border:1px solid #d6d6d6;background:#f4f4f4;color:#222;font:700 15px var(--f-ui);border-radius:999px;padding:8px 16px;cursor:pointer}
+.show .body{overflow:auto;display:grid;align-content:safe center;gap:calc(var(--fs,30px)*.45);padding-block:10px;min-height:0;--fs:30px}
+.show .say{font:500 var(--fs)/1.42 var(--f-ko);word-break:keep-all;margin:0}
+.show .say b{color:#c8102e;font-weight:900}
+.show .addr{font:900 calc(var(--fs)*1.05)/1.35 var(--f-ko);word-break:keep-all;margin:0;border:3px solid #111;border-radius:12px;padding:10px 12px}
+.show .thanks{font:900 calc(var(--fs)*.85) var(--f-ko);margin:0}
+.show .en{font:13px/1.4 var(--f-ui);color:#5a616c;border-top:1px solid #e3e3e3;padding:8px 66px 0 0;margin:0;max-height:22vh;overflow:auto}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>Korea Pharmacy &amp; Taxi Cards</h1>
+  <p class="sub">Pick what you need, then hand your phone to the pharmacist or taxi driver. Big Korean for them, a small English line for you.</p>
+</header>
+<nav role="tablist" aria-label="Sections">
+  <button id="t-pharm" role="tab" aria-selected="true" data-tab="pharm">Pharmacy</button>
+  <button id="t-taxi" role="tab" aria-selected="false" data-tab="taxi">Taxi</button>
+  <button id="t-about" role="tab" aria-selected="false" data-tab="about">Good to know</button>
+</nav>
+
+<section id="p-pharm" role="tabpanel">
+  <h2>1. What's wrong?</h2>
+  <div class="picks" id="sym"></div>
+  <h2>2. About you (optional)</h2>
+  <div class="picks" id="info"></div>
+  <button class="primary" id="showPharm" disabled>Show the pharmacist</button>
+  <h2>Questions to point at</h2>
+  <div id="pq" style="display:grid;gap:8px"></div>
+</section>
+
+<section id="p-taxi" role="tabpanel" hidden>
+  <p class="hint">Paste the Korean address of your hotel or destination (copy it from your booking or a map app). It stays on this phone only.</p>
+  <textarea id="addr" aria-label="Destination address in Korean" placeholder="예: 서울특별시 중구 명동길 14"></textarea>
+  <button class="primary" id="showTaxi" disabled>Show the driver</button>
+  <h2>Phrases for the ride</h2>
+  <div id="tq" style="display:grid;gap:8px"></div>
+</section>
+
+<section id="p-about" role="tabpanel" hidden>
+  <div class="tip"><p><b>Pharmacy</b> = 약국 (yak-guk). Look for a green or red <b>약</b> sign. Many close in the evening and on Sundays.</p>
+    <p><b>24-hour convenience stores</b> sell a few basic medicines when pharmacies are closed: pain and fever relievers, cold medicine, digestive aids and pain patches. They do not sell medicine for diarrhea (as of Nov 2026).</p></div>
+  <div class="tip"><p><b>Emergency:</b> 119 (ambulance). <b>Korea Travel Hotline:</b> 1330 can help interpret (check current hours).</p>
+    <p>These cards help you describe how you feel. They are not medical advice. If it is serious, getting worse, or you are unsure, see a doctor or call 119.</p></div>
+  <div class="tip"><p><b>Free to use.</b> If this helped, please share it with other travelers.</p></div>
+  <p class="hint">Version 0.1 · November 2026 · prototype</p>
+</section>
+</div>
+
+<button class="sos" id="sos" aria-label="Emergency card">SOS</button>
+<div class="show" id="show" hidden role="dialog" aria-modal="true" aria-labelledby="showTitle">
+  <div class="top"><span id="showTitle">보여 드려요</span><button class="close" id="close">Close</button></div>
+  <div class="body" id="showBody"></div>
+  <p class="en" id="showEn"></p>
+</div>
+
+<script>
+// 증상: id, 영어 이름, 한국어 문장(<b>강조</b>)
+const SYM = [
+  ["headache","Headache","<b>머리가 아파요.</b>"],
+  ["fever","Fever","<b>열이 나요.</b>"],
+  ["cold","Cold","<b>감기</b>에 걸린 것 같아요."],
+  ["cough","Cough","<b>기침</b>이 나요."],
+  ["throat","Sore throat","<b>목이 아파요.</b>"],
+  ["nose","Runny or stuffy nose","<b>콧물</b>이 나고 <b>코가 막혀요.</b>"],
+  ["indigestion","Indigestion","<b>소화가 안 돼요.</b> 속이 더부룩해요."],
+  ["heartburn","Heartburn","<b>속이 쓰려요.</b>"],
+  ["diarrhea","Diarrhea","<b>설사</b>를 해요."],
+  ["constipation","Constipation","<b>변비</b>가 있어요."],
+  ["nausea","Nausea","<b>속이 메스꺼워요.</b>"],
+  ["motion","Motion sickness","<b>멀미</b>를 해요. 멀미약이 필요해요."],
+  ["period","Period pain","<b>생리통</b>이 있어요."],
+  ["muscle","Muscle pain","<b>근육이 아파요.</b> 파스가 필요해요."],
+  ["bite","Insect bites","<b>벌레에 물려서</b> 가려워요."],
+  ["rash","Skin rash","<b>피부에 뭐가 나고</b> 가려워요."],
+  ["allergy","Hay fever","<b>재채기</b>가 나고 <b>눈이 가려워요.</b>"],
+  ["eyes","Dry eyes","<b>눈이 건조해요.</b> 인공눈물이 필요해요."],
+  ["cut","Small cut","<b>작은 상처</b>가 났어요. 밴드와 연고가 필요해요."],
+  ["burn","Minor burn","<b>가벼운 화상</b>을 입었어요."],
+  ["sunburn","Sunburn","<b>햇볕에 피부가 탔어요.</b>"],
+  ["hangover","Hangover","<b>숙취</b>가 있어요."],
+];
+const INFO = [
+  ["child","For a child (show age)","<b>아이가 먹을 약</b>이에요. 아이는 ___살이에요."],
+  ["pregnant","Pregnant","저는 <b>임신 중</b>이에요."],
+  ["breast","Breastfeeding","저는 <b>모유 수유 중</b>이에요."],
+  ["meds","Taking other medicine","<b>다른 약</b>을 먹고 있어요."],
+  ["nodrowsy","Non-drowsy, please","<b>졸리지 않는 약</b>으로 주세요."],
+  ["penicillin","Allergic to penicillin","저는 <b>페니실린</b>에 알레르기가 있어요."],
+  ["aspirin","Allergic to aspirin","저는 <b>아스피린</b>에 알레르기가 있어요."],
+  ["ibuprofen","Allergic to ibuprofen","저는 <b>이부프로펜</b>에 알레르기가 있어요."],
+];
+const PQ = [
+  ["하루에 몇 번, 몇 알씩 먹어요?","How many times a day, and how many pills?"],
+  ["식사 전에 먹어요, 식사 후에 먹어요?","Before or after meals?"],
+  ["이 약을 먹으면 졸려요?","Will this make me sleepy?"],
+  ["처방전이 필요한 약이에요?","Do I need a prescription for this?"],
+  ["가까운 병원이 어디예요?","Where is the nearest clinic or hospital?"],
+  ["근처에 문 연 약국이 있어요?","Is there a pharmacy open nearby?"],
+];
+const TQ = [
+  ["여기서 세워 주세요.","Please stop here."],
+  ["카드로 낼게요.","I'll pay by card."],
+  ["영수증 주세요.","Receipt, please."],
+  ["트렁크 좀 열어 주세요.","Could you open the trunk, please?"],
+  ["얼마나 걸려요?","How long will it take?"],
+  ["천천히 가 주세요.","Please drive slowly."],
+  ["인천공항으로 가 주세요.","To Incheon Airport, please."],
+  ["인천공항 제1터미널로 가 주세요.","Incheon Airport, Terminal 1, please."],
+  ["인천공항 제2터미널로 가 주세요.","Incheon Airport, Terminal 2, please."],
+  ["김포공항으로 가 주세요.","To Gimpo Airport, please."],
+  ["가장 가까운 지하철역으로 가 주세요.","To the nearest subway station, please."],
+];
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const kb = s => esc(s).replace(/&lt;b&gt;/g,'<b>').replace(/&lt;\/b&gt;/g,'</b>').replace(/___/g,'<b>____</b>');
+const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const TABS = ['pharm','taxi','about'];
+function openTab(t){ document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===t))); TABS.forEach(x=>$('#p-'+x).hidden = x!==t); store.set('tab',t) }
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
+
+let lock = null;
+async function show(title, html, en){
+  $('#showTitle').textContent = '이 화면을 봐 주세요 · ' + title; $('#showBody').innerHTML = html; $('#showEn').textContent = en; $('#show').hidden = false; fit(); $('#close').focus();
+  try{ lock && lock.release() }catch(e){} try{ lock = await navigator.wakeLock?.request('screen') }catch(e){ lock = null } }
+function fit(){ const b = $('#showBody'); let lo = 16, hi = Math.min(48, Math.round(innerWidth * 0.09)); b.style.setProperty('--fs', hi + 'px');
+  if (b.scrollHeight <= b.clientHeight) return; while (hi - lo > 1){ const m = (lo + hi) >> 1; b.style.setProperty('--fs', m + 'px'); (b.scrollHeight <= b.clientHeight) ? lo = m : hi = m }
+  b.style.setProperty('--fs', lo + 'px'); b.scrollTop = 0 }
+addEventListener('resize', () => { if (!$('#show').hidden) fit() });
+function hide(){ $('#show').hidden = true; try{ lock && lock.release() }catch(e){} lock = null }
+$('#close').addEventListener('click', hide); document.addEventListener('keydown', e => { if (e.key==='Escape') hide() });
+$('#sos').addEventListener('click', () => show('Emergency', `<p class="say"><b>몸이 많이 아파요.</b></p><p class="say"><b>119에 전화해 주세요.</b></p><p class="say">가까운 병원 응급실로 가야 해요.</p><p class="thanks">도와주세요!</p>`,
+  'I feel very sick. Please call 119 (ambulance). I need to go to the nearest emergency room. Please help me.'));
+
+// 약국
+let sym = new Set(store.get('sym', [])), info = new Set(store.get('info', []));
+function picks(box, list, set, key){ list.forEach(([id, en]) => { const l = document.createElement('label'); l.className='pick';
+  l.innerHTML = `<input type="checkbox" id="${key}-${id}"${set.has(id)?' checked':''}> ${esc(en)}`;
+  l.querySelector('input').addEventListener('change', e => { e.target.checked ? set.add(id) : set.delete(id); store.set(key, [...set]); $('#showPharm').disabled = sym.size===0 });
+  $(box).appendChild(l) }) }
+picks('#sym', SYM, sym, 'sym'); picks('#info', INFO, info, 'info'); $('#showPharm').disabled = sym.size===0;
+$('#showPharm').addEventListener('click', () => {
+  const s = SYM.filter(x => sym.has(x[0])), i = INFO.filter(x => info.has(x[0]));
+  let h = s.map(x => `<p class="say">${kb(x[2])}</p>`).join('') + i.map(x => `<p class="say">${kb(x[2])}</p>`).join('');
+  h += `<p class="say">맞는 약을 추천해 주세요.</p><p class="thanks">감사합니다!</p>`;
+  show('Pharmacy', h, 'I have: ' + s.map(x=>x[1]).join(', ') + '.' + (i.length ? ' Also: ' + i.map(x=>x[1]).join(', ') + '.' : '') + ' Please recommend something suitable. Thank you!');
+});
+PQ.forEach(([ko,en],k) => { const b = document.createElement('button'); b.className='ask'; b.id='pq-'+k; b.innerHTML = `<b>${esc(ko)}</b><span>${esc(en)}</span>`;
+  b.addEventListener('click', () => show('Question', `<p class="say">${esc(ko)}</p>`, en)); $('#pq').appendChild(b) });
+
+// 택시
+const addr = $('#addr'); addr.value = store.get('addr', ''); $('#showTaxi').disabled = !addr.value.trim();
+addr.addEventListener('input', () => { store.set('addr', addr.value); $('#showTaxi').disabled = !addr.value.trim() });
+$('#showTaxi').addEventListener('click', () => show('Taxi', `<p class="say"><b>이 주소로 가 주세요.</b></p><p class="addr">${esc(addr.value.trim())}</p><p class="thanks">감사합니다!</p>`,
+  'Please take me to this address. Thank you!'));
+TQ.forEach(([ko,en],k) => { const b = document.createElement('button'); b.className='ask'; b.id='tq-'+k; b.innerHTML = `<b>${esc(ko)}</b><span>${esc(en)}</span>`;
+  b.addEventListener('click', () => show('Taxi', `<p class="say">${esc(ko)}</p>`, en)); $('#tq').appendChild(b) });
+{ const t = store.get('tab','pharm'); openTab(TABS.includes(t) ? t : 'pharm') }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wayfen Study Timer</title>
+<meta name="description" content="A free lofi focus timer (25/5, 50/10, 90/20) with original music by Wayfen Sounds.">
+<meta property="og:title" content="Wayfen Study Timer">
+<meta property="og:description" content="A free lofi focus timer (25/5, 50/10, 90/20) with original music by Wayfen Sounds.">
+<meta name="theme-color" content="#1b1612">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)} body{margin:0} img{max-width:100%} [hidden]{display:none!important}</style>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script>
+</head>
+<body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito+Sans:wght@400;600;800&display=swap">
+<style>
+/* Layout: 한 화면 앱. 곡 그림을 흐리게 깐 배경 위에 큰 원형 타이머, 아래에 모드·재생 버튼, 맨 아래 곡 목록. 아늑한 밤 분위기로 한 가지 테마로 고정. */
+:root{
+  --bg:#1b1612; --ink:#f6efe6; --muted:#c9bcae; --glass:rgba(27,22,18,.62); --line:rgba(246,239,230,.18);
+  --accent:#f2b36b; --rest:#9ccfb3; --f-d:"Fraunces",Georgia,serif; --f:"Nunito Sans",system-ui,sans-serif; color-scheme:dark;
+}
+*{box-sizing:border-box} [hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--f);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 28px}
+.bgart{position:fixed;inset:0;z-index:0;background:#1b1612 center/cover no-repeat;filter:blur(2px) brightness(.55);transform:scale(1.04);transition:background-image .6s}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;display:grid;gap:16px;padding-top:18px}
+header{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+h1{font:700 22px/1.1 var(--f-d);margin:0;letter-spacing:.2px} h1 small{display:block;font:600 12px var(--f);color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px}
+.count{font:600 13px var(--f);color:var(--muted);white-space:nowrap}
+.dial{position:relative;width:min(78vw,320px);aspect-ratio:1;margin:6px auto 0}
+.dial svg{width:100%;height:100%;transform:rotate(-90deg)}
+.dial circle{fill:none;stroke-width:8}
+.dial .track{stroke:var(--line)} .dial .prog{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .9s linear,stroke .4s}
+.dial .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:4px}
+.time{font:500 clamp(48px,16vw,76px)/1 var(--f-d);font-variant-numeric:tabular-nums;letter-spacing:1px}
+.phase{font:800 13px var(--f);letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+.modes{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--glass);color:var(--ink);font:700 14px var(--f);padding:8px 14px;border-radius:999px;cursor:pointer;backdrop-filter:blur(6px)}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+.ctrl{display:flex;justify-content:center;align-items:center;gap:14px}
+.round{width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--glass);color:var(--ink);font:800 18px var(--f);cursor:pointer;backdrop-filter:blur(6px)}
+.play{width:76px;height:76px;border:0;background:var(--accent);color:#2a1b0c;font-size:26px}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.now{background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:grid;gap:10px;backdrop-filter:blur(8px)}
+.now .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.now b{font:700 16px var(--f-d)} .now span{font-size:13px;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.tracks{display:grid;gap:6px}
+.trk{display:flex;gap:10px;align-items:center;text-align:left;border:1px solid transparent;background:transparent;color:var(--ink);padding:6px;border-radius:10px;cursor:pointer;font:600 14px var(--f)}
+.trk img{width:56px;height:32px;object-fit:cover;border-radius:6px}
+.trk[aria-current="true"]{border-color:var(--line);background:rgba(246,239,230,.06);color:var(--accent)}
+.foot{font-size:13px;color:var(--muted);text-align:center;display:grid;gap:4px}
+.foot a{color:var(--accent);font-weight:800;text-decoration:none}
+@media (prefers-reduced-motion:reduce){.dial .prog{transition:none}.bgart{transition:none}}
+</style>
+
+<div class="bgart" id="bgart"></div>
+<div class="wrap">
+  <header>
+    <h1>Wayfen Study Timer<small>lofi focus timer</small></h1>
+    <span class="count" id="count">0 sessions today</span>
+  </header>
+
+  <div class="dial" role="timer" aria-live="off">
+    <svg viewBox="0 0 200 200" aria-hidden="true"><circle class="track" cx="100" cy="100" r="92"/><circle class="prog" id="prog" cx="100" cy="100" r="92"/></svg>
+    <div class="mid"><div class="time" id="time">25:00</div><div class="phase" id="phase">Focus</div></div>
+  </div>
+
+  <div class="modes" role="group" aria-label="Timer length">
+    <button class="chip" id="m25" aria-pressed="true" data-f="25" data-r="5">25 · 5</button>
+    <button class="chip" id="m50" aria-pressed="false" data-f="50" data-r="10">50 · 10</button>
+    <button class="chip" id="m90" aria-pressed="false" data-f="90" data-r="20">90 · 20</button>
+  </div>
+
+  <div class="ctrl">
+    <button class="round" id="reset" aria-label="Reset timer">↺</button>
+    <button class="round play" id="play" aria-label="Start">▶</button>
+    <button class="round" id="skip" aria-label="Skip to next phase">⏭</button>
+  </div>
+
+  <div class="now">
+    <div class="row"><div><b id="tTitle">Bookshop Afternoon</b><br><span>Wayfen Sounds · lofi</span></div>
+      <button class="round" id="next" aria-label="Next song" style="width:44px;height:44px;font-size:15px">♪⏭</button></div>
+    <label style="display:grid;gap:2px;font-size:12px;color:var(--muted)">Music volume<input type="range" id="vol" min="0" max="100" value="60"></label>
+    <label style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)"><input type="checkbox" id="restMusic" checked style="accent-color:var(--accent)"> Keep music on during breaks</label>
+    <div class="tracks" id="tracks"></div>
+  </div>
+
+  <div class="foot">
+    <span>Music by Wayfen Sounds.</span>
+    <span>More long mixes on YouTube: <a href="https://www.youtube.com/@WayfenSounds" target="_blank" rel="noopener">Wayfen Sounds</a></span>
+  </div>
+</div>
+<audio id="aud" preload="auto"></audio>
+
+<script>
+const TRACKS = [
+  ["bookshop_afternoon","Bookshop Afternoon"],["hearthside","Hearthside"],["cocoa_shop","Cocoa Shop"],
+  ["frosted_glass","Frosted Glass"],["snow_dawn","Snow Dawn"],["sleepy_autumn","Sleepy Autumn"]];
+const $ = s => document.querySelector(s);
+const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const aud = $('#aud'); const R = 92, C = 2 * Math.PI * R; $('#prog').style.strokeDasharray = C;
+let endAt = 0, mode = store.get('mode', {f:25, r:5}), phase = 'focus', left = mode.f * 60, running = false, timer = null, ti = store.get('track', 0) % TRACKS.length, lock = null;
+const today = new Date().toDateString(); let stats = store.get('stats', {d:today, n:0}); if (stats.d !== today) stats = {d:today, n:0};
+
+// 곡
+TRACKS.forEach(([id, name], i) => { const b = document.createElement('button'); b.className='trk'; b.id='tr-'+i;
+  b.innerHTML = `<img src="art/${id}.jpg" alt="">${name}`; b.addEventListener('click', () => { setTrack(i); if (running || !aud.paused) aud.play().catch(()=>{}) }); $('#tracks').appendChild(b) });
+function setTrack(i){ ti = (i + TRACKS.length) % TRACKS.length; const [id, name] = TRACKS[ti]; aud.src = `music/${id}.mp3`; $('#tTitle').textContent = name;
+  $('#bgart').style.backgroundImage = `url(art/${id}.jpg)`; document.querySelectorAll('.trk').forEach((b,k)=>b.setAttribute('aria-current', String(k===ti))); store.set('track', ti) }
+aud.addEventListener('ended', () => { setTrack(ti + 1); aud.play().catch(()=>{}) });
+$('#next').addEventListener('click', () => { const was = !aud.paused; setTrack(ti + 1); if (was || running) aud.play().catch(()=>{}) });
+const vol = $('#vol'); vol.value = store.get('vol', 60); aud.volume = vol.value / 100;
+vol.addEventListener('input', () => { aud.volume = vol.value / 100; store.set('vol', vol.value) });
+$('#restMusic').checked = store.get('restMusic', true); $('#restMusic').addEventListener('change', e => store.set('restMusic', e.target.checked));
+
+// 종소리 (파일 없이 소리 합성)
+let ac = null;
+function chime(){ try{ ac = ac || new (window.AudioContext||window.webkitAudioContext)(); const t = ac.currentTime;
+  [660, 880, 990].forEach((f,i) => { const o = ac.createOscillator(), g = ac.createGain(); o.type='sine'; o.frequency.value=f; g.gain.setValueAtTime(0, t+i*.18); g.gain.linearRampToValueAtTime(.18, t+i*.18+.02); g.gain.exponentialRampToValueAtTime(.001, t+i*.18+1.2); o.connect(g).connect(ac.destination); o.start(t+i*.18); o.stop(t+i*.18+1.3) }) }catch(e){} }
+
+// 타이머
+function total(){ return (phase === 'focus' ? mode.f : mode.r) * 60 }
+function paint(){ const m = Math.floor(left/60), s = left % 60; $('#time').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  $('#phase').textContent = phase === 'focus' ? 'Focus' : 'Break'; $('#phase').style.color = phase === 'focus' ? 'var(--accent)' : 'var(--rest)';
+  $('#prog').style.stroke = phase === 'focus' ? 'var(--accent)' : 'var(--rest)';
+  $('#prog').style.strokeDashoffset = C * (1 - left / total()); $('#count').textContent = `${stats.n} session${stats.n===1?'':'s'} today`;
+  document.title = running ? `${$('#time').textContent} · ${phase==='focus'?'Focus':'Break'}` : 'Wayfen Study Timer' }
+function tick(){ left = Math.max(0, Math.ceil((endAt - Date.now()) / 1000)); if (left <= 0){ chime(); if (phase === 'focus'){ stats.n++; store.set('stats', stats) } switchPhase() } paint() }
+function switchPhase(){ phase = phase === 'focus' ? 'rest' : 'focus'; left = total(); endAt = Date.now() + left * 1000;
+  if (phase === 'rest' && !$('#restMusic').checked) aud.pause(); else if (running) aud.play().catch(()=>{}) }
+async function start(){ try{ ac = ac || new (window.AudioContext||window.webkitAudioContext)(); ac.resume() }catch(e){}
+  endAt = Date.now() + left * 1000; running = true; $('#play').textContent = '❚❚'; $('#play').setAttribute('aria-label','Pause'); timer = setInterval(tick, 1000);
+  if (!aud.src) setTrack(ti); if (phase === 'focus' || $('#restMusic').checked) aud.play().catch(()=>{});
+  try{ lock = await navigator.wakeLock?.request('screen') }catch(e){ lock = null } paint() }
+function pause(){ running = false; clearInterval(timer); $('#play').textContent = '▶'; $('#play').setAttribute('aria-label','Start'); aud.pause(); try{ lock && lock.release() }catch(e){} lock = null; paint() }
+$('#play').addEventListener('click', () => running ? pause() : start());
+$('#reset').addEventListener('click', () => { pause(); phase = 'focus'; left = total(); paint() });
+$('#skip').addEventListener('click', () => { switchPhase(); paint() });
+document.querySelectorAll('.modes .chip').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.modes .chip').forEach(x => x.setAttribute('aria-pressed', String(x===b)));
+  mode = {f:+b.dataset.f, r:+b.dataset.r}; store.set('mode', mode); pause(); phase='focus'; left = total(); paint() }));
+document.querySelectorAll('.modes .chip').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.f === mode.f)));
+document.addEventListener('visibilitychange', async () => { if (document.visibilityState === 'visible' && running){ tick(); try{ lock = await navigator.wakeLock?.request('screen') }catch(e){} } });
+// 아이폰은 음량 조절을 막아 두므로 슬라이더를 숨김
+if (/iPhone|iPad|iPod/.test(navigator.userAgent)) $('#vol').closest('label').hidden = true;
+setTrack(ti); left = total(); paint();
+</script>
+
+</body>
+</html>

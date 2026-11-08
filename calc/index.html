@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>N잡 순수익 계산기</title>
+<meta name="description" content="부업 수익원별 수수료·광고비·구독료를 빼서 진짜 남는 돈과 시간당 순수익을 계산하는 무료 계산기.">
+<meta property="og:title" content="N잡 순수익 계산기">
+<meta property="og:description" content="부업 수익원별 수수료·광고비·구독료를 빼서 진짜 남는 돈과 시간당 순수익을 계산하는 무료 계산기.">
+<meta name="theme-color" content="#2f5d46">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)} body{margin:0} img{max-width:100%} [hidden]{display:none!important}</style>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script>
+</head>
+<body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: 위 결과 요약(순수익·시간당·목표 막대) → 수익원 줄 목록(펼쳐서 편집) → 고정비 → 메모. 숫자는 고정폭. */
+:root{
+  --bg:#f3f5f2; --surface:#ffffff; --ink:#1c2420; --muted:#66706a; --line:#dfe5df;
+  --brand:#2f5d46; --brand-ink:#ffffff; --soft:#e6efe9; --neg:#b2452f; --bar:#cfe0d5;
+  --f:"Noto Sans KR",system-ui,sans-serif; --num:"IBM Plex Mono","Noto Sans KR",monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121614; --surface:#1b211e; --ink:#e7eee9; --muted:#9aa69f; --line:#2c3530; --brand:#7fc29f; --brand-ink:#0d1a13; --soft:#22302a; --neg:#f08c74; --bar:#2b3d33; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121614; --surface:#1b211e; --ink:#e7eee9; --muted:#9aa69f; --line:#2c3530; --brand:#7fc29f; --brand-ink:#0d1a13; --soft:#22302a; --neg:#f08c74; --bar:#2b3d33; color-scheme:dark}
+*{box-sizing:border-box} [hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f);margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+.wrap{max-width:640px;margin:0 auto;display:grid;gap:14px}
+header{padding-block:18px 0} h1{font:900 22px/1.25 var(--f);margin:0} .sub{margin:4px 0 0;color:var(--muted);font-size:14px}
+.sum{background:var(--brand);color:var(--brand-ink);border-radius:16px;padding:16px;display:grid;gap:10px}
+.sum .row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.sum .big{font:700 30px/1.1 var(--num);font-variant-numeric:tabular-nums}
+.sum .lab{font-size:13px;opacity:.85}
+.goal{height:10px;border-radius:99px;background:rgba(255,255,255,.25);overflow:hidden}
+.goal i{display:block;height:100%;background:currentColor;border-radius:99px}
+.mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mini div{background:rgba(255,255,255,.12);border-radius:10px;padding:8px}
+.mini b{display:block;font:600 16px var(--num)} .mini span{font-size:12px;opacity:.85}
+h2{font:700 15px var(--f);margin:6px 0 0;color:var(--muted)}
+.src{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:10px}
+.src .head{display:flex;gap:8px;align-items:center}
+.src .head input{flex:1;min-width:0;font:700 16px var(--f);border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;color:var(--ink);padding:4px 0}
+.src .net{font:600 16px var(--num);white-space:nowrap} .neg{color:var(--neg)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+label{display:grid;gap:3px;font-size:12.5px;color:var(--muted);font-weight:500}
+input,select{font:15px var(--num);padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--brand);outline-offset:1px}
+.x{border:0;background:transparent;color:var(--muted);font:700 18px var(--f);cursor:pointer;padding:4px 8px}
+.btn{border:1px dashed var(--line);background:transparent;color:var(--ink);font:700 15px var(--f);padding:12px;border-radius:12px;cursor:pointer}
+.bar{display:grid;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.bar .r{display:grid;grid-template-columns:7em minmax(0,1fr) auto;gap:8px;align-items:center;font-size:13px}
+.bar .t{height:12px;border-radius:99px;background:var(--bar);overflow:hidden} .bar .t i{display:block;height:100%;background:var(--brand)}
+.bar .v{font:500 13px var(--num)}
+.note{font-size:13px;color:var(--muted);background:var(--soft);border-radius:12px;padding:12px}
+.tag{font-size:11px;background:var(--soft);color:var(--muted);border-radius:6px;padding:1px 6px;margin-left:4px}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>N잡 순수익 계산기</h1>
+  <p class="sub">매출 말고 진짜 남는 돈. 수수료·광고비·구독료를 빼고, 시간당 얼마 버는지까지 한 번에.</p>
+</header>
+
+<div class="sum" aria-live="polite">
+  <div class="row"><span class="lab">이번 달 순수익 (세전)</span><span class="lab" id="goalLab"></span></div>
+  <div class="big" id="net">0원</div>
+  <div class="goal" aria-hidden="true"><i id="goalBar" style="width:0"></i></div>
+  <div class="mini">
+    <div><b id="hourly">-</b><span>시간당 순수익</span></div>
+    <div><b id="tax">-</b><span>미리 떼는 세금 3.3%</span></div>
+    <div><b id="year">-</b><span>1년 환산 (세전)</span></div>
+  </div>
+</div>
+
+<label>목표 월 순수익 (원)<input id="goal" inputmode="numeric" value="3000000"></label>
+
+<h2>수익원 <span class="tag" id="exTag">예시 값이 들어 있어요</span></h2>
+<div id="list" style="display:grid;gap:10px"></div>
+<button class="btn" id="add">+ 수익원 추가</button>
+
+<h2>매달 나가는 고정비 (구독·도구)</h2>
+<div class="grid">
+  <label>고정비 합계 (원)<input id="fixed" inputmode="numeric" value="140000"></label>
+</div>
+
+<h2>수익원별 시간당 순수익</h2>
+<div class="bar" id="bars"></div>
+
+<div class="note">
+  <b>알아 두기.</b> 순수익은 세금을 빼기 전 금액이에요. 플랫폼 수수료는 직접 고칠 수 있는 예시 값이에요(2026년 11월, 공식 표 확인 전). 3.3%는 미리 떼는 세금이라 5월 종합소득세 신고 때 돌려받거나 더 낼 수 있어요. 정확한 세금은 홈택스나 세무사에게 확인하세요. 입력한 숫자는 이 기기에만 저장돼요.
+</div>
+<p class="sub">버전 0.1 · 무료 시안</p>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const won = n => (Math.round(n)).toLocaleString('ko-KR') + '원';
+const num = v => Number(String(v).replace(/[^\d.-]/g, '')) || 0;
+const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const PRESETS = [ // 예시 수수료 — 확인 전 값
+  {name:'크몽 전자책', fee:15, w33:true}, {name:'스마트스토어', fee:5.5, w33:false}, {name:'유튜브(받은 금액)', fee:0, w33:false},
+  {name:'블로그 광고', fee:0, w33:false}, {name:'음원 유통(받은 금액)', fee:0, w33:false}, {name:'직접 입력', fee:0, w33:false}];
+const EXAMPLE = [
+  {name:'크몽 전자책', sales:190000, fee:15, ad:0, cost:0, hours:4, w33:true},
+  {name:'유튜브 채널', sales:85000, fee:0, ad:0, cost:30000, hours:20, w33:false},
+  {name:'스마트스토어', sales:450000, fee:5.5, ad:50000, cost:0, hours:30, w33:false}];
+let rows = store.get('rows', null), example = !rows;
+if (!rows) rows = EXAMPLE.map(r => ({...r}));
+const savedGoal = store.get('goal', null); if (savedGoal !== null) $('#goal').value = savedGoal;
+const savedFixed = store.get('fixed', null); if (savedFixed !== null) $('#fixed').value = savedFixed;
+
+function netOf(r){ return num(r.sales) * (1 - num(r.fee) / 100) - num(r.ad) - num(r.cost) }
+function draw(){
+  const list = $('#list'); list.innerHTML = '';
+  rows.forEach((r, i) => {
+    const d = document.createElement('div'); d.className = 'src';
+    const n = netOf(r);
+    d.innerHTML = `<div class="head"><input id="n-${i}" value="${r.name.replace(/"/g,'&quot;')}" aria-label="수익원 이름"><span class="net ${n<0?'neg':''}" id="nn-${i}">${won(n)}</span><button class="x" id="x-${i}" aria-label="${r.name.replace(/"/g,'&quot;')} 삭제">×</button></div>
+      <div class="grid">
+        <label>이번 달 매출<input id="s-${i}" inputmode="numeric" value="${r.sales}"></label>
+        <label>수수료 %<input id="f-${i}" inputmode="decimal" value="${r.fee}"></label>
+        <label>광고·재료비<input id="a-${i}" inputmode="numeric" value="${r.ad}"></label>
+        <label>이 일에만 드는 구독·도구<input id="c-${i}" inputmode="numeric" value="${r.cost}"></label>
+        <label>쓴 시간 (시간)<input id="h-${i}" inputmode="decimal" value="${r.hours}"></label>
+        <label style="display:flex;gap:6px;align-items:center;grid-column:1/-1"><input type="checkbox" id="w-${i}"${r.w33?' checked':''} style="width:18px;height:18px;accent-color:var(--brand)"> 3.3% 떼고 받는 돈이에요 (프리랜서·사업소득)</label>
+        <label>수수료 예시 불러오기<select id="p-${i}"><option value="">고르기</option>${PRESETS.map((p,k)=>`<option value="${k}">${p.name} ${p.fee}%</option>`).join('')}</select></label>
+      </div>`;
+    list.appendChild(d);
+    const bind = (id, key) => d.querySelector('#'+id).addEventListener('input', e => { rows[i][key] = key==='name' ? e.target.value : e.target.value; touched(); calc() });
+    bind(`n-${i}`,'name'); bind(`s-${i}`,'sales'); bind(`f-${i}`,'fee'); bind(`a-${i}`,'ad'); bind(`c-${i}`,'cost'); bind(`h-${i}`,'hours');
+    d.querySelector(`#w-${i}`).addEventListener('change', e => { rows[i].w33 = e.target.checked; touched(); calc() });
+    d.querySelector(`#p-${i}`).addEventListener('change', e => { const p = PRESETS[e.target.value]; if (!p) return; rows[i].fee = p.fee; rows[i].w33 = p.w33; if (p.name !== '직접 입력' && /새 수익원/.test(rows[i].name)) rows[i].name = p.name; touched(); draw() });
+    d.querySelector(`#x-${i}`).addEventListener('click', () => { rows.splice(i,1); touched(); draw() });
+  });
+  calc();
+}
+function touched(){ example = false; store.set('rows', rows); $('#exTag').hidden = true }
+function calc(){
+  const fixed = num($('#fixed').value), goal = num($('#goal').value);
+  const gross = rows.reduce((s,r)=>s+num(r.sales),0);
+  const net = rows.reduce((s,r)=>s+netOf(r),0) - fixed;
+  const hours = rows.reduce((s,r)=>s+num(r.hours),0);
+  rows.forEach((r,i)=>{ const el = $('#nn-'+i); if (el){ const n = netOf(r); el.textContent = won(n); el.classList.toggle('neg', n<0) } });
+  $('#net').textContent = won(net);
+  $('#hourly').textContent = hours ? won(net / hours) : '-';
+  // 3.3%는 3.3% 떼고 받는 수익원만, 기준은 정산 받는 돈(매출×(1−수수료))
+  const w = rows.filter(r => r.w33).reduce((s,r)=>s+num(r.sales)*(1-num(r.fee)/100),0);
+  $('#tax').textContent = w ? won(w * 0.033) : '해당 없음';
+  $('#year').textContent = won(net * 12);
+  const pct = goal ? Math.max(0, Math.min(100, net / goal * 100)) : 0;
+  $('#goalBar').style.width = pct + '%';
+  $('#goalLab').textContent = goal ? `목표 ${won(goal)}의 ${pct.toFixed(0)}%` : '';
+  // 시간당 막대
+  const per = rows.map(r => ({name:r.name, v: num(r.hours) ? netOf(r)/num(r.hours) : null})).filter(x => x.v !== null);
+  const max = Math.max(1, ...per.map(x => Math.abs(x.v)));
+  $('#bars').innerHTML = per.length ? per.sort((a,b)=>b.v-a.v).map(x => `<div class="r"><span>${x.name.replace(/</g,'&lt;')}</span><span class="t"><i style="width:${Math.max(0,x.v)/max*100}%"></i></span><span class="v ${x.v<0?'neg':''}">${won(x.v)}</span></div>`).join('') : '<span class="sub">쓴 시간을 넣으면 수익원끼리 비교돼요.</span>';
+  $('#exTag').hidden = !example;
+  store.set('goal', $('#goal').value); store.set('fixed', $('#fixed').value);
+}
+$('#add').addEventListener('click', () => { rows.push({name:'새 수익원', sales:0, fee:0, ad:0, cost:0, hours:0}); touched(); draw() });
+['#goal','#fixed'].forEach(s => $(s).addEventListener('input', calc));
+draw();
+</script>
+
+</body>
+</html>
