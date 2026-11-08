@@ -150,7 +150,7 @@ tr.miss td,tr.noprice td{color:var(--warn)} .prt{display:none}
 </section>
 
 <section id="p-rx" role="tabpanel" hidden>
-  <p class="hint">약국·병원용. 약사·의사가 정한 복용법을 골라 손님 나라 말(영어·중국어·일본어)로 보여 주는 도구예요. 판단은 하지 않고 말만 옮겨요.</p>
+  <p class="hint">약국·병원용. 약사·의사가 정한 복용법을 골라 손님 나라 말(영어·중국어·일본어·인도네시아어·베트남어·태국어 중 고른 말)로 보여 주는 도구예요. 판단은 하지 않고 말만 옮겨요.</p>
   <h2>손님 언어 (여러 개 가능)</h2><div class="langs" id="rxLangs"></div>
   <h2>몇 번 (필수)</h2><div class="langs" id="rxTimes"></div>
   <div id="rxMaxWrap" hidden><h2>하루 최대 (필수)</h2><div class="langs" id="rxMax"></div></div>
@@ -461,8 +461,10 @@ function rxAll(){
 }
 rxFix(); rxLangChips(); rxAll();
 $('#rxReset').addEventListener('click', () => { rx = rxClean(null); store.set('rx2', rx); rxAll() });
+// 손님이 숙소에서도 볼 수 있게 사진으로 남기라는 안내 [원어민 검수 전]
+const PHOTO = {en:'📷 Take a photo of this screen to keep it.', zh:'📷 请拍下这个画面保存。', ja:'📷 この画面を写真に撮って保存してください。', id_:'📷 Foto layar ini untuk disimpan.', id:'📷 Foto layar ini untuk disimpan.', vi:'📷 Hãy chụp ảnh màn hình này để giữ lại.', th:'📷 ถ่ายรูปหน้าจอนี้เก็บไว้'};
 $('#rxShow').addEventListener('click', () => { if (!rxReady()) return;
-  $('#showBody').innerHTML = rxLangs.map(l => `<div class="${rxCls(l)}" lang="${rxLang(l)}">${rxText(l).map(esc).join('<br>')}<br><small style="font-size:.5em;font-weight:500">${esc(ASK[l])}</small></div>`).join('') + `<div class="ko">${rxText('ko').map(esc).join(' ')}</div>`;
+  $('#showBody').innerHTML = rxLangs.map(l => `<div class="${rxCls(l)}" lang="${rxLang(l)}">${rxText(l).map(esc).join('<br>')}<br><small style="font-size:.5em;font-weight:500">${esc(ASK[l])} ${esc(PHOTO[l] || PHOTO.en)}</small></div>`).join('') + `<div class="ko">${rxText('ko').map(esc).join(' ')}</div>`;
   $('#gbar').hidden = true; $('#show').hidden = false; $('#close').focus() });
 translate(); render(); { const h = location.hash.slice(1), t = TABS.includes(h) ? h : store.get('tab','talk'); openTab(TABS.includes(t)?t:'talk') }
 </script>
