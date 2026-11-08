@@ -70,9 +70,13 @@ th{font-size:12px;color:var(--muted)} td.zh{font-family:var(--f-zh)} td.ja{font-
 tr.miss td{color:var(--warn)}
 .note{background:var(--soft);border-radius:12px;padding:12px 14px;font-size:13.5px}
 @media print{
+  body.pm header,body.pm nav,body.pm section:not(#p-menu),body.pm #p-menu>*:not(.tblwrap){display:none!important}
+  body.pm #p-menu{display:block!important} body.pm .tblwrap{border:0} body.pm table{min-width:0;font-size:13pt} body.pm tr.miss{display:none}
+}
+@media print{
   @page{size:A4 landscape;margin:12mm}
-  body{background:#fff;padding:0} header,nav,.hint,h2,#langs,#signs,#fill,#print,section:not(#p-sign){display:none!important}
-  #p-sign{display:block!important} .sheet{border:0;border-radius:0;aspect-ratio:auto;height:180mm;page-break-after:always;break-after:page;padding:10mm}
+  body:not(.pm){background:#fff;padding:0} body:not(.pm) header,body:not(.pm) nav,body:not(.pm) .hint,body:not(.pm) h2,body:not(.pm) #langs,body:not(.pm) #signs,body:not(.pm) #fill,body:not(.pm) #print,body:not(.pm) section:not(#p-sign){display:none!important}
+  body:not(.pm) #p-sign{display:block!important} .sheet{border:0;border-radius:0;aspect-ratio:auto;height:180mm;page-break-after:always;break-after:page;padding:10mm}
   .sheet .ko{font-size:56pt} .sheet .en{font-size:36pt} .sheet .zh,.sheet .ja{font-size:32pt}
 }
 .show{position:fixed;inset:0;z-index:20;background:#fff;color:#141210;display:grid;grid-template-rows:auto 1fr;
@@ -114,15 +118,16 @@ tr.miss td{color:var(--warn)}
 </section>
 
 <section id="p-menu" role="tabpanel" hidden>
-  <p class="hint">메뉴 이름을 한 줄에 하나씩 쓰세요. 아는 메뉴 <span id="dictN"></span>개는 바로 번역돼요.</p>
-  <textarea id="menuIn" aria-label="메뉴 이름">김치찌개
-된장찌개
-제육볶음
-순댓국
-공기밥
-우리집 특제 정식</textarea>
-  <div class="tblwrap"><table><thead><tr><th>메뉴</th><th>English</th><th>中文</th><th>日本語</th></tr></thead><tbody id="menuOut"></tbody></table></div>
-  <p class="hint">빨간 줄은 사전에 없는 메뉴예요. 파파고 같은 번역기로 확인해 직접 써 주세요.</p>
+  <p class="hint">메뉴 이름을 한 줄에 하나씩 쓰세요. 가격은 뒤에 숫자로 (예: 김치찌개 9000). 아는 메뉴 <span id="dictN"></span>개는 바로 번역돼요.</p>
+  <textarea id="menuIn" aria-label="메뉴 이름">김치찌개 9000
+된장찌개 9000
+제육볶음 11000
+순댓국 10000
+공기밥 1000
+우리집 특제 정식 15000</textarea>
+  <div class="tblwrap"><table><caption style="caption-side:top;text-align:left;font-weight:900;font-size:20px;padding:6px 10px">MENU · 菜单 · メニュー</caption><thead><tr><th>메뉴</th><th>English</th><th>中文</th><th>日本語</th><th>₩</th></tr></thead><tbody id="menuOut"></tbody></table></div>
+  <p class="hint">빨간 줄은 사전에 없는 메뉴예요. 인쇄할 땐 빠져요. 파파고 같은 번역기로 확인해 직접 써 주세요.</p>
+  <button class="primary" id="printMenu" hidden>외국어 메뉴판 인쇄 (A4)</button>
 </section>
 
 <section id="p-help" role="tabpanel" hidden>
@@ -190,17 +195,21 @@ function drawSheets(){
     box.appendChild(d) });
 }
 // 인쇄: 공개판(일반 브라우저)에서만 보임
-try { if (window.self === window.top) { $('#print').hidden = false; $('#print').addEventListener('click', () => window.print()) } } catch(e) {}
+try { if (window.self === window.top) {
+  $('#print').hidden = false; $('#print').addEventListener('click', () => { document.body.classList.remove('pm'); window.print() });
+  $('#printMenu').hidden = false; $('#printMenu').addEventListener('click', () => { document.body.classList.add('pm'); window.print(); setTimeout(() => document.body.classList.remove('pm'), 500) });
+} } catch(e) {}
 
 // 메뉴 번역
 const DICT = Object.fromEntries(DATA.menu.map(m => [m[0], m])); const ALIAS = DATA.aliases;
 $('#dictN').textContent = DATA.menu.length;
 function translate(){
   const rows = $('#menuIn').value.split('\n').map(s=>s.trim()).filter(Boolean);
-  $('#menuOut').innerHTML = rows.map(r => { const key = DICT[r] ? r : (ALIAS[r] || ALIAS[r.replace(/\s/g,'')] || (DICT[r.replace(/\s/g,'')] ? r.replace(/\s/g,'') : null));
+  $('#menuOut').innerHTML = rows.map(line => { const pm = line.match(/^(.*?)[\s,]+([\d,]+)\s*원?$/); const r = pm ? pm[1].trim() : line;
+    const price = pm ? Number(pm[2].replace(/,/g,'')).toLocaleString('ko-KR') : ''; const key = DICT[r] ? r : (ALIAS[r] || ALIAS[r.replace(/\s/g,'')] || (DICT[r.replace(/\s/g,'')] ? r.replace(/\s/g,'') : null));
     const m = key && DICT[key];
-    return m ? `<tr><td>${esc(r)}</td><td>${esc(m[1])}</td><td class="zh" lang="zh-Hans">${esc(m[2])}</td><td class="ja" lang="ja">${esc(m[3])}</td></tr>`
-             : `<tr class="miss"><td>${esc(r)}</td><td colspan="3">사전에 없어요</td></tr>` }).join('');
+    return m ? `<tr><td>${esc(r)}</td><td>${esc(m[1])}</td><td class="zh" lang="zh-Hans">${esc(m[2])}</td><td class="ja" lang="ja">${esc(m[3])}</td><td>${price}</td></tr>`
+             : `<tr class="miss"><td>${esc(r)}</td><td colspan="3">사전에 없어요</td><td>${price}</td></tr>` }).join('');
   store.set('menu', $('#menuIn').value);
 }
 const saved = store.get('menu', null); if (saved) $('#menuIn').value = saved;
