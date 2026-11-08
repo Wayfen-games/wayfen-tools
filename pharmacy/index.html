@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Korea Pharmacy, Taxi & Shopping Cards</title>
-<meta name="description" content="Free show-the-staff cards for Korea: describe symptoms at a pharmacy, show your address to a taxi driver, and ask about tax refunds and sizes when shopping, in Korean. Screens in English, Chinese (Simplified and Traditional), Japanese, Indonesian and Vietnamese.">
+<meta name="description" content="Free show-the-staff cards for Korea: describe symptoms at a pharmacy, show your address to a taxi driver, and ask about tax refunds and sizes when shopping, in Korean. Screens in English, Chinese (Simplified and Traditional), Japanese, Indonesian, Vietnamese and Thai.">
 <meta property="og:title" content="Korea Pharmacy, Taxi & Shopping Cards">
-<meta property="og:description" content="Free show-the-staff cards for Korea: describe symptoms at a pharmacy, show your address to a taxi driver, and ask about tax refunds and sizes when shopping, in Korean. Screens in English, Chinese (Simplified and Traditional), Japanese, Indonesian and Vietnamese.">
+<meta property="og:description" content="Free show-the-staff cards for Korea: describe symptoms at a pharmacy, show your address to a taxi driver, and ask about tax refunds and sizes when shopping, in Korean. Screens in English, Chinese (Simplified and Traditional), Japanese, Indonesian, Vietnamese and Thai.">
 <meta name="theme-color" content="#1f5f73">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="canonical" href="https://wayfen-games.github.io/wayfen-tools/pharmacy/">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Korea Pharmacy, Taxi & Shopping Cards", "description": "Free show-the-staff cards for Korea: describe symptoms at a pharmacy, show your address to a taxi driver, and ask about tax refunds and sizes when shopping, in Korean. Screens in English, Chinese (Simplified and Traditional), Japanese, Indonesian and Vietnamese.", "url": "https://wayfen-games.github.io/wayfen-tools/pharmacy/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": "en", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Korea Pharmacy, Taxi & Shopping Cards", "description": "Free show-the-staff cards for Korea: describe symptoms at a pharmacy, show your address to a taxi driver, and ask about tax refunds and sizes when shopping, in Korean. Screens in English, Chinese (Simplified and Traditional), Japanese, Indonesian, Vietnamese and Thai.", "url": "https://wayfen-games.github.io/wayfen-tools/pharmacy/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": "en", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)} body{margin:0} img{max-width:100%} [hidden]{display:none!important}</style>
@@ -202,7 +202,7 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const kb = s => esc(s).replace(/&lt;b&gt;/g,'<b>').replace(/&lt;\/b&gt;/g,'</b>').replace(/___/g,'<b>____</b>');
 const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-// 손님 화면 언어(중 간체·번체·일·인니·베트남). 약사·기사에게 보여 주는 한국어는 그대로. [번역: Claude, 원어민 검수 전]
+// 손님 화면 언어(중 간체·번체·일·인니·베트남·태국). 약사·기사에게 보여 주는 한국어는 그대로. [번역: Claude, 원어민 검수 전]
 const I18N = {
  zh: {sub:'选好需要的内容，把手机递给药剂师或出租车司机。大字韩语给对方看，下面的小字是给您看的说明。',
   share:'分享给同行的朋友', copied:'已复制链接', tabs:['药店','出租车','购物','须知'], titles:{Pharmacy:'药店',Question:'提问',Taxi:'出租车',Emergency:'紧急',Shopping:'购物'}, h5:'购物用语',
@@ -268,6 +268,22 @@ const I18N = {
   info:{child:'thuốc cho trẻ em (bé ___ tuổi; hãy báo tuổi cho dược sĩ)',pregnant:'đang mang thai',breast:'đang cho con bú',meds:'đang dùng thuốc khác',nodrowsy:'xin thuốc không gây buồn ngủ',penicillin:'dị ứng penicillin',aspirin:'dị ứng aspirin',ibuprofen:'dị ứng ibuprofen'},
   pq:['Một ngày uống mấy lần, mỗi lần mấy viên?','Uống trước hay sau khi ăn?','Thuốc này có gây buồn ngủ không?','Thuốc này có cần đơn thuốc không?','Phòng khám hoặc bệnh viện gần nhất ở đâu?','Gần đây có nhà thuốc nào đang mở cửa không?'],
   tq:['Xin dừng ở đây.','Tôi trả bằng thẻ.','Cho tôi hóa đơn.','Xin mở cốp xe giúp tôi.','Mất bao lâu?','Xin lái chậm thôi.','Đến sân bay Incheon.','Đến sân bay Incheon, nhà ga số 1.','Đến sân bay Incheon, nhà ga số 2.','Đến sân bay Gimpo.','Đến ga tàu điện ngầm gần nhất.']},
+ th: {sub:'เลือกสิ่งที่ต้องการ แล้วยื่นโทรศัพท์ให้เภสัชกรหรือคนขับแท็กซี่ดู ตัวอักษรเกาหลีตัวใหญ่สำหรับพวกเขา ข้อความเล็กด้านล่างเป็นคำอธิบายสำหรับคุณ',
+  share:'แชร์ให้เพื่อนร่วมทริป', copied:'คัดลอกลิงก์แล้ว', tabs:['ร้านขายยา','แท็กซี่','ช้อปปิ้ง','ข้อมูล'], titles:{Pharmacy:'ร้านขายยา',Question:'คำถาม',Taxi:'แท็กซี่',Emergency:'ฉุกเฉิน',Shopping:'ช้อปปิ้ง'}, h5:'ประโยคตอนช้อปปิ้ง',
+  taxfree:'<b>คืนภาษี:</b> มองหาป้าย “Tax Free” หรือ “Tax Refund” แล้วแสดงพาสปอร์ต หลายร้านคืนภาษีได้ทันทีสำหรับใบเสร็จที่ต่ำกว่า ₩1,000,000 รวมไม่เกิน ₩5,000,000 ต่อทริป ถ้าไม่ได้ให้ไปทำที่ตู้คีออสก์ในสนามบิน ยอดขั้นต่ำมักเป็น ₩15,000 ต่อใบเสร็จ แต่ควรถามร้าน (กฎตั้งแต่ปี 2024 โปรดตรวจสอบกฎล่าสุด)',
+  sq:['คืนภาษีได้ไหม','คืนภาษีที่นี่ได้เลยไหม','นี่คือพาสปอร์ตของฉัน','มีไซซ์อื่นไหม','มีสีอื่นไหม','ขอลองใส่ได้ไหม','ขอลองเทสเตอร์ได้ไหม','ราคาเท่าไร','จ่ายด้วยบัตร','ช่วยห่อของขวัญได้ไหม','ขอถุงหนึ่งใบ','เปลี่ยนหรือคืนสินค้าได้ไหม','ขอใบเสร็จ','แค่ดูเฉยๆ'], h1:'1. ไม่สบายตรงไหน', h2:'2. เกี่ยวกับคุณ (ไม่บังคับ)', showPharm:'ให้เภสัชกรดู', h3:'คำถามที่ชี้ให้ดูได้',
+  taxiHint:'วางที่อยู่โรงแรมหรือปลายทางเป็นภาษาเกาหลี (คัดลอกจากข้อมูลการจองหรือแอปแผนที่) บันทึกไว้ในโทรศัพท์เครื่องนี้เท่านั้น', showTaxi:'ให้คนขับดู', h4:'ประโยคบนแท็กซี่', close:'ปิด',
+  ab1:'<b>ร้านขายยา</b> ภาษาเกาหลีคือ 약국 (yak-guk) มองหาป้ายสีเขียวหรือแดงที่มีคำว่า <b>약</b> ร้านขายยาหลายแห่งปิดตอนกลางคืนและวันอาทิตย์',
+  ab2:'<b>ร้านสะดวกซื้อ 24 ชั่วโมง</b> ขายยาพื้นฐานบางอย่างเมื่อร้านขายยาปิด: ยาลดไข้แก้ปวด ยาแก้หวัด ยาช่วยย่อย และแผ่นแปะแก้ปวด ไม่มียาแก้ท้องเสีย (ข้อมูล ณ พฤศจิกายน 2026)',
+  ab3:'<b>ฉุกเฉิน:</b> 119 (รถพยาบาล) <b>สายด่วนท่องเที่ยวเกาหลี:</b> 1330 ช่วยแปลได้ (ภาษาไทยมีเวลาให้บริการจำกัด ภาษาอังกฤษ 24 ชั่วโมง)',
+  ab4:'การ์ดเหล่านี้ช่วยให้คุณอธิบายอาการ ไม่ใช่คำแนะนำทางการแพทย์ ถ้าอาการหนัก แย่ลง หรือไม่แน่ใจ ให้ไปพบแพทย์หรือโทร 119',
+  ab5:'<b>ใช้ฟรี</b> ถ้ามีประโยชน์ ช่วยแชร์ให้นักท่องเที่ยวคนอื่นด้วย',
+  have:'อาการของฉัน: ', also:'นอกจากนี้: ', rec:'ช่วยแนะนำยาที่เหมาะสมด้วย ขอบคุณ!', taxi:'ช่วยไปส่งที่อยู่นี้ด้วย ขอบคุณ!',
+  sos:'ฉันไม่สบายมาก ช่วยโทร 119 (รถพยาบาล) ฉันต้องไปห้องฉุกเฉินของโรงพยาบาลที่ใกล้ที่สุด ช่วยด้วย', sep:', ', end:' ',
+  sym:{headache:'ปวดหัว',fever:'มีไข้',cold:'น่าจะเป็นหวัด',cough:'ไอ',throat:'เจ็บคอ',nose:'น้ำมูกไหล คัดจมูก',indigestion:'อาหารไม่ย่อย ท้องอืด',heartburn:'แสบร้อนกลางอก',diarrhea:'ท้องเสีย',constipation:'ท้องผูก',nausea:'คลื่นไส้',motion:'เมารถ เมาเรือ (ต้องการยาแก้เมา)',period:'ปวดประจำเดือน',muscle:'ปวดกล้ามเนื้อ (ต้องการแผ่นแปะแก้ปวด)',bite:'แมลงกัด คัน',rash:'ผื่น คัน',allergy:'จาม คันตา (แพ้ละอองเกสร)',eyes:'ตาแห้ง (ต้องการน้ำตาเทียม)',cut:'แผลเล็ก (ต้องการพลาสเตอร์และยาทาแผล)',burn:'แผลไฟไหม้ น้ำร้อนลวกเล็กน้อย',sunburn:'ผิวไหม้แดด',hangover:'แฮงก์ (เมาค้าง)'},
+  info:{child:'ยาสำหรับเด็ก (อายุ ___ ปี กรุณาบอกอายุให้เภสัชกร)',pregnant:'กำลังตั้งครรภ์',breast:'กำลังให้นมลูก',meds:'กำลังทานยาอื่นอยู่',nodrowsy:'ขอยาที่ไม่ทำให้ง่วง',penicillin:'แพ้ยาเพนิซิลลิน',aspirin:'แพ้ยาแอสไพริน',ibuprofen:'แพ้ยาไอบูโพรเฟน'},
+  pq:['ทานวันละกี่ครั้ง ครั้งละกี่เม็ด','ทานก่อนหรือหลังอาหาร','ยานี้ทำให้ง่วงไหม','ยานี้ต้องมีใบสั่งยาไหม','คลินิกหรือโรงพยาบาลที่ใกล้ที่สุดอยู่ที่ไหน','แถวนี้มีร้านขายยาที่เปิดอยู่ไหม'],
+  tq:['จอดตรงนี้','จ่ายด้วยบัตร','ขอใบเสร็จ','ช่วยเปิดท้ายรถหน่อย','ใช้เวลานานแค่ไหน','ขับช้าๆ หน่อย','ไปสนามบินอินชอน','ไปสนามบินอินชอน อาคารผู้โดยสาร 1','ไปสนามบินอินชอน อาคารผู้โดยสาร 2','ไปสนามบินกิมโป','ไปสถานีรถไฟใต้ดินที่ใกล้ที่สุด']},
  ja: {sub:'必要なものを選んで、スマホを薬剤師さんやタクシーの運転手さんに見せてください。大きな韓国語は相手用、下の小さな文字はあなた用の説明です。',
   share:'旅の仲間にシェア', copied:'リンクをコピーしました', tabs:['薬局','タクシー','ショッピング','知っておくこと'], titles:{Pharmacy:'薬局',Question:'質問',Taxi:'タクシー',Emergency:'緊急',Shopping:'ショッピング'}, h5:'買い物のフレーズ',
   taxfree:'<b>免税（タックスリファンド）：</b>「Tax Free」「Tax Refund」の表示がある店でパスポートを見せてください。多くの店でその場で還付され、1回の購入につき₩1,000,000未満、旅行全体で最大₩5,000,000までです。それ以外は空港のキオスクで手続きできます。最低購入金額はふつうレシート1枚₩15,000ですが、お店で確認してください。（2024年からの制度です。最新の規定をご確認ください。）',
@@ -285,8 +301,8 @@ const I18N = {
   pq:['1日に何回、何錠ずつ飲みますか？','食前ですか、食後ですか？','この薬を飲むと眠くなりますか？','この薬は処方箋が必要ですか？','いちばん近いクリニックや病院はどこですか？','近くに開いている薬局はありますか？'],
   tq:['ここで止めてください。','カードで払います。','領収書をください。','トランクを開けてください。','どのくらいかかりますか？','ゆっくり運転してください。','仁川空港までお願いします。','仁川空港第1ターミナルまでお願いします。','仁川空港第2ターミナルまでお願いします。','金浦空港までお願いします。','いちばん近い地下鉄の駅までお願いします。']},
 };
-const LANGS = [['en','EN'],['zh','简体中文'],['ja','日本語'],['tw','繁體中文'],['id','Bahasa Indonesia'],['vi','Tiếng Việt']];
-let LANG = new URLSearchParams(location.search).get('lang') || store.get('lang', null) || (/^zh-(tw|hk|mo|hant)/i.test(navigator.language) ? 'tw' : /^zh/i.test(navigator.language) ? 'zh' : /^ja/i.test(navigator.language) ? 'ja' : /^(id|in|ms)/i.test(navigator.language) ? 'id' : /^vi/i.test(navigator.language) ? 'vi' : 'en');
+const LANGS = [['en','EN'],['zh','简体中文'],['ja','日本語'],['tw','繁體中文'],['id','Bahasa Indonesia'],['vi','Tiếng Việt'],['th','ไทย']];
+let LANG = new URLSearchParams(location.search).get('lang') || store.get('lang', null) || (/^zh-(tw|hk|mo|hant)/i.test(navigator.language) ? 'tw' : /^zh/i.test(navigator.language) ? 'zh' : /^ja/i.test(navigator.language) ? 'ja' : /^(id|in|ms)/i.test(navigator.language) ? 'id' : /^vi/i.test(navigator.language) ? 'vi' : /^th/i.test(navigator.language) ? 'th' : 'en');
 if (LANG !== 'en' && !I18N[LANG]) LANG = 'en';
 const X = I18N[LANG] || null;
 document.documentElement.lang = LANG === 'zh' ? 'zh-Hans' : LANG === 'tw' ? 'zh-Hant' : LANG;
