@@ -116,10 +116,10 @@ const won = n => (Math.round(n)).toLocaleString('ko-KR') + '원';
 const num = v => Number(String(v).replace(/[^\d.-]/g, '')) || 0;
 const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const PRESETS = [ // 예시 수수료 — 확인 전 값
-  {name:'크몽 전자책', fee:15, w33:true}, {name:'스마트스토어', fee:5.5, w33:false}, {name:'유튜브(받은 금액)', fee:0, w33:false},
+  {name:'크몽 전자책', fee:20, w33:true}, {name:'스마트스토어', fee:5.5, w33:false}, {name:'유튜브(받은 금액)', fee:0, w33:false},
   {name:'블로그 광고', fee:0, w33:false}, {name:'음원 유통(받은 금액)', fee:0, w33:false}, {name:'직접 입력', fee:0, w33:false}];
 const EXAMPLE = [
-  {name:'크몽 전자책', sales:190000, fee:15, ad:0, cost:0, hours:4, w33:true},
+  {name:'크몽 전자책', sales:190000, fee:20, ad:0, cost:0, hours:4, w33:true},
   {name:'유튜브 채널', sales:85000, fee:0, ad:0, cost:30000, hours:20, w33:false},
   {name:'스마트스토어', sales:450000, fee:5.5, ad:50000, cost:0, hours:30, w33:false}];
 let rows = store.get('rows', null), example = !rows;
