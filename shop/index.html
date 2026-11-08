@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>우리 가게 외국어 안내</title>
-<meta name="description" content="외국인 손님에게 영어·중국어·일본어로 보여 주고, 가게 안내판과 메뉴 번역을 무료로 만드는 사장님용 도구.">
+<meta name="description" content="외국인 손님에게 영어·중국어·일본어로 보여 주고, 가게 안내판·메뉴 번역·QR 메뉴·약국 복용 안내를 무료로 만드는 사장님용 도구.">
 <meta property="og:title" content="우리 가게 외국어 안내">
-<meta property="og:description" content="외국인 손님에게 영어·중국어·일본어로 보여 주고, 가게 안내판과 메뉴 번역을 무료로 만드는 사장님용 도구.">
+<meta property="og:description" content="외국인 손님에게 영어·중국어·일본어로 보여 주고, 가게 안내판·메뉴 번역·QR 메뉴·약국 복용 안내를 무료로 만드는 사장님용 도구.">
 <meta name="theme-color" content="#9a3b23">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="canonical" href="https://wayfen-games.github.io/wayfen-tools/shop/">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "우리 가게 외국어 안내", "description": "외국인 손님에게 영어·중국어·일본어로 보여 주고, 가게 안내판과 메뉴 번역을 무료로 만드는 사장님용 도구.", "url": "https://wayfen-games.github.io/wayfen-tools/shop/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": "ko", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "우리 가게 외국어 안내", "description": "외국인 손님에게 영어·중국어·일본어로 보여 주고, 가게 안내판·메뉴 번역·QR 메뉴·약국 복용 안내를 무료로 만드는 사장님용 도구.", "url": "https://wayfen-games.github.io/wayfen-tools/shop/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": "ko", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)} body{margin:0} img{max-width:100%} [hidden]{display:none!important}</style>
@@ -95,12 +95,13 @@ tr.miss td{color:var(--warn)}
 <div class="wrap">
 <header>
   <h1>우리 가게 외국어 안내</h1>
-  <p class="sub">외국인 손님에게 영어·중국어·일본어로 보여 주고, 붙일 안내판과 메뉴 번역을 바로 만들어요.</p>
+  <p class="sub">외국인 손님에게 영어·중국어·일본어로 보여 주고, 붙일 안내판, 메뉴 번역·QR 메뉴, 약 복용 안내를 바로 만들어요.</p>
 </header>
 <nav role="tablist" aria-label="메뉴">
   <button id="t-talk" role="tab" aria-selected="true" data-tab="talk">손님에게 보여주기</button>
   <button id="t-sign" role="tab" aria-selected="false" data-tab="sign">안내판</button>
   <button id="t-menu" role="tab" aria-selected="false" data-tab="menu">메뉴 번역</button>
+  <button id="t-rx" role="tab" aria-selected="false" data-tab="rx">약 복용 안내</button>
   <button id="t-help" role="tab" aria-selected="false" data-tab="help">도움말</button>
 </nav>
 
@@ -142,8 +143,23 @@ tr.miss td{color:var(--warn)}
   </div>
 </section>
 
+<section id="p-rx" role="tabpanel" hidden>
+  <p class="hint">약국·병원용. 약사·의사가 정한 복용법을 골라 손님 나라 말(영어·중국어·일본어)로 보여 주는 도구예요. 판단은 하지 않고 말만 옮겨요.</p>
+  <h2>몇 번 (필수)</h2><div class="langs" id="rxTimes"></div>
+  <div id="rxMaxWrap" hidden><h2>하루 최대 (필수)</h2><div class="langs" id="rxMax"></div></div>
+  <h2>언제</h2><div class="langs" id="rxWhen"></div>
+  <h2>얼마나 (필수)</h2><div class="langs" id="rxDose"></div>
+  <h2>며칠분</h2><div class="langs" id="rxDays"></div>
+  <h2>주의 (여러 개 가능)</h2><div class="langs" id="rxNote"></div>
+  <div class="sheet" id="rxOut"></div>
+  <button class="primary" id="rxShow" disabled>크게 보여 주기</button>
+  <button id="rxReset" style="margin-top:6px">처음부터 다시 고르기</button>
+  <p class="hint">흐린 칸은 지금 고른 것과 맞지 않아 막아 둔 거예요(예: 붙이는 약엔 '먹는' 주의 없음). 큰 화면 아래에는 "모르면 약사에게 다시 물어보세요"가 세 언어로 같이 나와요. 번역은 AI로 만들었고 원어민 검수 전이에요.</p>
+</section>
+
 <section id="p-help" role="tabpanel" hidden>
   <div class="note"><b>번역 안내.</b> 영어·중국어(간체)·일본어 번역은 AI로 만들었고 아직 원어민 검수 전이에요. 식당에서 쉽게 쓰는 표현으로 골랐어요. 이상한 표현을 알려 주시면 고칠게요.</div>
+  <div class="note"><b>약 복용 안내.</b> 약사·의사가 정한 내용을 옮겨 보여 주는 화면이에요. 번역은 원어민 검수 전이라, 중요한 내용은 손님이 이해했는지 꼭 확인해 주세요.</div>
   <div class="note"><b>재료 안내.</b> 돼지고기·알레르기 같은 재료 표시는 사장님 실제 레시피대로 확인해 주세요.</div>
   <div class="note"><b>무료예요.</b> 도움이 되셨다면 주변 사장님께 알려 주세요.</div>
   <p class="hint">버전 0.1 · 2026년 11월 · 시안</p>
@@ -161,7 +177,7 @@ const DATA = {"signs": [{"id": "card_ok", "ko": "카드 결제 됩니다", "en":
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const store = {get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-const TABS = ['talk','sign','menu','help'];
+const TABS = ['talk','sign','menu','rx','help'];
 function openTab(t){ document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===t))); TABS.forEach(x=>$('#p-'+x).hidden = x!==t); store.set('tab',t) }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
 
@@ -264,7 +280,96 @@ $('#makeQR').addEventListener('click', () => {
   $('#qrImg').innerHTML = `<img src="${src}" alt="QR 메뉴" style="width:260px;height:auto">`;
   $('#qrSave').href = src; $('#qrSave').hidden = false;
 });
-translate(); render(); { const t = store.get('tab','talk'); openTab(TABS.includes(t)?t:'talk') }
+
+// 약 복용 안내 [번역: Claude, 원어민 검수 전]. 처음엔 아무것도 안 고른 상태. 안 맞는 조합은 막음
+const RX = {
+  times: [['1', {ko:'하루 1번', en:'Once a day', zh:'每天1次', ja:'1日1回'}], ['2', {ko:'하루 2번', en:'Twice a day', zh:'每天2次', ja:'1日2回'}],
+          ['3', {ko:'하루 3번', en:'3 times a day', zh:'每天3次', ja:'1日3回'}], ['need', {ko:'필요할 때만', en:'Only when needed', zh:'需要时服用', ja:'必要なときだけ'}]],
+  max: [['m2', {ko:'하루 최대 2번', en:'no more than 2 times a day', zh:'每天最多2次', ja:'1日2回まで'}], ['m3', {ko:'하루 최대 3번', en:'no more than 3 times a day', zh:'每天最多3次', ja:'1日3回まで'}],
+        ['m4', {ko:'하루 최대 4번', en:'no more than 4 times a day', zh:'每天最多4次', ja:'1日4回まで'}]],
+  when: [['after30', {ko:'식사 후 30분', en:'30 minutes after meals', zh:'饭后30分钟', ja:'食後30分'}], ['afterNow', {ko:'식사 직후', en:'right after meals', zh:'饭后立即', ja:'食後すぐ'}],
+         ['before', {ko:'식사 30분 전', en:'30 minutes before meals', zh:'饭前30分钟', ja:'食前30分'}], ['morning', {ko:'아침에', en:'in the morning', zh:'早上', ja:'朝'}],
+         ['bed', {ko:'자기 전', en:'before bed', zh:'睡前', ja:'寝る前'}], ['food', {ko:'식사와 상관없이', en:'with or without food', zh:'饭前饭后均可', ja:'食事に関係なく'}]],
+  dose: [['half', {ko:'반 알씩', en:'half a tablet each time', zh:'每次半片', ja:'1回半錠'}], ['1t', {ko:'1알씩', en:'1 tablet each time', zh:'每次1片', ja:'1回1錠'}],
+         ['2t', {ko:'2알씩', en:'2 tablets each time', zh:'每次2片', ja:'1回2錠'}], ['1p', {ko:'1포씩', en:'1 packet each time', zh:'每次1包', ja:'1回1包'}],
+         ['1b', {ko:'1병씩 (마시는 약)', en:'1 bottle each time (drink it)', zh:'每次1瓶（口服液）', ja:'1回1本（飲み薬）'}],
+         ['patch', {ko:'아픈 곳에 1장 붙이기', en:'apply 1 patch to the sore area', zh:'在疼痛处贴1片', ja:'痛いところに1枚貼る'}],
+         ['cream', {ko:'아픈 곳에 얇게 바르기', en:'apply a thin layer to the affected area', zh:'在患处薄薄涂一层', ja:'患部に薄く塗る'}],
+         ['eye', {ko:'눈에 1~2방울', en:'1-2 drops in the affected eye', zh:'每次1～2滴，滴入患眼', ja:'1回1～2滴、目にさす'}]],
+  days: [['d1', {ko:'1일분이에요.', en:'This is 1 day of medicine.', zh:'这是1天的药量。', ja:'1日分です。'}], ['d3', {ko:'3일분이에요.', en:'This is 3 days of medicine.', zh:'这是3天的药量。', ja:'3日分です。'}],
+         ['d5', {ko:'5일분이에요.', en:'This is 5 days of medicine.', zh:'这是5天的药量。', ja:'5日分です。'}], ['d7', {ko:'7일분이에요.', en:'This is 7 days of medicine.', zh:'这是7天的药量。', ja:'7日分です。'}]],
+  note: [['sleepy', {ko:'졸릴 수 있어요. 운전하지 마세요.', en:'It may make you sleepy. Do not drive.', zh:'可能会犯困，请不要开车。', ja:'眠くなることがあります。運転しないでください。'}, 'oral'],
+         ['alcohol', {ko:'먹는 동안 술은 마시지 마세요.', en:'Do not drink alcohol while taking it.', zh:'服药期间请不要喝酒。', ja:'服用中はお酒を飲まないでください。'}, 'oral'],
+         ['water', {ko:'물과 함께 드세요.', en:'Take it with water.', zh:'请用水送服。', ja:'水と一緒に飲んでください。'}, 'oral'],
+         ['chew', {ko:'씹지 말고 그대로 삼키세요.', en:'Swallow it whole. Do not chew.', zh:'请整片吞服，不要嚼。', ja:'かまずにそのまま飲み込んでください。'}, 'oral'],
+         ['gap', {ko:'먹는 간격은 4시간 이상 두세요.', en:'Wait at least 4 hours between doses.', zh:'两次服药至少间隔4小时。', ja:'服用の間隔を4時間以上あけてください。'}, 'oral'],
+         ['other', {ko:'다른 감기약·진통제와 같이 먹지 마세요.', en:'Do not take it with other cold or pain medicine.', zh:'请不要和其他感冒药、止痛药一起吃。', ja:'ほかの風邪薬・痛み止めと一緒に飲まないでください。'}, 'oral'],
+         ['empty', {ko:'빈속에 먹지 마세요.', en:'Do not take it on an empty stomach.', zh:'请不要空腹服用。', ja:'空腹時に飲まないでください。'}, 'oral'],
+         ['finish', {ko:'나아져도 끝까지 다 드세요.', en:'Finish all of it, even if you feel better.', zh:'即使好转了，也请把药吃完。', ja:'よくなっても最後まで飲みきってください。'}, 'oral'],
+         ['shake', {ko:'흔들어서 드세요.', en:'Shake well before taking.', zh:'服用前请摇匀。', ja:'よく振ってから飲んでください。'}, 'oral'],
+         ['fridge', {ko:'냉장고에 보관하세요.', en:'Keep it in the refrigerator.', zh:'请放在冰箱里保存。', ja:'冷蔵庫で保管してください。'}, 'any'],
+         ['skin', {ko:'상처가 난 곳에는 쓰지 마세요.', en:'Do not use it on broken skin or wounds.', zh:'请不要用在伤口或破皮处。', ja:'傷口には使わないでください。'}, 'ext'],
+         ['pregnant', {ko:'임신·수유 중이면 알려 주세요.', en:'Please tell us if you are pregnant or breastfeeding.', zh:'如果您怀孕或正在哺乳，请告诉我们。', ja:'妊娠中・授乳中の方はお知らせください。'}, 'any'],
+         ['doctor', {ko:'3일이 지나도 낫지 않으면 병원에 가세요.', en:'If you do not feel better in 3 days, please see a doctor.', zh:'如果3天后还没好转，请去医院。', ja:'3日たってもよくならなければ、病院に行ってください。'}, 'any']]
+};
+const EXT = ['patch','cream','eye'];
+const ASK = {en:'If anything is unclear, please ask the pharmacist again.', zh:'如有不清楚的地方，请再问药剂师。', ja:'わからないことがあれば、もう一度薬剤師に聞いてください。', ko:'모르면 약사에게 다시 물어보세요.'};
+function rxClean(v){ const ok = (key, k) => RX[key].some(x => x[0] === k);
+  v = Object.assign({times:'', max:'', when:'', dose:'', days:'', note:[]}, v && typeof v === 'object' ? v : {});
+  ['times','max','when','dose','days'].forEach(key => { if (!ok(key, v[key])) v[key] = '' });
+  v.note = Array.isArray(v.note) ? v.note.filter(k => ok('note', k)) : []; return v }
+let rx = rxClean(store.get('rx2', null));
+// 안 맞는 조합: 붙이기·바르기·안약엔 '먹는' 주의·식사 시점 없음 / 하루 2·3번엔 '자기 전'·'아침에' 없음 / 식사 전엔 '빈속 금지' 없음
+function rxBlocked(key, k){
+  const ext = EXT.includes(rx.dose);
+  if (key === 'when') { if (ext && !['bed','morning'].includes(k)) return true; if (['2','3','need'].includes(rx.times) && ['bed','morning'].includes(k)) return true }
+  if (key === 'note') { const kind = RX.note.find(x => x[0] === k)[2]; if (ext && kind === 'oral') return true; if (!ext && rx.dose && kind === 'ext') return true;
+    if (k === 'empty' && ['before', 'food'].includes(rx.when)) return true
+    if (k === 'finish' && rx.times === 'need') return true
+    if (k === 'chew' && rx.dose && rx.dose !== '1t' && rx.dose !== '2t') return true   // 씹지 말기: 알약만
+    if (k === 'shake' && rx.dose && rx.dose !== '1b') return true                        // 흔들기: 마시는 약만
+    if (k === 'water' && rx.dose === '1b') return true
+    if (k === 'skin' && rx.dose === 'eye') return true
+    if (k === 'gap' && rx.times === '1') return true }
+  if (key === 'max') return rx.times !== 'need';
+  return false }
+function rxFix(){
+  ['when','max'].forEach(key => { if (rx[key] && rxBlocked(key, rx[key])) rx[key] = '' });
+  rx.note = rx.note.filter(k => !rxBlocked('note', k)) }
+function rxGroup(id, key, multi){
+  const box = $('#' + id); box.innerHTML = '';
+  RX[key].forEach(([k, t]) => { const l = document.createElement('label'); l.className = 'chip';
+    const on = multi ? rx[key].includes(k) : rx[key] === k, off = rxBlocked(key, k);
+    l.style.opacity = off ? .35 : 1;
+    l.innerHTML = `<input type="${multi ? 'checkbox' : 'radio'}" name="rx-${key}"${on ? ' checked' : ''}${off ? ' disabled' : ''}> ${esc(t.ko)}`;
+    l.querySelector('input').addEventListener('change', e => { if (multi) { rx[key] = e.target.checked ? [...rx[key], k] : rx[key].filter(x => x !== k) } else rx[key] = k;
+      rxFix(); store.set('rx2', rx); rxAll() });
+    box.appendChild(l) });
+}
+function rxText(lang){
+  const g = (key, k) => (RX[key].find(x => x[0] === k) || [0, {}])[1][lang] || '';
+  const sep = lang === 'ja' ? '、' : lang === 'zh' ? '，' : ', ';
+  const end = lang === 'en' || lang === 'ko' ? '.' : '。';
+  const first = [g('times', rx.times), rx.times === 'need' ? g('max', rx.max) : '', g('when', rx.when), g('dose', rx.dose)].filter(Boolean)
+    .map((x, i) => lang === 'en' ? (i ? x[0].toLowerCase() : x[0].toUpperCase()) + x.slice(1) : x);
+  const notes = RX.note.filter(x => rx.note.includes(x[0])).map(x => x[1][lang]);
+  return [first.join(sep) + end, ...(rx.days ? [g('days', rx.days)] : []), ...notes];
+}
+function rxReady(){ return !!(rx.times && rx.dose && (rx.times !== 'need' || rx.max)) }
+function rxAll(){
+  rxGroup('rxTimes','times'); rxGroup('rxMax','max'); rxGroup('rxWhen','when'); rxGroup('rxDose','dose'); rxGroup('rxDays','days'); rxGroup('rxNote','note',true);
+  $('#rxMaxWrap').hidden = rx.times !== 'need';
+  $('#rxShow').disabled = !rxReady();
+  const need = rx.times === 'need' ? " '필요할 때만'은 하루 최대 횟수도 골라 주세요." : '';
+  $('#rxOut').innerHTML = rxReady() ? `<div class="ko">${rxText('ko').map(esc).join('<br>')}</div><hr>` + ['en','zh','ja'].map(l => `<div class="${l}" lang="${l==='zh'?'zh-Hans':l}">${rxText(l).map(esc).join('<br>')}</div>`).join('')
+    : `<p class="hint">몇 번 · 얼마나를 고르면 여기에 문장이 나와요.${need}</p>`;
+}
+rxFix(); rxAll();
+$('#rxReset').addEventListener('click', () => { rx = rxClean(null); store.set('rx2', rx); rxAll() });
+$('#rxShow').addEventListener('click', () => { if (!rxReady()) return;
+  $('#showBody').innerHTML = ['en','zh','ja'].map(l => `<div class="${l}" lang="${l==='zh'?'zh-Hans':l}">${rxText(l).map(esc).join('<br>')}<br><small style="font-size:.5em;font-weight:500">${esc(ASK[l])}</small></div>`).join('') + `<div class="ko">${rxText('ko').map(esc).join(' ')}</div>`;
+  $('#show').hidden = false; $('#close').focus() });
+translate(); render(); { const h = location.hash.slice(1), t = TABS.includes(h) ? h : store.get('tab','talk'); openTab(TABS.includes(t)?t:'talk') }
 </script>
 
 </body>
