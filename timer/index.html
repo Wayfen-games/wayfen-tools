@@ -65,7 +65,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 <div class="wrap">
   <header>
     <h1><span data-t="title">Wayfen Study Timer</span><small data-t="sub">lofi focus timer</small></h1>
-    <span style="display:flex;gap:8px;align-items:center"><span class="count" id="count">0 sessions today</span><button class="chip" id="lang" style="padding:4px 10px;font-size:12px" aria-label="Language">EN/한/日</button></span>
+    <span style="display:flex;gap:8px;align-items:center"><span class="count" id="count">0 sessions today</span><button class="chip" id="lang" style="padding:4px 10px;font-size:12px" aria-label="Language">EN/한/日/繁</button></span>
   </header>
 
   <div class="dial" role="timer" aria-live="off">
@@ -108,11 +108,13 @@ const T = {
        focus:'Focus', brk:'Break', sess:n=>`${n} session${n===1?'':'s'} today`, start:'Start', pause:'Pause', reset:'Reset timer', skip:'Skip to next phase', next:'Next song'},
   ko: {title:'Wayfen 공부 타이머', sub:'로파이 집중 타이머', vol:'음악 소리', rest:'쉬는 시간에도 음악 켜 두기', more:'더 긴 믹스는 유튜브에서:', stream:'음원 사이트에서 듣기:',
        focus:'집중', brk:'휴식', sess:n=>`오늘 ${n}번 완료`, start:'시작', pause:'일시정지', reset:'처음으로', skip:'다음 단계로', next:'다음 곡'},
+  tw: {title:'Wayfen 讀書計時器', sub:'Lo-fi 專注計時器', vol:'音樂音量', rest:'休息時也播放音樂', more:'更長的混音在 YouTube：', stream:'在各音樂平台收聽：',
+       focus:'專注', brk:'休息', sess:n=>`今天完成 ${n} 次`, start:'開始', pause:'暫停', reset:'重設', skip:'跳到下一段', next:'下一首'},
   ja: {title:'Wayfen 勉強タイマー', sub:'作業用ローファイ集中タイマー', vol:'音楽の音量', rest:'休憩中も音楽を流す', more:'長いミックスはYouTubeで：', stream:'各音楽サービスで聴く：',
        focus:'集中', brk:'休憩', sess:n=>`今日の完了：${n}回`, start:'スタート', pause:'一時停止', reset:'リセット', skip:'次へ進む', next:'次の曲'}};
-let L = (new URLSearchParams(location.search).get('lang')) || (()=>{try{return localStorage.getItem('lang')}catch(e){return null}})() || ((l => l.startsWith('ko') ? 'ko' : l.startsWith('ja') ? 'ja' : 'en')((navigator.language||'').toLowerCase()));
+let L = (new URLSearchParams(location.search).get('lang')) || (()=>{try{return localStorage.getItem('lang')}catch(e){return null}})() || ((l => l.startsWith('ko') ? 'ko' : l.startsWith('ja') ? 'ja' : /^zh-(tw|hk|mo|hant)/.test(l) ? 'tw' : 'en')((navigator.language||'').toLowerCase()));
 if (!T[L]) L = 'en';
-function applyLang(){ document.documentElement.lang = L; document.querySelectorAll('[data-t]').forEach(e => e.textContent = T[L][e.dataset.t]);
+function applyLang(){ document.documentElement.lang = L === 'tw' ? 'zh-Hant' : L; document.querySelectorAll('[data-t]').forEach(e => e.textContent = T[L][e.dataset.t]);
   document.getElementById('reset').setAttribute('aria-label', T[L].reset); document.getElementById('skip').setAttribute('aria-label', T[L].skip);
   document.getElementById('next').setAttribute('aria-label', T[L].next); }
 const TRACKS = [
@@ -167,7 +169,7 @@ document.querySelectorAll('.modes .chip').forEach(b => b.setAttribute('aria-pres
 document.addEventListener('visibilitychange', async () => { if (document.visibilityState === 'visible' && running){ tick(); try{ lock = await navigator.wakeLock?.request('screen') }catch(e){} } });
 // 아이폰은 음량 조절을 막아 두므로 슬라이더를 숨김
 if (/iPhone|iPad|iPod/.test(navigator.userAgent)) $('#vol').closest('label').hidden = true;
-$('#lang').addEventListener('click', () => { L = {en:'ko', ko:'ja', ja:'en'}[L] || 'en'; try{ localStorage.setItem('lang', L) }catch(e){} applyLang(); paint() });
+$('#lang').addEventListener('click', () => { L = {en:'ko', ko:'ja', ja:'tw', tw:'en'}[L] || 'en'; try{ localStorage.setItem('lang', L) }catch(e){} applyLang(); paint() });
 applyLang();
 setTrack(ti); left = total(); paint();
 </script>
