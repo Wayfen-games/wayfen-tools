@@ -221,10 +221,14 @@ function show(p, num){
   $('#show').hidden = false; $('#close').focus();
 }
 // 손님이 되물을 때: 손님 말 단추 → 사장님께 한국어로 크게
-function guestList(){ $('#showTag').textContent = '손님 쪽으로 돌려 주세요'; $('#showBody').innerHTML = '<div class="glist">' + GA.map((g,i) => `<button data-g="${i}">${talkLangs.map((l,k) => k ? `<small>${esc(g[l])}</small>` : esc(g[l])).join('')}</button>`).join('') + '</div>'; gMode = 'list'; $('#gMain').textContent = '↩ 처음 문장으로 / Back'; $('#showBody').scrollTop = 0 }
-function guestShow(i){ const g = GA[i]; $('#showBody').innerHTML = `<div class="ko" style="font:800 clamp(30px,9vw,52px)/1.3 var(--f-ko);color:#141210;border:0">${esc(g.ko)}</div><div class="${talkLangs[0] === 'zh' || talkLangs[0] === 'ja' ? talkLangs[0] : 'en'}" lang="${talkLangs[0] === 'zh' ? 'zh-Hans' : talkLangs[0]}">${esc(g[talkLangs[0]])}</div>`; gMode = 'answer'; $('#showTag').textContent = '사장님 보세요 · 손님의 답'; $('#gMain').textContent = '↩ 다른 답 / Other answer' }
+let gLang = null;  // 손님이 자기 말을 고르면 그 말로만 보여 줌(단추가 짧아짐)
+const LNAME = {en:'English', zh:'中文', ja:'日本語', id:'Bahasa Indonesia', vi:'Tiếng Việt', th:'ไทย'};
+function guestList(){ $('#showTag').textContent = '손님 쪽으로 돌려 주세요'; const ls = gLang ? [gLang] : talkLangs;
+  $('#showBody').innerHTML = (talkLangs.length > 1 ? `<div class="nums">${talkLangs.map(l => `<button data-gl="${l}" aria-pressed="${gLang === l}">${LNAME[l]}</button>`).join('')}</div>` : '')
+    + '<div class="glist">' + GA.map((g,i) => `<button data-g="${i}">${ls.map((l,k) => k ? `<small>${esc(g[l])}</small>` : esc(g[l])).join('')}</button>`).join('') + '</div>'; gMode = 'list'; $('#gMain').textContent = '↩ 처음 문장으로 / Back'; $('#showBody').scrollTop = 0 }
+function guestShow(i){ const g = GA[i]; $('#showBody').innerHTML = `<div class="ko" style="font:800 clamp(30px,9vw,52px)/1.3 var(--f-ko);color:#141210;border:0">${esc(g.ko)}</div>${(l => `<div class="${l === 'zh' || l === 'ja' ? l : 'en'}" lang="${l === 'zh' ? 'zh-Hans' : l}">${esc(g[l])}</div>`)(gLang || talkLangs[0])}`; gMode = 'answer'; $('#showTag').textContent = '사장님 보세요 · 손님의 답'; $('#gMain').textContent = '↩ 다른 답 / Other answer' }
 $('#showBody').addEventListener('click', e => { const b = e.target.closest && e.target.closest('button'); if (!b) return;
-  if (b.dataset.n) show(curP, b.dataset.n); else if (b.dataset.g) guestShow(+b.dataset.g) });
+  if (b.dataset.n) show(curP, b.dataset.n); else if (b.dataset.gl){ gLang = gLang === b.dataset.gl ? null : b.dataset.gl; guestList() } else if (b.dataset.g) guestShow(+b.dataset.g) });
 $('#gMain').addEventListener('click', () => { if (gMode === 'say') guestList(); else if (gMode === 'answer') guestList(); else show(curP, curN) });
 let shPushed = false;
 function hideShow(fromPop){ if (fromPop !== true && shPushed){ shPushed = false; try{ history.back() }catch(e){} } $('#show').hidden = true }
