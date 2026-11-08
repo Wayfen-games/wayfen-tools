@@ -92,6 +92,9 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid 
 <h2>수익원별 시간당 순수익</h2>
 <div class="bar" id="bars"></div>
 
+<h2>목표까지</h2>
+<div class="bar" id="toGoal"></div>
+
 <div class="note">
   <b>알아 두기.</b> 순수익은 세금을 빼기 전 금액이에요. 플랫폼 수수료는 직접 고칠 수 있는 예시 값이에요(2026년 11월, 공식 표 확인 전). 3.3%는 미리 떼는 세금이라 5월 종합소득세 신고 때 돌려받거나 더 낼 수 있어요. 정확한 세금은 홈택스나 세무사에게 확인하세요. 입력한 숫자는 이 기기에만 저장돼요.
 </div>
@@ -160,6 +163,14 @@ function calc(){
   const per = rows.map(r => ({name:r.name, v: num(r.hours) ? netOf(r)/num(r.hours) : null})).filter(x => x.v !== null);
   const max = Math.max(1, ...per.map(x => Math.abs(x.v)));
   $('#bars').innerHTML = per.length ? per.sort((a,b)=>b.v-a.v).map(x => `<div class="r"><span>${x.name.replace(/</g,'&lt;')}</span><span class="t"><i style="width:${Math.max(0,x.v)/max*100}%"></i></span><span class="v ${x.v<0?'neg':''}">${won(x.v)}</span></div>`).join('') : '<span class="sub">쓴 시간을 넣으면 수익원끼리 비교돼요.</span>';
+  // 목표까지: 부족한 돈, 지금 남기는 비율로 필요한 추가 매출, 시간당 가장 좋은 일에 더 쓸 시간
+  const short = goal - net, margin = gross ? rows.reduce((s,r)=>s+netOf(r),0) / gross : 0;
+  const best = per.length ? per.slice().sort((a,b)=>b.v-a.v)[0] : null;
+  $('#toGoal').innerHTML = !goal ? '<span class="sub">목표를 넣으면 계산돼요.</span>'
+    : short <= 0 ? `<div>이번 달 목표를 <b>${won(-short)}</b> 넘었어요.</div>`
+    : `<div>목표까지 <b>${won(short)}</b> 남았어요.</div>`
+      + (margin > 0 ? `<div class="sub">지금처럼 매출의 ${(margin*100).toFixed(0)}%를 남기면, 매출이 <b>${won(short / margin)}</b> 더 필요해요.</div>` : '')
+      + (best && best.v > 0 ? `<div class="sub">시간당 가장 많이 남는 '${best.name.replace(/</g,'&lt;')}'(시간당 ${won(best.v)})에 <b>${Math.ceil(short / best.v)}시간</b> 더 쓰면 닿아요.</div>` : '');
   $('#exTag').hidden = !example;
   store.set('goal', $('#goal').value); store.set('fixed', $('#fixed').value);
 }
