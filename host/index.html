@@ -120,5 +120,5 @@ const cp=async(u,b,lbl)=>{try{await navigator.clipboard.writeText(u);b.textConte
 $('#copy').onclick=e=>cp(guest,e.target,'손님 주소');$('#edit').onclick=e=>cp(editUrl,e.target,'고치기용 주소');
 (async()=>{const m=location.hash.match(/^#edit=(.+)$/);
   if(m){try{fill(await dec(m[1]));return}catch(e){}}
-  try{const s=localStorage.getItem('host.form');if(s){const d=JSON.parse(s);fill(d);if(d.w&&!$('#p').value){$('#p').style.borderColor='#c0392b';$('#p').placeholder='비밀번호를 다시 넣어 주세요';}}}catch(e){}})();
+  try{const s=localStorage.getItem('host.form');if(s){const d=JSON.parse(s);fill(d);if(d.w&&!$('#p').value){$('#p').style.borderColor='#c0392b';$('#p').placeholder='비밀번호를 다시 넣어 주세요';$('#p').addEventListener('input',()=>{$('#p').style.borderColor=''},{once:true});}}}catch(e){}})();
 </script></body></html>
