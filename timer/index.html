@@ -136,12 +136,15 @@ const $ = s => document.querySelector(s);
 const store = {P:'timer.', get(k,d){try{let v=localStorage.getItem(this.P+k);if(v===null&&k!=='lang'&&k!=='tab'){v=localStorage.getItem(k)}if(v===null)return d;try{return JSON.parse(v)}catch(e){return v}}catch(e){return d}}, set(k,v){try{localStorage.setItem(this.P+k,JSON.stringify(v))}catch(e){}}};
 const aud = $('#aud'); const R = 92, C = 2 * Math.PI * R; $('#prog').style.strokeDasharray = C;
 let byUs = false, musicNeedsTap = false;
-let endAt = 0, mode = store.get('mode', {f:25, r:5}), phase = 'focus', left = mode.f * 60, running = false, timer = null, ti = store.get('track', 0) % TRACKS.length, lock = null;
+let endAt = 0, mode = store.get('mode', {f:25, r:5}), phase = 'focus', left = mode.f * 60, running = false, timer = null, ti = 0, lock = null;
+// 하루마다 시작 곡이 바뀜. 오늘 직접 고른 곡이 있으면 그 곡 유지(11-09 대표님)
+const DAY = Math.floor((Date.now() - new Date().getTimezoneOffset() * 6e4) / 864e5);
+ti = (store.get('pickDay', -1) === DAY ? store.get('track', 0) : DAY) % TRACKS.length;
 const today = new Date().toDateString(); let stats = store.get('stats', {d:today, n:0}); if (stats.d !== today) stats = {d:today, n:0};
 
 // 곡
 TRACKS.forEach(([id, name], i) => { const b = document.createElement('button'); b.className='trk'; b.id='tr-'+i;
-  b.innerHTML = `<img src="art/${id}.jpg" alt="">${name}`; b.addEventListener('click', () => { setTrack(i); if (running || !aud.paused) aud.play().catch(()=>{}) }); $('#tracks').appendChild(b) });
+  b.innerHTML = `<img src="art/${id}.jpg" alt="">${name}`; b.addEventListener('click', () => { store.set('pickDay', DAY); setTrack(i); if (running || !aud.paused) aud.play().catch(()=>{}) }); $('#tracks').appendChild(b) });
 function setTrack(i){ ti = (i + TRACKS.length) % TRACKS.length; const [id, name] = TRACKS[ti]; aud.src = `music/${id}.mp3`; $('#tTitle').textContent = name;
   $('#bgart').style.backgroundImage = `url(art/${id}.jpg)`; document.querySelectorAll('.trk').forEach((b,k)=>b.setAttribute('aria-current', String(k===ti))); store.set('track', ti) }
 aud.addEventListener('ended', () => { setTrack(ti + 1); aud.play().catch(()=>{}) });
