@@ -123,6 +123,14 @@ tr.miss td,tr.noprice td{color:var(--warn)} .prt{display:none}
   <h2>미리보기</h2>
   <div id="sheets" class="list"></div>
   <button class="primary" id="print" hidden>인쇄하기 (A4 가로)</button>
+  <h2 style="margin-top:22px">손님 와이파이 QR</h2>
+  <p class="hint">손님이 휴대폰 카메라로 찍으면 비밀번호를 치지 않고 바로 연결돼요. 이 기기 안에서만 만들고, 와이파이 정보는 어디에도 보내지 않아요.</p>
+  <label class="hint" style="display:block">와이파이 이름 <input id="wfName" autocomplete="off" style="display:block;width:100%;max-width:360px;font:16px var(--f-ko);padding:9px;border:1px solid #ccc;border-radius:8px"></label>
+  <label class="hint" style="display:block">비밀번호 (없으면 비워 두세요) <input id="wfPw" autocomplete="off" style="display:block;width:100%;max-width:360px;font:16px var(--f-ko);padding:9px;border:1px solid #ccc;border-radius:8px"></label>
+  <button class="primary" id="wfMake">와이파이 QR 만들기</button>
+  <div id="wfBox" hidden style="margin-top:12px;text-align:center"><div id="wfImg"></div>
+    <p><a id="wfSave" download="wifi-qr.png">그림 저장</a> <button class="chip" id="wfShare" hidden>카톡 등으로 보내기</button></p>
+    <p class="hint" style="text-align:left">그림을 인쇄해 카운터·테이블·객실에 붙이세요. 비밀번호를 바꾸면 QR도 새로 만들어야 해요. 일부 오래된 휴대폰은 카메라로 와이파이 QR을 못 읽을 수 있어서 그림 아래에 이름과 비밀번호도 함께 적혀 있어요.</p></div>
 </section>
 
 <section id="p-menu" role="tabpanel" hidden>
@@ -354,6 +362,30 @@ $('#makeQR').addEventListener('click', () => {
 });
 let qrBlob = null;
 $('#qrShare').addEventListener('click', async () => { try { await navigator.share({files: [new File([qrBlob], 'qr-menu.png', {type: 'image/png'})], title: 'QR 메뉴'}) } catch(e) {} });
+
+// 손님 와이파이 QR: 표준 WIFI: 형식(특수문자 \ ; , : " 는 앞에 \). 한글 이름도 되게 UTF-8로
+$('#wfName').value = store.get('wfName', '');
+$('#wfName').addEventListener('input', e => store.set('wfName', e.target.value));  // 비밀번호는 저장하지 않음
+let wfBlob = null;
+$('#wfMake').addEventListener('click', () => {
+  const raw = $('#wfName').value, name = raw.trim() ? raw : '', pw = $('#wfPw').value; if (!name) { $('#wfName').focus(); return }
+  if (typeof qrcode !== 'function') { $('#wfImg').textContent = '인터넷에 연결된 상태에서 다시 눌러 주세요.'; $('#wfBox').hidden = false; return }
+  const e = x => x.replace(/([\\;,:"])/g, '\\$1');
+  try { qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'] } catch(err) {}
+  const q = qrcode(0, 'M'); q.addData(`WIFI:T:${pw ? 'WPA' : 'nopass'};S:${e(name)};P:${e(pw)};;`, 'Byte'); q.make();
+  const n = q.getModuleCount(), cell = Math.max(8, Math.floor(520 / n)), pad = cell * 3, Q = n * cell + pad * 2, Wd = Math.max(Q, 760), x0 = (Wd - n * cell) / 2, Hd = Q + 190;
+  const cv = document.createElement('canvas'); cv.width = Wd; cv.height = Hd; const g = cv.getContext('2d');
+  g.fillStyle = '#fff'; g.fillRect(0, 0, Wd, Hd); g.fillStyle = '#000';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) g.fillRect(x0 + c * cell, pad + r * cell, cell, cell);
+  g.textAlign = 'center';
+  const fitT = (t, size, bold, y) => { do { g.font = (bold ? 'bold ' : '') + size + 'px system-ui, sans-serif'; size-- } while (g.measureText(t).width > Wd - 30 && size > 12); g.fillText(t, Wd / 2, y) };
+  fitT('Free Wi-Fi · 免费WiFi · 無料Wi-Fi', 34, true, Q + 34); fitT('Scan with your camera · 扫码连接 · カメラで読み取る', 26, false, Q + 76);
+  fitT('Wi-Fi: ' + name, 28, true, Q + 124); if (pw) fitT('Password: ' + pw, 28, true, Q + 166);
+  const src = cv.toDataURL('image/png'); $('#wfImg').innerHTML = `<img src="${src}" alt="와이파이 QR" style="width:280px;height:auto">`;
+  $('#wfSave').href = src; $('#wfBox').hidden = false;
+  cv.toBlob(b => { wfBlob = b; $('#wfShare').hidden = !(b && navigator.canShare && navigator.canShare({files: [new File([b], 'wifi-qr.png', {type: 'image/png'})]})) });
+});
+$('#wfShare').addEventListener('click', async () => { try { await navigator.share({files: [new File([wfBlob], 'wifi-qr.png', {type: 'image/png'})], title: 'Wi-Fi QR'}) } catch(e) {} });
 
 // 약 복용 안내 [번역: Claude, 원어민 검수 전]. 처음엔 아무것도 안 고른 상태. 안 맞는 조합은 막음
 const RX = {
