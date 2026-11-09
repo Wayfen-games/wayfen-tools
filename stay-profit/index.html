@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>에어비앤비·숙소 수익 계산기 (손익분기 점유율·월 순이익)</title>
+<title>숙소 수익 계산기 (손익분기 점유율·월 순이익, 수수료 15.5% 반영)</title>
 <meta name="description" content="월세, 관리비, 청소비, 플랫폼 수수료, 1박 요금만 넣으면 숙소 운영 예상 월 순이익과 손익분기 점유율(몇 % 차야 본전인지)을 바로 계산해요. 매물 계약 전에 비교해 보세요. 무료, 가입 없음.">
 <link rel="canonical" href="https://wayfen-games.github.io/wayfen-tools/stay-profit/">
 <script data-goatcounter="https://wayfen.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
@@ -21,7 +21,8 @@ table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid 
 </style></head>
 <body><main>
 <h1>숙소 수익 계산기</h1>
-<p class="lead">매물을 계약하기 전에, 이 집으로 에어비앤비·단기 숙소를 하면 <b>한 달에 얼마 남는지</b>, <b>방이 몇 % 차야 본전인지</b> 바로 계산해요. 숫자는 모두 직접 넣는 가정값이에요.</p>
+<p class="lead">숙소 운영을 생각 중이라면, <b>허가 조건을 먼저 확인한 뒤</b> 한 달에 얼마 남는지, 방이 몇 % 차야 본전인지 계산해 보세요. 숫자는 모두 직접 넣는 가정값이에요. 1박 단위 숙박 기준이에요.</p>
+<p class="note" style="background:#fff6e5;border-radius:10px;padding:10px 12px">한국에서 집을 숙소로 쓰려면 영업신고가 필요해요. 일반 주택에서 흔히 쓰는 외국인관광 도시민박업은 호스트가 그 집에 실제로 살아야 하고 외국인 손님만 받을 수 있어요. 그래서 집을 빌려 통째로 숙소로 돌리는 방식은 대부분 허가가 나지 않아요. 에어비앤비도 영업신고증이 없는 국내 숙소의 예약을 받지 않아요. 계약 전에 관할 구청에 꼭 물어보세요.</p>
 
 <div class="card"><h2>매달 나가는 돈</h2>
 <div class="row"><div><label>월세</label><input id="rent" type="number" inputmode="numeric" min="0" step="10000" value="900000"></div>
@@ -35,14 +36,14 @@ table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid 
 <div><label>예상 점유율 <small>%</small></label><input id="occ" type="number" min="0" max="100" step="1" value="60"></div></div>
 <div class="row"><div><label>청소비 <small>1회, 맡기면</small></label><input id="clean" type="number" inputmode="numeric" min="0" step="5000" value="35000"></div>
 <div><label>평균 숙박 <small>예약 1건당 박</small></label><input id="stay" type="number" min="1" step="0.5" value="2.5"></div></div>
-<label>플랫폼 수수료 <small>% · 숙소 매출에서 빠지는 비율. 계정 설정에서 확인하세요</small></label><input id="fee" type="number" min="0" max="40" step="0.5" value="3">
-<p class="note">손님이 따로 내는 청소비를 받는다면 1박 요금에 나눠 넣어 주세요.</p>
+<label>플랫폼 수수료 <small>% · 숙소 매출에서 빠지는 비율</small></label><input id="fee" type="number" min="0" max="40" step="0.5" value="15.5">
+<p class="note">에어비앤비는 호스트가 수수료를 전부 내는 방식(대부분 15.5%)으로 바뀌고 있어요. 예전 방식(호스트 약 3%, 손님 따로)이 남아 있는지는 내 계정에서 확인하세요. 손님이 따로 내는 청소비를 받는다면 1박 요금에 나눠 넣어 주세요(그 금액에도 수수료가 붙어요).</p>
 </div>
 
 <div class="card"><h2>처음 한 번 드는 돈</h2>
 <div class="row"><div><label>가구·인테리어·비품</label><input id="setup" type="number" inputmode="numeric" min="0" step="100000" value="5000000"></div>
-<div><label>몇 달에 나눠 갚을지</label><input id="months" type="number" min="1" step="1" value="12"></div></div>
-<p class="note">보증금은 돌려받는 돈이라 넣지 않았어요.</p>
+<div><label>몇 달에 나눠 계산할지</label><input id="months" type="number" min="1" step="1" value="12"></div></div>
+<p class="note">보증금은 돌려받는 돈이라 넣지 않았어요. 나눠 계산하는 기간이 지나면 그만큼 순이익이 늘어요.</p>
 </div>
 
 <div class="card" id="res"></div>
@@ -53,17 +54,17 @@ table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid 
 <li><b>숙박일:</b> 30일 × 점유율</li>
 <li><b>매출:</b> 숙박일 × 1박 요금. 여기서 플랫폼 수수료를 빼요.</li>
 <li><b>청소 횟수:</b> 숙박일 ÷ 평균 숙박. 청소비 × 청소 횟수.</li>
-<li><b>순이익:</b> 매출 − 수수료 − 청소비 − (월세 + 관리비 + 공과금 + 소모품) − 처음 비용 ÷ 갚는 달 수</li>
+<li><b>순이익:</b> 매출 − 수수료 − 청소비 − (월세 + 관리비 + 공과금 + 소모품) − 처음 비용 ÷ 나눠 계산하는 달 수</li>
 <li><b>손익분기 점유율:</b> 순이익이 0이 되는 점유율</li>
 </ul>
 <h2>꼭 알아 두세요</h2>
 <ul>
 <li>추정값이에요. 실제 점유율과 요금은 계절, 위치, 후기에 따라 크게 달라요. 비슷한 동네 숙소의 요금과 예약 상황을 직접 확인해 넣으세요.</li>
 <li>세금(종합소득세·부가가치세)과 사업자 등록, 보험료는 넣지 않았어요.</li>
-<li><b>허가·계약:</b> 한국에서 숙박 영업을 하려면 보통 숙박업 등록이 필요해요. 외국인관광 도시민박업은 호스트가 그 집에 실제로 살아야 하는 등 조건이 있어요. 월세 집이라면 집주인 동의도 필요해요. 매물을 정하기 전에 관할 구청과 계약서에서 꼭 확인하세요.</li>
-<li>플랫폼 수수료 방식(호스트·손님이 나눠 내는지, 호스트만 내는지)은 계정마다 다를 수 있어요. 호스트만 내는 방식이면 수수료가 훨씬 높아요.</li>
+<li><b>허가:</b> 외국인관광 도시민박업은 호스트 실거주·외국인 손님만 등 조건이 있고, 농어촌민박·한옥체험업 등은 각각 따로 요건이 있어요. 월세 집이라면 집주인 동의도 필요해요. 매물을 정하기 전에 관할 구청과 계약서에서 꼭 확인하세요.</li>
+<li>30일 이상 빌려주는 단기임대는 숙박업이 아니라 임대차라 규칙과 수수료 구조가 달라요. 이 계산기는 1박 단위 숙박 기준이에요.</li>
 </ul>
-<footer>무료, 가입 없음, 입력한 숫자는 어디에도 보내지 않아요(방문 수만 셉니다). · <a href="../host/">숙소 외국인 손님 안내 QR</a> · <a href="../calc/">N잡 순수익</a> · <a href="../">모든 도구</a> · 확인일 2026-11-09</footer>
+<footer>무료, 가입 없음, 입력한 숫자는 어디에도 보내지 않아요(방문 수만 셉니다). · <a href="../host/">숙소 외국인 손님 안내 QR</a> · <a href="../calc/">N잡 순수익</a> · <a href="../">모든 도구</a> · 확인일 2026-11-09 · 근거: <a href="https://www.airbnb.com/help/article/1857" target="_blank" rel="noopener">에어비앤비 서비스 수수료 도움말</a>, <a href="https://news.airbnb.com/ko/enforcement" target="_blank" rel="noopener">에어비앤비 영업신고 의무화 공지</a></footer>
 </main>
 <script>
 const $=s=>document.querySelector(s);const n=id=>Math.max(0,+$('#'+id).value||0);const won=v=>Math.round(v).toLocaleString('ko-KR')+'원';
