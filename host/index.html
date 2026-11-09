@@ -51,6 +51,12 @@ footer{color:var(--muted);font-size:14px;margin-top:24px}
 <fieldset><legend>이용 수칙 (골라 주세요)</legend><div id="rules"></div><p class="hint">미리 번역해 둔 문장이 그대로 나가요. 우리 숙소와 다르면 체크하지 마세요.</p></fieldset>
 <fieldset><legend>나가실 때 부탁 (골라 주세요)</legend><div id="outs"></div><p class="hint">에어비앤비는 2026년 11월 20일 예약분부터 손님에게 설거지나 쓰레기를 밖에 내놓는 일을 요구할 수 없어요. 에어비앤비로 받는 숙소라면 '쓰레기 모아 주기'도 꼭 필요한 경우가 아니면 빼 주세요.</p></fieldset>
 
+<fieldset><legend>손님 스스로 해결 (문제 해결 안내)</legend>
+<p class="hint" style="margin-top:0">온수·난방·도어락처럼 자주 오는 문의에, 손님이 연락하기 전에 직접 해 볼 방법을 손님 언어로 보여 줘요. 우리 숙소에 맞는 것만 골라 주세요. 문장은 미리 번역해 둔 것만 나가요.</p>
+<div class="two"><div><label>보일러 조절기 위치</label><select id="fl_bl"></select></div><div><label>공유기 위치</label><select id="fl_rl"></select></div></div>
+<label>차단기(두꺼비집) 위치</label><select id="fl_kl"></select>
+<div id="fixes"></div></fieldset>
+
 <fieldset><legend>택시 주소 카드</legend>
 <label>한국어 주소 <small>택시 기사님이 읽을 주소</small></label><input id="a" type="text" placeholder="서울특별시 종로구 북촌로 00">
 <label>건물 이름·눈에 띄는 곳 <small>선택</small></label><input id="bd" type="text" placeholder="예: 북촌한옥마을 입구, 파란 대문 집">
@@ -86,6 +92,7 @@ footer{color:var(--muted);font-size:14px;margin-top:24px}
 <div id="sheet"><h2>Guest Guide · 入住指南 · ゲストガイド</h2><p class="n" id="sN"></p><div class="qr" id="sQ"></div>
 <p class="l">Scan with your phone camera · 用手机相机扫描 · 用手機相機掃描 · スマホのカメラで読み取ってください</p>
 <p class="l">Wi-Fi · Check-in/out · House rules · Taxi address card · Emergency</p><p class="w" id="sW"></p><small>휴대폰 카메라로 찍으세요</small></div>
+<script src="fix_data.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" integrity="sha384-mZT2gIty7ZDdOGkxfP6joZcYdMW1Jvj9dRlfpTmaJAKKXTqzygtB22k7FLe+KZC1" crossorigin="anonymous"></script>
 <script>
 const RULES=[['smoke','실내 금연'],['quiet','밤 10시~아침 8시 조용히'],['shoes','실내에서 신발 벗기'],['trash','쓰레기 분리배출(일반·재활용·음식물)'],['guests','예약하지 않은 사람 출입 금지'],['party','파티·큰 소음 금지'],['pets','반려동물 금지'],['cook','객실 안 요리 금지'],['door','현관 비밀번호 다른 사람에게 알리지 않기']];
@@ -93,12 +100,18 @@ const OUTS=[['key','열쇠(카드)는 방 안 탁자 위에'],['trash','쓰레�
 const BASE='https://wayfen-games.github.io/wayfen-tools/';const $=s=>document.querySelector(s);
 const box=(id,list)=>{$(id).innerHTML=list.map(([k,v])=>`<label class="chk"><input type="checkbox" value="${k}"> ${v}</label>`).join('')};
 box('#rules',RULES);box('#outs',OUTS);
+const HASFIX=typeof FIX==='object';
+if(HASFIX){const lo='<option value="">모름·표시 안 함</option>'+Object.entries(FIX_LOC).map(([k,v])=>`<option value="${k}">${v.ko}</option>`).join('');['bl','rl','kl'].forEach(x=>$('#fl_'+x).innerHTML=lo);
+  $('#fixes').innerHTML=FIX_ORDER.map(k=>`<p style="margin:12px 0 2px;font-weight:800">${FIX[k].t.ko}</p>`+Object.entries(FIX[k].o).map(([o,v])=>`<label class="chk"><input type="checkbox" data-fk="${k}" value="${o}"> ${v.ko.replace(/\(\{L\}\)/,'(위치는 위에서 고름)')}</label>`).join('')).join('')}
 const F=['n','ne','w','p','ci','co','bf','a','bd','st','ct','cid','ph','x'];
 function read(){const d={};F.forEach(k=>{const v=$('#'+k).value.trim();if(v)d[k]=v});
   const r=[...document.querySelectorAll('#rules input:checked')].map(i=>i.value);if(r.length)d.r=r;
-  const o=[...document.querySelectorAll('#outs input:checked')].map(i=>i.value);if(o.length)d.o=o;return d}
+  const o=[...document.querySelectorAll('#outs input:checked')].map(i=>i.value);if(o.length)d.o=o;
+  if(HASFIX){const f={};document.querySelectorAll('#fixes input:checked').forEach(i=>{(f[i.dataset.fk]=f[i.dataset.fk]||[]).push(i.value)});
+    if(Object.keys(f).length){['bl','rl','kl'].forEach(x=>{const v=$('#fl_'+x).value;if(v)f[x]=v});d.f=f}}return d}
 function fill(d){F.forEach(k=>{if(d[k]!=null)$('#'+k).value=d[k]});
-  document.querySelectorAll('#rules input').forEach(i=>i.checked=(d.r||[]).includes(i.value));document.querySelectorAll('#outs input').forEach(i=>i.checked=(d.o||[]).includes(i.value))}
+  document.querySelectorAll('#rules input').forEach(i=>i.checked=(d.r||[]).includes(i.value));document.querySelectorAll('#outs input').forEach(i=>i.checked=(d.o||[]).includes(i.value));
+  if(HASFIX){const f=d.f||{};document.querySelectorAll('#fixes input').forEach(i=>i.checked=(f[i.dataset.fk]||[]).includes(i.value));['bl','rl','kl'].forEach(x=>$('#fl_'+x).value=f[x]||'')}}
 async function enc(d){const s=JSON.stringify(d);
   try{const cs=new Blob([s]).stream().pipeThrough(new CompressionStream('deflate-raw'));const b=new Uint8Array(await new Response(cs).arrayBuffer());
     let t='';b.forEach(x=>t+=String.fromCharCode(x));return 'z'+btoa(t).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}catch(e){return 'j'+encodeURIComponent(s)}}
