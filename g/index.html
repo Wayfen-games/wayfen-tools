@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guest Guide</title><meta name="robots" content="noindex">
+<script data-goatcounter="https://wayfen.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<style>
+:root{--bg:#f6f3ee;--card:#fff;--ink:#1d1a16;--muted:#6f6a62;--ac:#0f4c5c;--line:#e6e0d6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 system-ui,-apple-system,"Noto Sans KR","Noto Sans SC","Noto Sans JP",sans-serif}
+main{max-width:560px;margin:0 auto;padding:16px 16px 40px}
+h1{font-size:26px;line-height:1.25;margin:6px 0 2px}.sub{color:var(--muted);margin:0 0 12px;font-size:15px}
+.langs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 14px}.langs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:600 15px system-ui;cursor:pointer}
+.langs button[aria-pressed=true]{background:var(--ac);color:#fff;border-color:var(--ac)}
+section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:12px 0}
+h2{font-size:16px;margin:0 0 8px;color:var(--ac);letter-spacing:.2px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid #f0ebe3}.row:last-child{border:0}
+.row span{color:var(--muted)}.row b{text-align:right;word-break:break-all}
+.btn{display:inline-block;border:0;background:var(--ac);color:#fff;border-radius:10px;padding:9px 14px;font:700 15px system-ui;cursor:pointer;text-decoration:none}
+.btn.ghost{background:#eef4f5;color:var(--ac)}
+ul{margin:0;padding-left:20px}li{margin:4px 0}
+.taxi{background:#fffdf6}.taxi .ko{font-size:24px;font-weight:800;line-height:1.35;margin:6px 0}.taxi .say{font-size:20px;font-weight:700}
+.links{display:grid;gap:8px}.links a{display:block;background:#eef4f5;color:var(--ac);border-radius:12px;padding:12px 14px;text-decoration:none;font-weight:700}
+.links small{display:block;font-weight:400;color:var(--muted)}
+.sos{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center}.sos a{background:#fff3f0;color:#9a2b1a;border-radius:12px;padding:10px 4px;text-decoration:none;font-weight:800}.sos small{display:block;font-weight:500;color:#7a4a40;font-size:12px}
+.note{color:var(--muted);font-size:13px}
+#big{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;justify-content:center;padding:24px;z-index:9}#big[hidden]{display:none}
+#big .say{font-size:30px;font-weight:800;margin:0 0 14px}#big .ko{font-size:38px;font-weight:900;line-height:1.3}#big button{margin-top:28px;align-self:flex-start}
+.err{padding:40px 16px;text-align:center;color:var(--muted)}
+</style></head>
+<body><main id="app"><p class="err">Loading…</p></main>
+<div id="big" hidden><p class="say">이 주소로 가 주세요.</p><p class="ko" id="bigAddr"></p><p class="ko" id="bigSt" style="font-size:24px;font-weight:700"></p><button class="btn" id="bigClose">✕</button></div>
+<script>
+const LANGS=[['en','English'],['zh','简体中文'],['tw','繁體中文'],['ja','日本語'],['ko','한국어']];
+const HTML_LANG={en:'en',zh:'zh-Hans',tw:'zh-Hant',ja:'ja',ko:'ko'};
+const T={
+ welcome:{en:'Welcome',zh:'欢迎入住',tw:'歡迎入住',ja:'ようこそ',ko:'환영합니다'},
+ wifi:{en:'Wi-Fi',zh:'Wi-Fi',tw:'Wi-Fi',ja:'Wi-Fi',ko:'와이파이'},
+ net:{en:'Network',zh:'网络名称',tw:'網路名稱',ja:'ネットワーク名',ko:'이름'},
+ pw:{en:'Password',zh:'密码',tw:'密碼',ja:'パスワード',ko:'비밀번호'},
+ nopw:{en:'(no password)',zh:'（无密码）',tw:'（無密碼）',ja:'（パスワードなし）',ko:'(비밀번호 없음)'},
+ copy:{en:'Copy password',zh:'复制密码',tw:'複製密碼',ja:'パスワードをコピー',ko:'비밀번호 복사'},
+ copied:{en:'Copied',zh:'已复制',tw:'已複製',ja:'コピーしました',ko:'복사됨'},
+ stay:{en:'Your stay',zh:'入住信息',tw:'入住資訊',ja:'ご滞在について',ko:'숙박 안내'},
+ ci:{en:'Check-in',zh:'入住',tw:'入住',ja:'チェックイン',ko:'체크인'},
+ co:{en:'Check-out',zh:'退房',tw:'退房',ja:'チェックアウト',ko:'체크아웃'},
+ bf:{en:'Breakfast',zh:'早餐',tw:'早餐',ja:'朝食',ko:'조식'},
+ rules:{en:'House rules',zh:'入住须知',tw:'入住須知',ja:'ハウスルール',ko:'이용 수칙'},
+ leave:{en:'Before you check out',zh:'退房前',tw:'退房前',ja:'チェックアウトの前に',ko:'나가시기 전에'},
+ taxi:{en:'Taxi: show this to the driver',zh:'出租车：请给司机看',tw:'計程車：請給司機看',ja:'タクシー：運転手さんに見せてください',ko:'택시: 기사님께 보여 주세요'},
+ near:{en:'Nearest station',zh:'最近的车站',tw:'最近的車站',ja:'最寄り駅',ko:'가까운 역'},
+ big:{en:'Show full screen',zh:'全屏显示',tw:'全螢幕顯示',ja:'大きく表示',ko:'크게 보기'},
+ contact:{en:'Contact your host',zh:'联系房东',tw:'聯絡房東',ja:'ホストへの連絡',ko:'호스트 연락처'},
+ help:{en:'Useful in Korea',zh:'在韩国用得上',tw:'在韓國用得到',ja:'韓国で役立つ',ko:'한국에서 쓸모 있는 것'},
+ food:{en:'Food allergy or diet? Show the staff in Korean',zh:'食物过敏或饮食限制？用韩文给店员看',tw:'食物過敏或飲食限制？用韓文給店員看',ja:'食物アレルギー・食事制限？韓国語で店員さんに見せる',ko:'음식 알레르기·채식 카드'},
+ pharm:{en:'Feeling sick? Pharmacy & taxi cards',zh:'身体不适？药店和出租车卡片',tw:'身體不適？藥局和計程車卡片',ja:'体調不良？薬局・タクシーカード',ko:'약국·택시 카드'},
+ free:{en:'Free, no sign-up',zh:'免费，无需注册',tw:'免費，無需註冊',ja:'無料・登録不要',ko:'무료, 가입 없음'},
+ sos:{en:'Emergency',zh:'紧急情况',tw:'緊急情況',ja:'緊急時',ko:'긴급'},
+ fire:{en:'Fire · Ambulance',zh:'火警·急救',tw:'火警·救護車',ja:'火事・救急',ko:'화재·구급'},
+ police:{en:'Police',zh:'报警',tw:'報警',ja:'警察',ko:'경찰'},
+ tour:{en:'Travel help (multilingual)',zh:'旅游咨询（多语言）',tw:'旅遊諮詢（多語言）',ja:'観光案内（多言語）',ko:'관광 안내(외국어)'},
+ msg:{en:'Message from your host (in Korean)',zh:'房东留言（韩文）',tw:'房東留言（韓文）',ja:'ホストからのメッセージ（韓国語）',ko:'호스트 메시지'},
+ by:{en:'This guide was written by your host.',zh:'本指南由房东填写。',tw:'本指南由房東填寫。',ja:'このガイドはホストが作成しました。',ko:'이 안내는 호스트가 작성했어요.'},
+ bad:{en:'This guide link is incomplete. Please ask your host for the QR code again.',zh:'此指南链接不完整，请向房东重新索取二维码。',tw:'此指南連結不完整，請向房東重新索取QR碼。',ja:'このガイドのリンクが不完全です。ホストにQRコードをもう一度お願いしてください。',ko:'안내 주소가 잘렸어요. 호스트에게 QR을 다시 받아 주세요.'}
+};
+const RULES={
+ smoke:{ko:'실내에서는 담배를 피울 수 없어요.',en:'No smoking indoors.',zh:'室内禁止吸烟。',tw:'室內禁止吸菸。',ja:'室内は禁煙です。'},
+ quiet:{ko:'밤 10시부터 아침 8시까지는 조용히 해 주세요.',en:'Quiet hours: 10 PM to 8 AM.',zh:'晚上10点到早上8点请保持安静。',tw:'晚上10點到早上8點請保持安靜。',ja:'夜10時から朝8時まではお静かにお願いします。'},
+ shoes:{ko:'실내에서는 신발을 벗어 주세요.',en:'Please take off your shoes indoors.',zh:'进屋请脱鞋。',tw:'進屋請脫鞋。',ja:'室内では靴を脱いでください。'},
+ trash:{ko:'쓰레기는 일반·재활용·음식물로 나눠 버려 주세요.',en:'Please sort your trash into general waste, recycling and food waste.',zh:'垃圾请分为一般垃圾、可回收物和厨余垃圾。',tw:'垃圾請分為一般垃圾、資源回收和廚餘。',ja:'ゴミは一般ゴミ・リサイクル・生ゴミに分けてください。'},
+ guests:{ko:'예약하지 않은 사람은 들어올 수 없어요.',en:'Only registered guests may enter.',zh:'仅限登记的住客入内。',tw:'僅限登記的住客進入。',ja:'ご予約の方以外は入室できません。'},
+ pets:{ko:'반려동물은 데려올 수 없어요.',en:'No pets.',zh:'禁止携带宠物。',tw:'禁止攜帶寵物。',ja:'ペットは同伴できません。'},
+ cook:{ko:'객실에서는 요리할 수 없어요.',en:'No cooking in the room.',zh:'客房内禁止做饭。',tw:'客房內禁止烹飪。',ja:'客室での調理はできません。'},
+ door:{ko:'현관 비밀번호는 다른 사람에게 알려 주지 마세요.',en:'Please do not share the door code with anyone.',zh:'请勿将门锁密码告诉他人。',tw:'請勿將門鎖密碼告訴他人。',ja:'ドアの暗証番号は他の人に教えないでください。'},
+ party:{ko:'파티나 큰 소리로 노는 것은 안 돼요.',en:'No parties or loud gatherings.',zh:'禁止聚会或大声喧哗。',tw:'禁止派對或大聲喧嘩。',ja:'パーティーや大きな音での集まりはご遠慮ください。'}
+};
+const OUT={
+ key:{ko:'열쇠(카드)는 방 안 탁자 위에 두고 나가 주세요.',en:'Please leave the key (card) on the table in the room.',zh:'请把钥匙（房卡）放在房间桌上。',tw:'請把鑰匙（房卡）放在房間桌上。',ja:'鍵（カード）は部屋のテーブルの上に置いてください。'},
+ trash:{ko:'쓰레기를 한곳에 모아 주세요.',en:'Please gather your trash in one place.',zh:'请把垃圾集中放在一处。',tw:'請把垃圾集中放在一處。',ja:'ゴミは一か所にまとめてください。'},
+ power:{ko:'에어컨·난방과 불을 꺼 주세요.',en:'Please turn off the air conditioner, heater and lights.',zh:'请关闭空调、暖气和灯。',tw:'請關閉冷氣、暖氣和燈。',ja:'エアコン・暖房と電気を消してください。'},
+ dishes:{ko:'쓴 그릇은 설거지해 주세요.',en:'Please wash the dishes you used.',zh:'请把用过的餐具洗干净。',tw:'請把用過的餐具洗乾淨。',ja:'使った食器は洗ってください。'},
+ msg:{ko:'나가실 때 메시지를 보내 주세요.',en:'Please send me a message when you leave.',zh:'离开时请给我发消息。',tw:'離開時請傳訊息給我。',ja:'お出かけの際はメッセージをお送りください。'}
+};
+const BASE='https://wayfen-games.github.io/wayfen-tools/';
+const $=s=>document.querySelector(s); const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function decode(h){
+  if(h.startsWith('z')){const b=atob(h.slice(1).replace(/-/g,'+').replace(/_/g,'/'));const u=Uint8Array.from(b,c=>c.charCodeAt(0));
+    const s=new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate-raw'));return JSON.parse(await new Response(s).text())}
+  if(h.startsWith('j')) return JSON.parse(decodeURIComponent(h.slice(1)));
+  throw 0}
+let D=null,L='en';
+function pick(){try{const s=localStorage.getItem('guest.lang');if(s&&T.welcome[s])return s}catch(e){}
+  const n=(navigator.language||'').toLowerCase();return /^ko/.test(n)?'ko':/^zh-(tw|hk|mo|hant)/.test(n)?'tw':/^zh/.test(n)?'zh':/^ja/.test(n)?'ja':'en'}
+function t(k){return T[k][L]||T[k].en}
+function render(){
+  document.documentElement.lang=HTML_LANG[L]; document.title=(D.ne||D.n||'Guest Guide')+' · '+t('welcome');
+  const q=L==='en'?'':'?lang='+L;
+  const rules=(D.r||[]).filter(k=>RULES[k]).map(k=>`<li>${esc(RULES[k][L])}${L!=='ko'?`<br><small class="note" lang="ko">${esc(RULES[k].ko)}</small>`:''}</li>`).join('');
+  const outs=(D.o||[]).filter(k=>OUT[k]).map(k=>`<li>${esc(OUT[k][L])}</li>`).join('');
+  const contact=[D.ct?`<div class="row"><span>${esc(D.ct)}</span><b>${esc(D.cid||'')}</b></div>`:'',D.ph?`<div class="row"><span>☎</span><b><a href="tel:${esc(D.ph.replace(/[^0-9+]/g,''))}">${esc(D.ph)}</a></b></div>`:''].join('');
+  $('#app').innerHTML=`
+  <p class="sub" style="margin:0">${esc(t('welcome'))}</p><h1>${esc(L==='ko'?(D.n||D.ne):(D.ne||D.n))}</h1>${D.ne&&D.n&&L!=='ko'?`<p class="sub" lang="ko">${esc(D.n)}</p>`:''}
+  <div class="langs">${LANGS.map(([k,n])=>`<button type="button" data-l="${k}" aria-pressed="${k===L}" lang="${HTML_LANG[k]}">${n}</button>`).join('')}</div>
+  ${D.w?`<section><h2>${t('wifi')}</h2><div class="row"><span>${t('net')}</span><b>${esc(D.w)}</b></div><div class="row"><span>${t('pw')}</span><b>${D.p?esc(D.p):t('nopw')}</b></div>${D.p?`<p style="margin:10px 0 0"><button class="btn ghost" id="cp" type="button">${t('copy')}</button></p>`:''}</section>`:''}
+  ${(D.ci||D.co||D.bf)?`<section><h2>${t('stay')}</h2>${D.ci?`<div class="row"><span>${t('ci')}</span><b>${esc(D.ci)}</b></div>`:''}${D.co?`<div class="row"><span>${t('co')}</span><b>${esc(D.co)}</b></div>`:''}${D.bf?`<div class="row"><span>${t('bf')}</span><b>${esc(D.bf)}</b></div>`:''}</section>`:''}
+  ${rules?`<section><h2>${t('rules')}</h2><ul>${rules}</ul></section>`:''}
+  ${outs?`<section><h2>${t('leave')}</h2><ul>${outs}</ul></section>`:''}
+  ${D.a?`<section class="taxi"><h2>${t('taxi')}</h2><p class="say" lang="ko">이 주소로 가 주세요.</p><p class="ko" lang="ko">${esc(D.a)}</p>${D.st?`<div class="row"><span>${t('near')}</span><b lang="ko">${esc(D.st)}</b></div>`:''}<p style="margin:10px 0 0"><button class="btn" id="bigBtn" type="button">${t('big')}</button></p></section>`:''}
+  ${contact?`<section><h2>${t('contact')}</h2>${contact}</section>`:''}
+  ${D.x?`<section><h2>${t('msg')}</h2><p lang="ko" style="white-space:pre-wrap;margin:0">${esc(D.x)}</p></section>`:''}
+  <section><h2>${t('help')}</h2><div class="links"><a href="${BASE}food/${q}">${t('food')}<small>${t('free')}</small></a><a href="${BASE}pharmacy/${q}">${t('pharm')}<small>${t('free')}</small></a></div></section>
+  <section><h2>${t('sos')}</h2><div class="sos"><a href="tel:119">119<small>${t('fire')}</small></a><a href="tel:112">112<small>${t('police')}</small></a><a href="tel:1330">1330<small>${t('tour')}</small></a></div></section>
+  <p class="note">${t('by')}</p>`;
+  document.querySelectorAll('.langs button').forEach(b=>b.onclick=()=>{L=b.dataset.l;try{localStorage.setItem('guest.lang',L)}catch(e){}render()});
+  const cp=$('#cp'); if(cp) cp.onclick=async()=>{try{await navigator.clipboard.writeText(D.p);cp.textContent='✓ '+t('copied')}catch(e){window.prompt('',D.p)}};
+  const bb=$('#bigBtn'); if(bb) bb.onclick=()=>{$('#bigAddr').textContent=D.a;$('#bigSt').textContent=D.st||'';$('#big').hidden=false;history.pushState({big:1},'')};
+}
+$('#bigClose').onclick=()=>history.back();
+addEventListener('popstate',()=>{$('#big').hidden=true});
+(async()=>{const h=location.hash.slice(1);L=pick();
+  try{D=await decode(h);if(!D||typeof D!=='object')throw 0}catch(e){$('#app').innerHTML=`<p class="err">${esc(T.bad[L]||T.bad.en)}</p>`;return}
+  const q=new URLSearchParams(location.search).get('lang');if(q&&T.welcome[q])L=q;render()})();
+</script></body></html>
