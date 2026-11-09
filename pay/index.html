@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>주휴수당·알바 월급 계산기 (2026·2027 최저임금)</title>
+<meta name="description" content="시급과 근무 시간을 넣으면 주휴수당, 주급, 월급을 바로 계산해요. 주 15시간 기준, 5인 이상 사업장 연장 1.5배·야간 0.5배 가산, 3.3% 공제, 2026년 10,320원·2027년 10,700원 최저임금 확인까지. 무료.">
+<link rel="canonical" href="https://wayfen-games.github.io/wayfen-tools/pay/">
+<script data-goatcounter="https://wayfen.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"주휴수당·알바 월급 계산기","url":"https://wayfen-games.github.io/wayfen-tools/pay/","applicationCategory":"FinanceApplication","operatingSystem":"Any","inLanguage":"ko","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}}</script>
+<style>
+:root{--bg:#f5f4f0;--ink:#1d1b18;--muted:#6a655d;--ac:#1f5f4a;--line:#e1dcd2;--warn:#b3361f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Noto Sans KR",sans-serif}
+main{max-width:620px;margin:0 auto;padding:18px 16px 60px}h1{font-size:25px;line-height:1.3;margin:4px 0 6px}.lead{margin:0 0 12px;color:#3a3630}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0}
+label{display:block;font-weight:700;margin:10px 0 4px;font-size:15px}label small{font-weight:400;color:var(--muted)}
+input[type=number]{width:100%;font:17px system-ui;padding:10px 12px;border:1px solid #cdc6b9;border-radius:10px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.days div{text-align:center;font-size:13px;color:var(--muted)}.days input{text-align:center;padding:8px 2px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}.seg button{border:1px solid #cdc6b9;background:#fff;border-radius:999px;padding:7px 12px;font:600 14px system-ui;cursor:pointer}.seg button[aria-pressed=true]{background:var(--ac);color:#fff;border-color:var(--ac)}
+.chk{display:flex;gap:8px;align-items:flex-start;font-weight:500;margin:8px 0}.chk input{margin-top:5px;width:18px;height:18px}
+.res .big{font-size:30px;font-weight:900;margin:2px 0}.res .line{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee9df}.res .line:last-child{border:0}.res span{color:var(--muted)}
+.warn{color:var(--warn);font-weight:700}.note{color:var(--muted);font-size:14px}
+h2{font-size:18px;margin:22px 0 6px}ul{padding-left:20px}footer{color:var(--muted);font-size:14px;margin-top:24px}
+</style></head>
+<body><main>
+<h1>주휴수당·알바 월급 계산기</h1>
+<p class="lead">시급과 요일별 근무 시간만 넣으면 주휴수당, 주급, 한 달 월급이 바로 나와요.</p>
+
+<div class="card">
+<label>시급 (원)</label>
+<input id="wage" type="number" inputmode="numeric" min="0" step="10" value="10320">
+<div class="seg" style="margin-top:8px"><button type="button" data-w="10320" aria-pressed="true">2026년 최저 10,320원</button><button type="button" data-w="10700" aria-pressed="false">2027년 최저 10,700원</button></div>
+
+<label>요일별 근무 시간 <small>쉬는 시간 빼고, 쉬는 날은 0</small></label>
+<div class="days" id="days"></div>
+<div class="seg" style="margin-top:8px"><button type="button" data-p="5x8">주 5일 8시간</button><button type="button" data-p="5x4">주 5일 4시간</button><button type="button" data-p="2x8">주말 이틀 8시간</button><button type="button" data-p="3x5">주 3일 5시간</button></div>
+
+<label class="chk"><input type="checkbox" id="five" checked> 직원 5명 이상인 곳이에요 <small>(연장 1.5배·야간 0.5배 가산은 5인 이상만)</small></label>
+<div class="row"><div><label>야간 시간 <small>밤 10시~아침 6시, 주당 · 요일별 시간에도 그대로 넣어요</small></label><input id="night" type="number" min="0" step="0.5" value="0"></div>
+<div><label>연장 시간 <small>하루 8시간·주 40시간 넘은 시간, 주당</small></label><input id="over" type="number" min="0" step="0.5" value="0"></div></div>
+
+<label>떼는 돈</label>
+<div class="seg" id="ded"><button type="button" data-d="0" aria-pressed="true">안 뗌</button><button type="button" data-d="3.3" aria-pressed="false">3.3% (프리랜서·사업소득)</button></div>
+</div>
+
+<div class="card res" id="res"></div>
+<p class="note" id="minw"></p>
+
+<h2>이렇게 계산해요</h2>
+<ul>
+<li><b>주휴수당:</b> 일주일에 정해진 근무 시간이 15시간 이상이고, 그 주에 정해진 날을 다 나왔으면 받아요. (주 근무 시간 ÷ 40) × 8시간 × 시급. 주 40시간을 넘어도 8시간분까지만 줘요. 근무 시간이 주마다 다르면 4주 평균으로 15시간을 따져요. 그만두는 마지막 주는 주휴수당이 없을 수 있어요.</li>
+<li><b>연장·야간:</b> 직원 5명 이상인 곳은 연장(하루 8시간·주 40시간 초과) 시간에 시급의 1.5배, 야간(밤 10시~아침 6시) 시간에 시급의 0.5배를 더 줘요. 연장 시간은 위 요일별 시간에 넣지 말고 따로 적어 주세요. 야간 시간은 요일별 시간에도 넣고, 야간 칸에는 더 받는 몫만 계산돼요.</li>
+<li><b>한 달:</b> 한 달 평균 주 수 약 4.345주(365일 ÷ 7 ÷ 12)로 곱해요. 실제 월급은 그달 요일 수에 따라 조금 달라요. 정부가 발표하는 최저임금 월 환산액(209시간, 2026년 2,156,880원)은 시간을 반올림한 값이라 이 계산과 몇천 원 차이가 나요.</li>
+<li><b>떼는 돈:</b> 3.3%는 프리랜서·사업소득으로 받을 때 떼는 세금이에요. 근로계약으로 4대보험에 가입했다면 국민연금·건강보험·장기요양·고용보험과 소득세 등이 따로 빠져요(이 계산기에는 넣지 않았어요). 3.3%를 떼더라도 실제로 정해진 시간에 지시를 받고 일하면 근로자로 보아 주휴수당·가산수당 대상일 수 있어요.</li>
+</ul>
+<h2>꼭 알아 두세요</h2>
+<ul>
+<li>이 계산은 일반적인 기준으로 어림한 값이에요. 계약 내용, 결근, 휴게 시간, 수습 등에 따라 실제 금액은 달라져요. 정확한 판단은 고용노동부 고객상담센터(국번 없이 1350)에 물어보세요.</li>
+<li>수습: 1년 이상 계약이고 수습 3개월 이내라면 최저임금의 90%까지 줄 수 있어요(단순노무 업무는 제외). 그래서 수습 시급은 최저임금 경고가 떠도 위법이 아닐 수 있어요.</li>
+<li>직원 5명 미만인 곳은 주 40시간을 넘게 정할 수 있어서, 하루 9시간처럼 정했다면 주휴수당이 8시간분보다 많을 수 있어요.</li>
+<li>최저임금: 2026년 시간당 10,320원(고용노동부 고시 제2025-47호). 2027년 10,700원은 2026년 8월 고시 내용(언론 보도 기준)이에요. 해마다 1월 1일부터 바뀌어요.</li>
+</ul>
+<footer>무료, 가입 없음, 입력한 숫자는 어디에도 보내지 않아요(방문 수만 셉니다). · <a href="../calc/">N잡 순수익 계산기</a> · <a href="../">모든 도구</a> · 확인일 2026-11-09</footer>
+</main>
+<script>
+const $=s=>document.querySelector(s); const D=['월','화','수','목','금','토','일'];
+$('#days').innerHTML=D.map((d,i)=>`<div>${d}<input type="number" min="0" max="24" step="0.5" value="${i<5?8:0}" data-i="${i}"></div>`).join('');
+const P={'5x8':[8,8,8,8,8,0,0],'5x4':[4,4,4,4,4,0,0],'2x8':[0,0,0,0,0,8,8],'3x5':[5,0,5,0,5,0,0]};
+let ded=0; const fmt=n=>Math.round(n).toLocaleString('ko-KR')+'원';
+function seg(sel,attr,fn){document.querySelectorAll(sel+' button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll(sel+' button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));fn(b.dataset[attr]);calc()}))}
+document.querySelectorAll('[data-w]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-w]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('#wage').value=b.dataset.w;calc()}));
+document.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{P[b.dataset.p].forEach((v,i)=>document.querySelector(`#days input[data-i="${i}"]`).value=v);calc()}));
+seg('#ded','d',v=>ded=+v);
+function calc(){
+  const w=Math.max(0,+$('#wage').value||0); const hrs=[...document.querySelectorAll('#days input')].map(i=>Math.min(24,Math.max(0,+i.value||0)));
+  const H=hrs.reduce((a,b)=>a+b,0); const five=$('#five').checked; const night=Math.max(0,+$('#night').value||0); const over=Math.max(0,+$('#over').value||0);
+  const base=H*w; const ju=H>=15?Math.min(H,40)/40*8*w:0;
+  const overPay=over*w*(five?1.5:1); const nightPay=five?night*w*0.5:0;
+  const week=base+ju+overPay+nightPay; const month=week*365/7/12; const cut=month*ded/100;
+  const warn=[]; if(H>40)warn.push('요일별 합계가 주 40시간을 넘어요. 40시간을 넘는 시간은 연장 칸에 따로 넣어 주세요.'); if(hrs.some(h=>h>8))warn.push('하루 8시간을 넘는 날이 있어요. 넘는 시간은 연장 칸에 넣어 주세요.');
+  $('#res').innerHTML=`<span>한 달 예상 월급</span><p class="big">${fmt(month-cut)}</p>
+  <div class="line"><span>주 근무 시간</span><b>${H}시간</b></div>
+  <div class="line"><span>주휴수당 (주)</span><b>${H>=15?fmt(ju):'없음 (주 15시간 미만)'}</b></div>
+  <div class="line"><span>기본급 (주)</span><b>${fmt(base)}</b></div>
+  ${over?`<div class="line"><span>연장 (주${five?', 1.5배':''})</span><b>${fmt(overPay)}</b></div>`:''}
+  ${night&&five?`<div class="line"><span>야간 가산 (주, 0.5배)</span><b>${fmt(nightPay)}</b></div>`:''}
+  <div class="line"><span>주급 합계</span><b>${fmt(week)}</b></div>
+  <div class="line"><span>월급 (세전, 약 4.345주)</span><b>${fmt(month)}</b></div>
+  ${ded?`<div class="line"><span>3.3% 공제</span><b>−${fmt(cut)}</b></div>`:''}
+  ${warn.map(t=>`<p class="warn">${t}</p>`).join('')}`;
+  const sel=document.querySelector('[data-w][aria-pressed=true]'); const mw=sel?+sel.dataset.w:10320;
+  $('#minw').innerHTML=w&&w<mw?`<span class="warn">입력한 시급이 ${sel.textContent.split(' ')[0]} 최저임금(${mw.toLocaleString()}원)보다 낮아요.</span>`:'';
+}
+document.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));calc();
+</script></body></html>
