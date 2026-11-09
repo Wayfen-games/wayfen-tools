@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>연차 계산기 (입사일로 연차 일수·연차수당)</title>
+<meta name="description" content="입사일만 넣으면 지금까지 생긴 연차 일수를 계산해요. 1년 미만 월 1일, 1년 이상 15일, 만 3년부터 2년마다 1일 가산(최대 25일), 못 쓴 연차수당까지. 무료, 가입 없음.">
+<link rel="canonical" href="https://wayfen-games.github.io/wayfen-tools/leave/">
+<script data-goatcounter="https://wayfen.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"연차 계산기","url":"https://wayfen-games.github.io/wayfen-tools/leave/","applicationCategory":"BusinessApplication","operatingSystem":"Any","inLanguage":"ko","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}}</script>
+<style>
+:root{--bg:#f5f4f0;--ink:#1d1b18;--muted:#6a655d;--ac:#1f5f4a;--line:#e1dcd2;--warn:#b3361f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Noto Sans KR",sans-serif}
+main{max-width:620px;margin:0 auto;padding:18px 16px 60px}h1{font-size:25px;line-height:1.3;margin:4px 0 6px}.lead{margin:0 0 12px;color:#3a3630}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0}
+label{display:block;font-weight:700;margin:10px 0 4px;font-size:15px}label small{font-weight:400;color:var(--muted)}
+input{width:100%;font:17px system-ui;padding:10px 12px;border:1px solid #cdc6b9;border-radius:10px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chk{display:flex;gap:8px;align-items:flex-start;font-weight:500;margin:8px 0}.chk input{width:18px;height:18px;margin-top:5px}
+.res .big{font-size:30px;font-weight:900;margin:2px 0}.res .line{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid #eee9df}.res .line:last-child{border:0}.res span{color:var(--muted)}
+.warn{color:var(--warn);font-weight:700}h2{font-size:18px;margin:22px 0 6px}ul{padding-left:20px}footer{color:var(--muted);font-size:14px;margin-top:24px}
+</style></head>
+<body><main>
+<h1>연차 계산기</h1>
+<p class="lead">입사일과 기준일만 넣으면 지금 몇 년차인지, 올해 연차가 며칠 생겼는지, 못 쓴 연차가 있으면 연차수당이 얼마인지 나와요(입사일 기준).</p>
+<div class="card">
+<div class="row"><div><label>입사일</label><input id="start" type="date"></div><div><label>기준일 <small>보통 오늘, 퇴사했다면 마지막 근무일</small></label><input id="ref" type="date"></div></div>
+<label class="chk"><input type="checkbox" id="five" checked> 직원 5명 이상인 곳이에요</label>
+<label class="chk"><input type="checkbox" id="att" checked> 지난 1년 동안 80% 이상 출근했어요</label>
+<div class="row"><div><label>통상 시급 <small>연차수당 계산용</small></label><input id="wage" type="number" min="0" step="10" value="10320"></div>
+<div><label>하루 근무 시간</label><input id="hrs" type="number" min="1" max="8" step="0.5" value="8"></div></div>
+<label>못 쓴 연차 일수 <small>수당 계산용, 없으면 0</small></label><input id="unused" type="number" min="0" step="0.5" value="0">
+</div>
+<div class="card res" id="res"></div>
+
+<h2>이렇게 계산해요 (근로기준법 제60조)</h2>
+<ul>
+<li><b>1년 미만:</b> 한 달 개근할 때마다 1일, 최대 11일.</li>
+<li><b>1년 이상:</b> 1년 동안 80% 이상 출근했으면 15일.</li>
+<li><b>3년 이상:</b> 처음 1년을 넘은 뒤 2년마다 1일씩 더해서 최대 25일(만 3년 근속하면 16일, 만 5년 17일 …).</li>
+<li><b>연차수당:</b> 못 쓴 연차 일수 × 하루치 통상임금(통상 시급 × 하루 근무 시간).</li>
+</ul>
+<h2>꼭 알아 두세요</h2>
+<ul>
+<li>직원 5명 미만인 곳은 법정 연차가 의무가 아니에요(회사 규정이 있으면 그에 따라요).</li>
+<li>회사가 회계연도(1월 1일) 기준으로 연차를 주는 경우 일수가 다르게 보일 수 있어요. 다만 퇴사할 때는 입사일 기준보다 적으면 안 돼요.</li>
+<li>회사가 연차 사용을 정식으로 독려(사용 촉진)했는데 쓰지 않았다면 수당이 나오지 않을 수 있어요.</li>
+<li>1년 계약직이 꼭 1년만 일하고 끝나면 최대 11일만 생긴다는 대법원 판단이 있어요.</li>
+<li>정확한 판단은 고용노동부 고객상담센터(국번 없이 1350)에 물어보세요. 법 근거: <a href="https://www.law.go.kr/법령/근로기준법" target="_blank" rel="noopener">근로기준법</a> 제60조·제61조.</li>
+</ul>
+<footer>무료, 가입 없음, 입력한 숫자는 어디에도 보내지 않아요(방문 수만 셉니다). · <a href="../pay/">주휴수당</a> · <a href="../severance/">퇴직금</a> · <a href="../unemployment/">실업급여</a> · <a href="../">모든 도구</a> · 확인일 2026-11-09</footer>
+</main>
+<script>
+const $=s=>document.querySelector(s); const fmt=n=>Math.round(n).toLocaleString('ko-KR')+'원';
+const loc=new Date(); const p2=x=>String(x).padStart(2,'0'); const ymd=(y,m,d)=>`${y}-${p2(m)}-${p2(d)}`;
+$('#ref').value=ymd(loc.getFullYear(),loc.getMonth()+1,loc.getDate()); $('#start').value=ymd(loc.getFullYear()-2,loc.getMonth()+1,loc.getDate());
+const U=s=>{const [y,m,d]=s.split('-').map(Number);return {y,m:m-1,d}};
+function fullMonths(a,b){let n=(b.y-a.y)*12+(b.m-a.m); if(b.d<a.d)n--; return Math.max(0,n)} // a부터 b까지 다 채운 달 수
+function calc(){
+  if(!$('#start').value||!$('#ref').value){$('#res').innerHTML='<p class="warn">날짜를 넣어 주세요.</p>';return}
+  const a=U($('#start').value), b=U($('#ref').value); const m=fullMonths(a,b);
+  if(Date.UTC(b.y,b.m,b.d)<Date.UTC(a.y,a.m,a.d)){$('#res').innerHTML='<p class="warn">날짜를 확인해 주세요.</p>';return}
+  const years=Math.floor(m/12); let days, label;
+  if(!$('#five').checked){$('#res').innerHTML='<span>법정 연차</span><p class="big">의무 아님</p><p class="warn">직원 5명 미만인 곳은 법정 연차가 없어요. 회사 규정을 확인하세요.</p>';return}
+  if(years<1){days=Math.min(11,m);label=`1년 미만: 다 채운 달 ${m}개(모두 개근했다면) → ${days}일`}
+  else if(!$('#att').checked){days=null;label='1년 이상이지만 출근율 80% 미만이면, 그해에 개근한 달마다 1일씩 생겨요.'}
+  else{days=Math.min(25,15+Math.floor((years-1)/2));label=`만 ${years}년 근속: 15일 + 가산 ${days-15}일`}
+  const wage=Math.max(0,+$('#wage').value||0), hrs=Math.min(8,Math.max(1,+$('#hrs').value||8)), unused=Math.max(0,+$('#unused').value||0);
+  const pay=unused*wage*hrs;
+  $('#res').innerHTML=`<span>${years<1?'지금까지 생긴 연차':'올해 생긴 연차'} (입사일 기준)</span><p class="big">${days==null?'개근한 달 수만큼':days+'일'}</p>
+  <div class="line"><span>근속</span><b>${years}년 ${m%12}개월</b></div>
+  <div class="line"><span>계산</span><b>${label}</b></div>
+  ${years>=1?'<p style="color:var(--muted);font-size:14px">1년 미만 때 생긴 연차(최대 11일)는 입사 1년이 되는 날까지 써야 해요. 1년 이상 연차는 생긴 날부터 1년 안에 써요.</p>':''}
+  ${unused?`<div class="line"><span>못 쓴 ${unused}일 연차수당</span><b>${fmt(pay)}</b></div>`:''}`;
+}
+document.querySelectorAll('input').forEach(i=>{i.addEventListener('input',calc);i.addEventListener('change',calc)});calc();
+</script></body></html>
