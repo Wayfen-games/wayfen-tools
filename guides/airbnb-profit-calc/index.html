@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>에어비앤비 수익 계산법: 수수료 15.5%·청소비 넣고 손익분기 점유율 구하기</title><meta name="description" content="1박 요금, 점유율, 청소비, 플랫폼 수수료, 월세·관리비로 숙소 월 순이익과 본전 점유율을 계산하는 법. 에어비앤비 호스트 수수료 변경과 영업신고 의무도 정리했어요.">
+<link rel="canonical" href="https://wayfen-games.github.io/wayfen-tools/guides/airbnb-profit-calc/">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "에어비앤비 수익 계산법: 수수료 15.5%·청소비 넣고 손익분기 점유율 구하기", "description": "1박 요금, 점유율, 청소비, 플랫폼 수수료, 월세·관리비로 숙소 월 순이익과 본전 점유율을 계산하는 법. 에어비앤비 호스트 수수료 변경과 영업신고 의무도 정리했어요.", "inLanguage": "ko", "dateModified": "2026-11-08", "mainEntityOfPage": "https://wayfen-games.github.io/wayfen-tools/guides/airbnb-profit-calc/"}</script>
+<meta property="og:title" content="에어비앤비 수익 계산법: 수수료 15.5%·청소비 넣고 손익분기 점유율 구하기"><meta property="og:description" content="1박 요금, 점유율, 청소비, 플랫폼 수수료, 월세·관리비로 숙소 월 순이익과 본전 점유율을 계산하는 법. 에어비앤비 호스트 수수료 변경과 영업신고 의무도 정리했어요.">
+<style>:root{--bg:#f7f5f1;--ink:#1e1d1b;--muted:#5d5952;--line:#e3ddd3;--accent:#0f4c5c;--box:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#141412;--ink:#ecebe7;--muted:#a8a39a;--line:#33312d;--accent:#7cc3d3;--box:#1e1e1b}}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 system-ui,"Noto Sans KR",sans-serif;padding:24px 16px 60px}
+main{max-width:680px;margin:0 auto} h1{font-size:28px;line-height:1.25;margin:8px 0 12px} h2{font-size:20px;margin:32px 0 8px}
+p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font-size:20px;font-weight:700}
+.card{background:var(--box);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+.card small{display:block;color:var(--muted);font-size:14px} .cta{display:inline-block;background:var(--accent);color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:700;margin:12px 0}
+@media (prefers-color-scheme:dark){.cta{color:#0b1a1f}} nav a{font-size:14px} .toprow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 8px} .cta2{font-weight:700;font-size:15px} .sharebtn{font:600 14px system-ui;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--box);color:var(--ink);cursor:pointer} .chart thead th,.chart .hr th{font-size:13px} footer{margin-top:40px;font-size:14px;color:var(--muted)}
+.tw{overflow-x:auto;margin:12px 0} .chart{border-collapse:collapse;font-size:14px;min-width:640px} .chart th,.chart td{border:1px solid var(--line);padding:6px;text-align:center} .chart tbody th{text-align:left;font-weight:600;min-width:150px;position:sticky;left:0;background:var(--bg)} .chart thead th:first-child{position:sticky;left:0;z-index:1} .chart tbody th small{display:block;font-weight:400;color:var(--muted);font-size:12px} .chart thead th,.chart .hr th{background:var(--box);font-size:12px;text-align:center}</style><script data-goatcounter="https://wayfen.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script></head>
+<body><main>
+<nav><a href="../../">모든 도구</a></nav>
+<h1>에어비앤비 수익 계산법: 수수료 15.5%·청소비 넣고 손익분기 점유율 구하기</h1>
+<p class="toprow"><a class="cta2" href="../../stay-profit/">무료 도구 열기 →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">공유하기</button></p>
+<p class="lead">숙소 수익은 "1박 요금 × 숙박일"이 아니에요. 수수료, 청소비, 고정비, 처음 꾸민 비용을 빼야 실제로 남는 돈이 나와요. 순서대로 계산해 보세요.</p>
+<h2>계산 순서</h2>
+<ol><li><b>숙박일:</b> 30일 × 점유율 (예: 60%면 18박)</li>
+<li><b>매출:</b> 숙박일 × 1박 요금</li>
+<li><b>플랫폼 수수료:</b> 매출 × 수수료율</li>
+<li><b>청소비:</b> (숙박일 ÷ 예약 1건당 평균 숙박) × 1회 청소비</li>
+<li><b>고정비:</b> 월세 + 관리비 + 공과금 + 소모품·세탁</li>
+<li><b>처음 비용:</b> 가구·인테리어 비용 ÷ 나눠 계산할 달 수</li>
+<li><b>순이익</b> = 매출 − 수수료 − 청소비 − 고정비 − 처음 비용 몫</li></ol>
+<h2>예시</h2>
+<p>1박 9만 원, 점유율 60%, 수수료 15.5%, 청소 1회 3만 5천 원(평균 2.5박), 월세 90만·관리비 10만·공과금 15만·소모품 10만, 가구 500만 원을 12달로 나눠 계산<br>
+매출 162만 원 − 수수료 약 25만 원 − 청소비 약 25만 원 − 고정비 125만 원 − 처음 비용 몫 약 42만 원<br>
+→ <b>월 약 55만 원 적자</b>, 본전이 되려면 점유율 약 90%가 필요해요.</p>
+<p>같은 조건에서 수수료가 3%라면 본전 점유율은 약 76%예요. 수수료 방식 하나로 결과가 크게 달라져요.</p>
+<h2>꼭 확인할 것</h2>
+<ul><li><b>수수료 방식:</b> 에어비앤비는 호스트가 수수료를 전부 내는 방식(대부분 15.5%)으로 바꾸고 있어요. 예전 방식(호스트 약 3%, 손님 따로)이 남아 있는지 계정에서 확인하세요.</li>
+<li><b>영업신고:</b> 에어비앤비는 영업신고증이 없는 국내 숙소의 예약을 받지 않아요. 일반 주택에서 흔히 쓰는 외국인관광 도시민박업은 호스트가 실제로 살아야 하고 외국인 손님만 받을 수 있어요. 집을 빌려 통째로 숙소로 돌리는 방식은 대부분 허가가 나지 않으니, 계약 전에 관할 구청에 물어보세요.</li>
+<li><b>점유율:</b> 계절과 위치에 따라 크게 달라요. 같은 동네 비슷한 숙소의 예약 상황을 직접 보고 낮게 잡는 게 안전해요.</li>
+<li><b>세금:</b> 위 계산에는 종합소득세·부가가치세가 빠져 있어요.</li></ul>
+<p>숫자만 바꿔 넣으면 바로 계산되는 무료 계산기가 있어요. 손님 응대 시간을 줄이고 싶다면 <a href="../host-guest-complaints/">외국인 손님 민원 8가지와 영어 답장</a>도 보세요.</p>
+<p><small>근거: 에어비앤비 서비스 수수료 도움말(airbnb.com/help/article/1857), 에어비앤비 영업신고 의무화 공지(news.airbnb.com/ko/enforcement). 확인일 2026-11-09.</small></p>
+<h2>다른 안내</h2><ul><li><a href="../host-english-messages/">에어비앤비 외국인 손님 응대 영어 문장 16개 (예약부터 후기까지)</a></li><li><a href="../host-house-rules-english/">숙소 하우스룰 영어 예문 11개 (금연·소음·신발·쓰레기 분리)</a></li><li><a href="../host-checkin-guide-english/">셀프 체크인·체크아웃 안내문 영어 템플릿 (도어락·짐 보관·나가기 전 부탁)</a></li><li><a href="../airbnb-guest-guide-qr/">에어비앤비·게스트하우스 외국인 손님 안내문, QR 하나로 무료 만들기</a></li></ul>
+<a class="cta" href="../../stay-profit/">무료 도구 열기: 숙소 수익 계산기</a>
+<p style="font-size:14px">틀린 곳이나 바라는 점이 있나요? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">의견 보내기</a> · <a href="../../">모든 도구</a></p>
+<footer>업데이트 2026-11-08</footer>
+</main></body></html>
