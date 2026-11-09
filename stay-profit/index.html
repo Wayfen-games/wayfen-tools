@@ -37,6 +37,12 @@ table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid 
 <div class="row"><div><label>청소비 <small>1회, 맡기면</small></label><input id="clean" type="number" inputmode="numeric" min="0" step="5000" value="35000"></div>
 <div><label>평균 숙박 <small>예약 1건당 박</small></label><input id="stay" type="number" min="1" step="0.5" value="2.5"></div></div>
 <label>플랫폼 수수료 <small>% · 숙소 매출에서 빠지는 비율</small></label><input id="fee" type="number" min="0" max="40" step="0.5" value="15.5">
+<details style="margin:10px 0"><summary style="cursor:pointer;font-weight:700;color:var(--ac)">1박 요금을 모르겠다면: 동네 비슷한 숙소 요금으로 정하기</summary>
+<p class="note">에어비앤비 앱에서 그 동네를 검색해 비슷한 숙소(방 개수·인원)의 1박 요금을 몇 개 적어 주세요. 쉼표나 줄바꿈으로 나눠요. 예: 85000, 92000, 78000</p>
+<textarea id="comps" rows="3" style="width:100%;font:16px system-ui;padding:10px;border:1px solid #cfc8bc;border-radius:10px" placeholder="85000, 92000, 78000, 101000"></textarea>
+<p class="note" id="compsOut"></p>
+<button type="button" id="compsUse" style="border:0;background:var(--ac);color:#fff;border-radius:10px;padding:8px 14px;font:700 15px system-ui;cursor:pointer">중간값을 1박 요금으로 쓰기</button>
+<p class="note">요금이 2박 총액이면 2로 나눠 적어 주세요. 총액에는 청소비 등이 들어 있을 수 있어 실제 1박 요금보다 높게 나올 수 있어요.</p></details>
 <p class="note">에어비앤비는 호스트가 수수료를 전부 내는 방식(대부분 15.5%)으로 바뀌고 있어요. 예전 방식(호스트 약 3%, 손님 따로)이 남아 있는지는 내 계정에서 확인하세요. 손님이 따로 내는 청소비를 받는다면 1박 요금에 나눠 넣어 주세요(그 금액에도 수수료가 붙어요).</p>
 </div>
 
@@ -84,5 +90,9 @@ function calc(){const o=Math.min(100,n('occ')),r=profitAt(o);
   <p class="note">입력한 가정값으로 계산한 추정이에요. 세금은 빠져 있어요.</p>`;
   $('#tbl').innerHTML='<table><tr><th>점유율</th><th>숙박일</th><th>월 순이익</th></tr>'+[30,40,50,60,70,80,90].map(x=>{const p=profitAt(x).profit;return `<tr><td>${x}%</td><td>${(30*x/100).toFixed(0)}박</td><td class="${p>=0?'good':'warn'}">${p<0?'−':''}${won(Math.abs(p))}</td></tr>`}).join('')+'</table>'}
 document.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));calc();
+function comps(){const v=($('#comps').value.match(/\d[\d,]*/g)||[]).map(x=>+x.replace(/,/g,'')).filter(x=>x>=10000&&x<=5000000).sort((a,b)=>a-b);
+  if(!v.length){$('#compsOut').textContent='';return null}const m=v.length%2?v[(v.length-1)/2]:(v[v.length/2-1]+v[v.length/2])/2;
+  $('#compsOut').textContent=`${v.length}개 · 가장 낮음 ${won(v[0])} · 중간값 ${won(m)} · 가장 높음 ${won(v[v.length-1])}${v.length<5?' · 5개 이상이면 더 믿을 만해요':''}`;return m}
+$('#comps').addEventListener('input',comps);$('#compsUse').onclick=()=>{const m=comps();if(m){$('#rate').value=Math.round(m/1000)*1000;calc();try{goatcounter.count({path:'stay-profit-comps',event:true})}catch(e){}}};
 let sent=0;document.addEventListener('input',()=>{if(sent)return;sent=1;try{goatcounter.count({path:'stay-profit-used',event:true})}catch(e){}});
 </script></body></html>
