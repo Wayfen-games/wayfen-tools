@@ -28,7 +28,7 @@ ul{margin:0;padding-left:20px}li{margin:4px 0}
 </style></head>
 <body><main id="app"><p class="err">Loading…</p></main>
 <div id="big" hidden><p class="say">이 주소로 가 주세요.</p><p class="ko" id="bigAddr"></p><p class="ko" id="bigSt" style="font-size:24px;font-weight:700;white-space:pre-line"></p><button class="btn" id="bigClose">✕</button></div>
-<script src="fix_data.js?v=4"></script>
+<script src="fix_data.js?v=5"></script>
 <script>
 const LANGS=[['en','English'],['zh','简体中文'],['tw','繁體中文'],['ja','日本語'],['id','Bahasa Indonesia'],['vi','Tiếng Việt'],['th','ไทย'],['ko','한국어']];
 const HTML_LANG={en:'en',zh:'zh-Hans',tw:'zh-Hant',ja:'ja',id:'id',vi:'vi',th:'th',ko:'ko'};
@@ -104,7 +104,7 @@ function render(){
   const fx=(D.f&&typeof D.f==='object'&&typeof FIX==='object')?FIX_ORDER.filter(k=>Array.isArray(D.f[k])&&D.f[k].some(o=>FIX[k].o[o])):[];
   const fu=k=>FIX_UI[k][L]||FIX_UI[k].en;
   const fline=(k,o)=>{let s=FIX[k].o[o][L]||FIX[k].o[o].en;const lv=D.f[FIX_LOCKEY[k]];const lt=lv&&FIX_LOC[lv]?(FIX_LOC[lv][L]||FIX_LOC[lv].en):'';return lt?s.replace('{L}',lt):s.replace(/[（(]\{L\}[)）]/,'').replace(/\s+([,，、。.])/,'$1').replace(/\s{2,}/g,' ').trim()};
-  const fixHtml=fx.length?`<section id="fix"><h2>${fu('title')}</h2><p class="note" style="margin:0 0 4px">${fu('sub')}</p>${fx.map(k=>`<details data-k="${k}"><summary>${esc(FIX[k].t[L]||FIX[k].t.en)}</summary><ol>${D.f[k].filter(o=>FIX[k].o[o]).map(o=>`<li>${esc(fline(k,o))}</li>`).join('')}</ol><div class="fb"><button class="btn ghost" type="button" data-ok="${k}">👍 ${fu('ok')}</button><button class="btn ghost" type="button" data-no="${k}">${fu('no')}</button></div><div class="fm" hidden></div></details>`).join('')}</section>`:'';
+  const fixHtml=fx.length?`<section id="fix"><h2>${fu('title')}</h2><p class="note" style="margin:0 0 4px">${fu('sub')}</p>${fx.some(k=>k==='hw'||k==='ht')?`<p class="fm" style="background:#fff3f0;color:#9a2b1a">⚠ ${esc(fu('gas'))}</p>`:''}${fx.map(k=>`<details data-k="${k}"><summary>${esc(FIX[k].t[L]||FIX[k].t.en)}</summary><ol>${D.f[k].filter(o=>FIX[k].o[o]).map(o=>`<li>${esc(fline(k,o))}</li>`).join('')}</ol><div class="fb"><button class="btn ghost" type="button" data-ok="${k}">👍 ${fu('ok')}</button><button class="btn ghost" type="button" data-no="${k}">${fu('no')}</button></div><div class="fm" hidden></div></details>`).join('')}</section>`:'';
   const contact=[D.ct?`<div class="row"><span>${esc(D.ct)}</span><b>${esc(D.cid||'')}</b></div>`:'',D.ph?`<div class="row"><span>☎</span><b><a href="tel:${esc(D.ph.replace(/[^0-9+]/g,''))}">${esc(D.ph)}</a></b></div>`:''].join('');
   $('#app').innerHTML=`
   <p class="sub" style="margin:0">${esc(t('welcome'))}</p><h1>${esc(L==='ko'?(D.n||D.ne):(D.ne||D.n))}</h1>${D.ne&&D.n&&L!=='ko'?`<p class="sub" lang="ko">${esc(D.n)}</p>`:''}

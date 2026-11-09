@@ -6,6 +6,7 @@ const FIX_UI={
  ok:{en:'Solved',zh:'解决了',tw:'解決了',ja:'解決しました',ko:'해결됐어요',id:'Sudah beres',vi:'Đã giải quyết được',th:'แก้ได้แล้ว'},
  no:{en:'Still not working',zh:'还是不行',tw:'還是不行',ja:'まだ直らない',ko:'아직 안 돼요',id:'Masih belum bisa',vi:'Vẫn chưa được',th:'ยังไม่ได้'},
  thanks:{en:'Glad it worked!',zh:'太好了！',tw:'太好了！',ja:'よかったです！',ko:'다행이에요!',id:'Syukurlah!',vi:'Tốt quá!',th:'ดีจังที่แก้ได้!'},
+ gas:{ko:'가스 냄새가 나면 스위치를 만지지 말고 창문을 연 뒤 밖으로 나가 119에 전화하세요.',en:'If you smell gas, do not touch any switches. Open the windows, go outside and call 119.',zh:'如果闻到煤气味，请不要碰任何开关，打开窗户后到室外拨打119。',tw:'如果聞到瓦斯味，請不要碰任何開關，打開窗戶後到室外撥打119。',ja:'ガスのにおいがしたら、スイッチには触れず、窓を開けて外に出て119に電話してください。',id:'Jika tercium bau gas, jangan sentuh saklar apa pun. Buka jendela, keluar, lalu telepon 119.',vi:'Nếu ngửi thấy mùi gas, đừng chạm vào công tắc nào. Mở cửa sổ, ra ngoài và gọi 119.',th:'ถ้าได้กลิ่นแก๊ส อย่าแตะสวิตช์ใด ๆ เปิดหน้าต่าง ออกไปข้างนอก แล้วโทร 119'},
  call:{en:'Please contact your host:',zh:'请联系房东：',tw:'請聯絡房東：',ja:'ホストに連絡してください：',ko:'호스트에게 연락해 주세요:',id:'Silakan hubungi tuan rumah:',vi:'Vui lòng liên hệ chủ nhà:',th:'กรุณาติดต่อเจ้าของที่พัก:'}
 };
 const FIX_LOC={
