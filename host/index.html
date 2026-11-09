@@ -113,14 +113,14 @@ box('#rules',RULES);box('#outs',OUTS);
 const HASFIX=typeof FIX==='object';
 const HASREPLY=typeof REPLY==='object';
 const RS=[['hw','온수가 안 나와요'],['ht','추워요·난방'],['dl','도어락이 안 열려요'],['wf','와이파이가 안 돼요'],['tr','쓰레기 버리는 곳'],['pw','전기가 나갔어요'],['ci','체크인 시간 문의'],['co','체크아웃 시간 문의'],['wifi','와이파이 비밀번호 문의'],['check','확인하고 연락드릴게요'],['thanks','감사 인사(퇴실 후)']];
-function reply(L){const d=read(),rs=$('#rs').value,K=L==='th'?$('#rk2').value:'',R=k=>(REPLY[k][L]||REPLY[k].en).replace(/\{k\}/g,K);
+function reply(L){const d=read(),rs=$('#rs').value,K=L==='th'?$('#rk2').value:'',TK=t=>t.replace(/นะ\{k\}/g,K==='ค่ะ'?'นะคะ':'นะ'+K).replace(/\{k\}/g,K),R=k=>TK(REPLY[k][L]||REPLY[k].en);
   const need={ci:['ci','체크인 시간'],co:['co','체크아웃 시간'],wifi:['w','와이파이 이름']};
   if(need[rs]&&!d[need[rs][0]])return `(위에서 ${need[rs][1]}을 먼저 입력해 주세요)`;
   if(rs==='wifi'&&!d.p)return '(위에서 와이파이 비밀번호를 먼저 입력해 주세요)';
   const sub=t=>t.replace('{ci}',d.ci||'').replace('{co}',d.co||'').replace('{w}',d.w||'').replace('{p}',d.p||'');
   if(FIX[rs]){const f=d.f||{},opts=f[rs]||[],lv=f[FIX_LOCKEY[rs]],lt=lv&&FIX_LOC[lv]?(FIX_LOC[lv][L]||FIX_LOC[lv].en):'';
     if(!opts.length)return '(위 “손님 스스로 해결”에서 이 상황에 맞는 방법을 먼저 골라 주세요)';
-    const steps=opts.filter(o=>FIX[rs].o[o]).map((o,i)=>{const rf=REPLY_FIX[rs]&&REPLY_FIX[rs][o];let x=(rf&&rf[L])||FIX[rs].o[o][L]||FIX[rs].o[o].en;x=x.replace(/\{k\}/g,K);x=lt?x.replace('{L}',lt):x.replace(/[（(]\{L\}[)）]/,'').replace(/\s+([,，、。.])/,'$1').replace(/\s{2,}/g,' ').trim();return (i+1)+'. '+x});
+    const steps=opts.filter(o=>FIX[rs].o[o]).map((o,i)=>{const rf=REPLY_FIX[rs]&&REPLY_FIX[rs][o];let x=(rf&&rf[L])||FIX[rs].o[o][L]||FIX[rs].o[o].en;x=TK(x);x=lt?x.replace('{L}',lt):x.replace(/[（(]\{L\}[)）]/,'').replace(/\s+([,，、。.])/,'$1').replace(/\s{2,}/g,' ').trim();return (i+1)+'. '+x});
     if(rs==='wf'&&opts.includes('case')&&d.w&&d.p)steps.push(sub(R('wifi')));
     return rs==='tr'?[R('hello'),R('trA'),...steps,R('trZ')].join('\n'):[R('hello'),R('sorry'),...steps,R('after')].join('\n')}
   return [R('hello'),sub(R(rs))].join('\n')}
