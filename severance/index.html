@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>퇴직금 계산기 (평균임금·재직일수로 바로 계산)</title>
+<meta name="description" content="입사일, 퇴사일, 최근 3개월 월급만 넣으면 퇴직금을 바로 계산해요. 평균임금, 상여금·연차수당 반영, 1년·주 15시간 조건 확인까지. 무료, 가입 없음.">
+<link rel="canonical" href="https://wayfen-games.github.io/wayfen-tools/severance/">
+<script data-goatcounter="https://wayfen.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"퇴직금 계산기","url":"https://wayfen-games.github.io/wayfen-tools/severance/","applicationCategory":"FinanceApplication","operatingSystem":"Any","inLanguage":"ko","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}}</script>
+<style>
+:root{--bg:#f5f4f0;--ink:#1d1b18;--muted:#6a655d;--ac:#1f5f4a;--line:#e1dcd2;--warn:#b3361f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Noto Sans KR",sans-serif}
+main{max-width:620px;margin:0 auto;padding:18px 16px 60px}h1{font-size:25px;line-height:1.3;margin:4px 0 6px}.lead{margin:0 0 12px;color:#3a3630}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0}
+label{display:block;font-weight:700;margin:10px 0 4px;font-size:15px}label small{font-weight:400;color:var(--muted)}
+input{width:100%;font:17px system-ui;padding:10px 12px;border:1px solid #cdc6b9;border-radius:10px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chk{display:flex;gap:8px;align-items:flex-start;font-weight:500;margin:8px 0}.chk input{width:18px;height:18px;margin-top:5px}
+.res .big{font-size:30px;font-weight:900;margin:2px 0}.res .line{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid #eee9df}.res .line:last-child{border:0}.res span{color:var(--muted)}
+.warn{color:var(--warn);font-weight:700}.note{color:var(--muted);font-size:14px}h2{font-size:18px;margin:22px 0 6px}ul{padding-left:20px}footer{color:var(--muted);font-size:14px;margin-top:24px}
+</style></head>
+<body><main>
+<h1>퇴직금 계산기</h1>
+<p class="lead">입사일, 마지막 근무일, 최근 3개월 월급만 넣으면 예상 퇴직금이 바로 나와요.</p>
+<div class="card">
+<div class="row"><div><label>입사일</label><input id="start" type="date"></div><div><label>마지막 근무일</label><input id="end" type="date"></div></div>
+<label>최근 3개월 월급 <small>수당·초과근무수당 포함 세전 총액, 한 달 기준(매달 다르면 평균)</small></label>
+<input id="pay" type="number" inputmode="numeric" min="0" step="10000" value="3000000">
+<label class="chk"><input type="checkbox" id="three"> 최근 3개월 월급을 각각 넣을래요</label>
+<div class="row" id="threeBox" hidden><div><label>1개월 전</label><input id="p1" type="number" min="0" step="10000"></div><div><label>2개월 전</label><input id="p2" type="number" min="0" step="10000"></div><div><label>3개월 전</label><input id="p3" type="number" min="0" step="10000"></div></div>
+<div class="row"><div><label>퇴직 전 12개월 동안 받은 상여금 <small>없으면 0</small></label><input id="bonus" type="number" min="0" step="10000" value="0"></div>
+<div><label>퇴직 전 12개월 동안 받은 연차수당 <small>퇴사하면서 받는 연차수당은 빼요</small></label><input id="leave" type="number" min="0" step="10000" value="0"></div></div>
+<label class="chk"><input type="checkbox" id="h15" checked> 4주 평균 일주일에 15시간 이상 일했어요</label>
+</div>
+<div class="card res" id="res"></div>
+
+<h2>이렇게 계산해요</h2>
+<ul>
+<li><b>받을 수 있는 조건:</b> 같은 곳에서 1년 이상 일했고, 4주 평균으로 일주일에 15시간 이상 일했다면 받아요(근로자퇴직급여보장법).</li>
+<li><b>1일 평균임금:</b> 그만두기 전 3개월 동안 받은 임금 총액 ÷ 그 3개월의 날수. 1년 동안 받은 상여금과 연차수당은 3/12만큼 더해요.</li>
+<li><b>퇴직금:</b> 1일 평균임금 × 30일 × (재직일수 ÷ 365).</li>
+<li>재직일수는 입사일부터 마지막 근무일까지를 셌어요.</li>
+</ul>
+<h2>꼭 알아 두세요</h2>
+<ul>
+<li>이 계산은 일반적인 기준으로 어림한 값이에요. 평균임금이 통상임금보다 적으면 통상임금으로 계산하는 등 실제 금액은 회사 규정과 급여 내역에 따라 달라져요. 정확한 판단은 고용노동부 고객상담센터(국번 없이 1350)에 물어보세요.</li>
+<li>세금(퇴직소득세)은 빼지 않은 금액이에요. 퇴직금은 퇴직연금(IRP) 계좌로 받는 게 원칙이에요(만 55세 이후 퇴직 등 예외 있음). 회사는 퇴직한 날부터 14일 안에 줘야 해요(서로 합의하면 늦출 수 있어요).</li>
+<li>법 근거: <a href="https://www.law.go.kr/법령/근로자퇴직급여보장법" target="_blank" rel="noopener">근로자퇴직급여 보장법</a>(제4조·제8조·제9조). 고용노동부 퇴직금 계산기로도 확인해 보세요.</li>
+<li>육아휴직·병가 같은 기간이 3개월 안에 있으면 평균임금 계산에서 빼는 등 예외가 있어요.</li>
+</ul>
+<footer>무료, 가입 없음, 입력한 숫자는 어디에도 보내지 않아요(방문 수만 셉니다). · <a href="../pay/">주휴수당·알바 월급 계산기</a> · <a href="../">모든 도구</a> · 확인일 2026-11-09</footer>
+</main>
+<script>
+const $=s=>document.querySelector(s); const fmt=n=>Math.round(n).toLocaleString('ko-KR')+'원';
+// 날짜는 모두 UTC 자정 기준 '날 수'로 다룸(시간대 때문에 하루 밀리지 않게)
+const loc=new Date(); const p2=x=>String(x).padStart(2,'0');
+const ymd=(y,m,d)=>`${y}-${p2(m)}-${p2(d)}`;
+$('#end').value=ymd(loc.getFullYear(),loc.getMonth()+1,loc.getDate()); $('#start').value=ymd(loc.getFullYear()-3,loc.getMonth()+1,loc.getDate());
+$('#three').addEventListener('change',()=>{$('#threeBox').hidden=!$('#three').checked;calc()});
+const U=s=>{const [y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d)};
+const dim=(y,m)=>new Date(Date.UTC(y,m+1,0)).getUTCDate(); // m: 0~11
+function addMonths(t,k){const d=new Date(t);let y=d.getUTCFullYear(),m=d.getUTCMonth()+k;y+=Math.floor(m/12);m=((m%12)+12)%12;return Date.UTC(y,m,Math.min(d.getUTCDate(),dim(y,m)))} // 그 달에 없는 날이면 말일
+function calc(){
+  if(!$('#start').value||!$('#end').value){$('#res').innerHTML='<p class="warn">날짜를 넣어 주세요.</p>';return}
+  const st=U($('#start').value), en=U($('#end').value);
+  if(en<st){$('#res').innerHTML='<p class="warn">날짜를 확인해 주세요.</p>';return}
+  const ret=en+864e5; // 퇴직일 = 마지막 근무일 다음날
+  const work=Math.round((ret-st)/864e5);
+  const b3=addMonths(ret,-3); const d3=Math.round((ret-b3)/864e5);
+  const n=v=>Math.max(0,+v||0);
+  const pay3=$('#three').checked? n($('#p1').value)+n($('#p2').value)+n($('#p3').value) : n($('#pay').value)*3;
+  if(!pay3){$('#res').innerHTML='<p class="warn">월급을 입력해 주세요.</p>';return}
+  const extra=(n($('#bonus').value)+n($('#leave').value))*3/12;
+  const avg=(pay3+extra)/d3; const sev=avg*30*work/365;
+  const oneYear=ret>=addMonths(st,12);
+  const ok=oneYear&&$('#h15').checked;
+  $('#res').innerHTML=`<span>예상 퇴직금 (세전)</span><p class="big">${ok?fmt(sev):'받을 조건이 안 돼요'}</p>
+  ${!ok?`<p class="warn">${!oneYear?'재직 기간이 1년이 안 돼요 ('+work+'일).':'주 15시간 미만이면 퇴직금 대상이 아니에요.'}</p>`:''}
+  <div class="line"><span>재직일수</span><b>${work.toLocaleString()}일 (약 ${(work/365).toFixed(1)}년)</b></div>
+  <div class="line"><span>3개월 임금 총액</span><b>${fmt(pay3)}</b></div>
+  ${extra?`<div class="line"><span>상여금·연차수당 3/12</span><b>${fmt(extra)}</b></div>`:''}
+  <div class="line"><span>3개월 날수</span><b>${d3}일</b></div>
+  <div class="line"><span>1일 평균임금</span><b>${fmt(avg)}</b></div>
+  ${ok?`<div class="line"><span>계산</span><b>${fmt(avg)} × 30 × ${work}/365</b></div>`:''}`;
+}
+document.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));calc();
+</script></body></html>
