@@ -75,6 +75,9 @@ function calc(){
   const base=H*w; const ju=H>=15?Math.min(H,40)/40*8*w:0;
   const overPay=over*w*(five?1.5:1); const nightPay=five?night*w*0.5:0;
   const week=base+ju+overPay+nightPay; const month=week*365/7/12; const cut=month*ded/100;
+  // 2026→2027 최저임금 비교(같은 근무 시간, 최저임금으로 일할 때)
+  const minPay=(r)=>((H*r)+(H>=15?Math.min(H,40)/40*8*r:0)+over*r*(five?1.5:1)+(five?night*r*0.5:0))*365/7/12*(1-ded/100);
+  const m26=minPay(10320), m27=minPay(10700);
   const warn=[]; if(H>40)warn.push('요일별 합계가 주 40시간을 넘어요. 40시간을 넘는 시간은 연장 칸에 따로 넣어 주세요.'); if(hrs.some(h=>h>8))warn.push('하루 8시간을 넘는 날이 있어요. 넘는 시간은 연장 칸에 넣어 주세요.');
   $('#res').innerHTML=`<span>한 달 예상 월급</span><p class="big">${fmt(month-cut)}</p>
   <div class="line"><span>주 근무 시간</span><b>${H}시간</b></div>
@@ -85,6 +88,7 @@ function calc(){
   <div class="line"><span>주급 합계</span><b>${fmt(week)}</b></div>
   <div class="line"><span>월급 (세전, 약 4.345주)</span><b>${fmt(month)}</b></div>
   ${ded?`<div class="line"><span>3.3% 공제</span><b>−${fmt(cut)}</b></div>`:''}
+  <div class="line" style="background:#f1f7f3;border-radius:8px;padding:8px"><span>같은 시간을 최저임금으로 일하면</span><b>2026년 ${fmt(m26)} → 2027년 ${fmt(m27)} (+${fmt(m27-m26)})</b></div>
   ${warn.map(t=>`<p class="warn">${t}</p>`).join('')}`;
   const sel=document.querySelector('[data-w][aria-pressed=true]'); const mw=sel?+sel.dataset.w:10320;
   $('#minw').innerHTML=w&&w<mw?`<span class="warn">입력한 시급이 ${sel.textContent.split(' ')[0]} 최저임금(${mw.toLocaleString()}원)보다 낮아요.</span>`:'';
