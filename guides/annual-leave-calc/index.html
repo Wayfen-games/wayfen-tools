@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>연차 몇 개 생길까? 근속 연수별 연차 일수와 연차수당 계산법</title><meta name="description" content="1년 미만은 한 달 개근마다 1일(최대 11일), 1년 이상은 15일, 만 3년부터 2년마다 1일씩 늘어 최대 25일. 근속별 표, 못 쓴 연차수당 계산, 1년 계약직 11일 판례까지.">
+<link rel="canonical" href="https://wayfen-games.github.io/wayfen-tools/guides/annual-leave-calc/">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "연차 몇 개 생길까? 근속 연수별 연차 일수와 연차수당 계산법", "description": "1년 미만은 한 달 개근마다 1일(최대 11일), 1년 이상은 15일, 만 3년부터 2년마다 1일씩 늘어 최대 25일. 근속별 표, 못 쓴 연차수당 계산, 1년 계약직 11일 판례까지.", "inLanguage": "ko", "dateModified": "2026-11-08", "mainEntityOfPage": "https://wayfen-games.github.io/wayfen-tools/guides/annual-leave-calc/"}</script>
+<meta property="og:title" content="연차 몇 개 생길까? 근속 연수별 연차 일수와 연차수당 계산법"><meta property="og:description" content="1년 미만은 한 달 개근마다 1일(최대 11일), 1년 이상은 15일, 만 3년부터 2년마다 1일씩 늘어 최대 25일. 근속별 표, 못 쓴 연차수당 계산, 1년 계약직 11일 판례까지.">
+<style>:root{--bg:#f7f5f1;--ink:#1e1d1b;--muted:#5d5952;--line:#e3ddd3;--accent:#0f4c5c;--box:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#141412;--ink:#ecebe7;--muted:#a8a39a;--line:#33312d;--accent:#7cc3d3;--box:#1e1e1b}}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 system-ui,"Noto Sans KR",sans-serif;padding:24px 16px 60px}
+main{max-width:680px;margin:0 auto} h1{font-size:28px;line-height:1.25;margin:8px 0 12px} h2{font-size:20px;margin:32px 0 8px}
+p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font-size:20px;font-weight:700}
+.card{background:var(--box);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+.card small{display:block;color:var(--muted);font-size:14px} .cta{display:inline-block;background:var(--accent);color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:700;margin:12px 0}
+@media (prefers-color-scheme:dark){.cta{color:#0b1a1f}} nav a{font-size:14px} .toprow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 8px} .cta2{font-weight:700;font-size:15px} .sharebtn{font:600 14px system-ui;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--box);color:var(--ink);cursor:pointer} .chart thead th,.chart .hr th{font-size:13px} footer{margin-top:40px;font-size:14px;color:var(--muted)}
+.tw{overflow-x:auto;margin:12px 0} .chart{border-collapse:collapse;font-size:14px;min-width:640px} .chart th,.chart td{border:1px solid var(--line);padding:6px;text-align:center} .chart tbody th{text-align:left;font-weight:600;min-width:150px;position:sticky;left:0;background:var(--bg)} .chart thead th:first-child{position:sticky;left:0;z-index:1} .chart tbody th small{display:block;font-weight:400;color:var(--muted);font-size:12px} .chart thead th,.chart .hr th{background:var(--box);font-size:12px;text-align:center}</style><script data-goatcounter="https://wayfen.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script></head>
+<body><main>
+<nav><a href="../../">모든 도구</a></nav>
+<h1>연차 몇 개 생길까? 근속 연수별 연차 일수와 연차수당 계산법</h1>
+<p class="toprow"><a class="cta2" href="../../leave/">무료 도구 열기 →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">공유하기</button></p>
+<p class="lead">연차는 근로기준법 제60조에 따라 생겨요. 직원 5명 이상인 곳이라면 알바·계약직도 똑같이 적용돼요.</p>
+<h2>근속 연수별 연차 일수</h2>
+<table><tr><th>근속</th><th>연차</th></tr>
+<tr><td>1년 미만</td><td>한 달 개근마다 1일, 최대 11일</td></tr>
+<tr><td>만 1년, 만 2년</td><td>15일</td></tr>
+<tr><td>만 3년, 만 4년</td><td>16일</td></tr>
+<tr><td>만 5년, 만 6년</td><td>17일</td></tr>
+<tr><td>…</td><td>2년마다 1일씩 늘어남</td></tr>
+<tr><td>만 21년 이상</td><td>25일(최대)</td></tr></table>
+<p>1년 이상 연차는 그 1년 동안 80% 이상 출근했을 때 생겨요. 80% 미만이면 개근한 달마다 1일씩 생겨요.</p>
+<h2>연차수당</h2>
+<p><b>연차수당 = 못 쓴 연차 일수 × 하루치 통상임금</b>(통상 시급 × 하루 근무 시간)<br>예: 시급 10,320원, 하루 8시간, 못 쓴 연차 5일 → 5 × 82,560원 = <b>412,800원</b></p>
+<p>회사가 연차 사용을 정식으로 독려(사용 촉진)했는데도 쓰지 않았다면 수당이 나오지 않을 수 있어요.</p>
+<h2>헷갈리는 것</h2>
+<ul><li><b>1년 계약직:</b> 딱 1년(365일)만 일하고 끝나면 연차는 최대 11일이에요. 366일째에도 일해야 15일이 더 생긴다는 대법원 판단(2021다227100)이 있어요.</li>
+<li><b>회계연도 기준:</b> 회사가 1월 1일 기준으로 연차를 줘도, 퇴사할 때는 입사일 기준으로 계산한 것보다 적으면 안 돼요.</li>
+<li><b>5인 미만:</b> 직원 5명 미만인 곳은 법정 연차가 의무가 아니에요.</li></ul>
+<p>정확한 판단은 고용노동부 고객상담센터(국번 없이 1350)에 물어보세요.</p>
+<h2>다른 안내</h2><ul><li><a href="../free-wifi-qr-code/">가게 와이파이 QR 코드 무료로 만들기 (외국인 손님 안내 문구 포함)</a></li><li><a href="../restaurant-foreign-signs/">식당 외국어 안내판 무료로 만들기 (영어·중국어·일본어)</a></li><li><a href="../free-qr-menu-foreign/">외국어 QR 메뉴판 무료로 만들기 (영어·중국어·일본어)</a></li><li><a href="../foreign-guest-food-cards/">외국인 친구·손님 알레르기와 채식, 한국어 카드로 해결하기 (무료)</a></li></ul>
+<a class="cta" href="../../leave/">무료 도구 열기: 연차 계산기</a>
+<p style="font-size:14px">틀린 곳이나 바라는 점이 있나요? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">의견 보내기</a> · <a href="../../">모든 도구</a></p>
+<footer>업데이트 2026-11-08</footer>
+</main></body></html>
