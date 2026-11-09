@@ -48,3 +48,14 @@ const FIX={
 const FIX_ORDER=['hw','ht','dl','wf','tr','pw'];
 // 위치가 필요한 상황: 보일러(hw·ht 공통 bl), 공유기(rl), 차단기(kl)
 const FIX_LOCKEY={hw:'bl',ht:'bl',wf:'rl',pw:'kl'};
+// 번역 답장 도우미(11-09): 호스트가 상황·손님 언어를 고르면 답장 완성 → 복사. {ci}{co}{w}{p}는 호스트 입력값.
+const REPLY={
+ hello:{ko:'안녕하세요. 연락 주셔서 감사해요.',en:'Hi, thank you for your message.',zh:'您好，感谢您的留言。',tw:'您好，感謝您的訊息。',ja:'こんにちは。ご連絡ありがとうございます。',id:'Halo, terima kasih atas pesannya.',vi:'Xin chào, cảm ơn bạn đã nhắn tin.',th:'สวัสดี ขอบคุณที่ติดต่อมา'},
+ sorry:{ko:'불편을 드려 죄송해요. 아래 방법을 해 봐 주세요.',en:'Sorry for the trouble. Please try the steps below.',zh:'给您带来不便，非常抱歉。请试试下面的方法。',tw:'造成您的不便，非常抱歉。請試試下面的方法。',ja:'ご不便をおかけしてすみません。以下の方法を試してみてください。',id:'Mohon maaf atas ketidaknyamanannya. Silakan coba langkah berikut.',vi:'Xin lỗi vì sự bất tiện. Bạn hãy thử các bước dưới đây.',th:'ขออภัยในความไม่สะดวก กรุณาลองทำตามขั้นตอนด้านล่างนี้'},
+ after:{ko:'그래도 안 되면 다시 알려 주세요. 바로 도와드릴게요.',en:'If it still doesn\'t work, please let me know and I\'ll help right away.',zh:'如果还是不行，请再告诉我，我会马上帮您处理。',tw:'如果還是不行，請再告訴我，我會馬上幫您處理。',ja:'それでも直らない場合は、またお知らせください。すぐに対応します。',id:'Jika masih belum bisa, kabari saya lagi ya. Saya akan segera membantu.',vi:'Nếu vẫn chưa được, hãy báo lại cho tôi, tôi sẽ hỗ trợ ngay.',th:'ถ้ายังไม่ได้ แจ้งกลับมาได้เลย จะช่วยดูให้ทันที'},
+ ci:{ko:'체크인은 {ci}부터예요.',en:'Check-in is from {ci}.',zh:'入住时间从{ci}开始。',tw:'入住時間從{ci}開始。',ja:'チェックインは{ci}からです。',id:'Check-in mulai pukul {ci}.',vi:'Giờ nhận phòng từ {ci}.',th:'เช็คอินได้ตั้งแต่ {ci}'},
+ co:{ko:'체크아웃은 {co}까지예요.',en:'Check-out is by {co}.',zh:'退房时间是{co}之前。',tw:'退房時間是{co}之前。',ja:'チェックアウトは{co}までです。',id:'Check-out paling lambat pukul {co}.',vi:'Trả phòng trước {co}.',th:'เช็คเอาท์ภายใน {co}'},
+ wifi:{ko:'와이파이 이름은 {w}, 비밀번호는 {p}예요.',en:'The Wi-Fi name is {w} and the password is {p}.',zh:'Wi-Fi名称是{w}，密码是{p}。',tw:'Wi-Fi名稱是{w}，密碼是{p}。',ja:'Wi-Fiの名前は{w}、パスワードは{p}です。',id:'Nama Wi-Fi: {w}, kata sandi: {p}.',vi:'Tên Wi-Fi là {w}, mật khẩu là {p}.',th:'ชื่อ Wi-Fi คือ {w} รหัสผ่านคือ {p}'},
+ check:{ko:'확인하고 바로 다시 연락드릴게요.',en:'Let me check, and I\'ll get back to you shortly.',zh:'我确认一下，马上回复您。',tw:'我確認一下，馬上回覆您。',ja:'確認して、すぐにご連絡します。',id:'Saya cek dulu, nanti segera saya kabari.',vi:'Để tôi kiểm tra rồi sẽ trả lời bạn ngay.',th:'ขอตรวจสอบก่อน แล้วจะรีบติดต่อกลับ'},
+ thanks:{ko:'머물러 주셔서 감사해요. 즐거운 여행 되세요!',en:'Thank you for staying with us. Enjoy your trip!',zh:'感谢您的入住，祝您旅途愉快！',tw:'感謝您的入住，祝您旅途愉快！',ja:'ご滞在ありがとうございました。良いご旅行を！',id:'Terima kasih sudah menginap. Selamat berlibur!',vi:'Cảm ơn bạn đã lưu trú. Chúc bạn có chuyến đi vui vẻ!',th:'ขอบคุณที่มาพัก ขอให้เที่ยวให้สนุก!'}
+};

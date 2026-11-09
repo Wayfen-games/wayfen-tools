@@ -87,12 +87,21 @@ footer{color:var(--muted);font-size:14px;margin-top:24px}
 <div style="margin-top:12px;padding:12px 14px;border:1px solid #cfe0e3;border-radius:12px;background:#f3f8f9"><b>유료판을 만들지 정하는 중이에요 (월 9,900원 예정)</b><br>QR을 다시 뽑지 않고 와이파이·안내 고치기, 여러 숙소 한곳에서 관리. 쓰실 생각이 있으면 알려 주세요. 신청해도 결제되지 않아요. 30초면 끝나요.<br><a class="btn s" style="display:inline-block;margin-top:8px;text-decoration:none" href="https://docs.google.com/forms/d/e/1FAIpQLSeyq8n0ZBgBj65NnFdYWeOW2-Lz1PmDg2Ikl3ks1o854dabYQ/viewform" target="_blank" rel="noopener" onclick="try{goatcounter.count({path:'host-paid-interest',event:true})}catch(e){}">관심 있어요 (출시 알림)</a></div>
 </div>
 
+<fieldset id="rh"><legend>손님 문의 답장 도우미</legend>
+<p class="hint" style="margin-top:0">손님 문자가 오면 상황과 손님 언어만 고르세요. 위에 넣은 숙소 정보와 '손님 스스로 해결'에서 고른 방법으로 답장이 완성돼요. 복사해서 에어비앤비·메신저에 붙여 넣으면 돼요.</p>
+<div class="two"><div><label>손님 언어</label><select id="rl"><option value="en">영어</option><option value="zh">중국어(간체)</option><option value="tw">중국어(번체·대만)</option><option value="ja">일본어</option><option value="id">인도네시아어</option><option value="vi">베트남어</option><option value="th">태국어</option><option value="ko">한국어</option></select></div>
+<div><label>상황</label><select id="rs"></select></div></div>
+<label>보낼 답장</label><textarea id="ro" readonly style="min-height:120px"></textarea>
+<p class="hint" id="rk" style="white-space:pre-wrap"></p>
+<button class="btn s" id="rc" type="button">답장 복사</button>
+</fieldset>
+
 <footer>여러 숙소를 한곳에서 관리하거나, QR을 다시 뽑지 않고 내용을 고치는 유료판(월 9,900원 예정)을 만들지 정하려고 의견을 모으고 있어요. <a href="https://docs.google.com/forms/d/e/1FAIpQLSeyq8n0ZBgBj65NnFdYWeOW2-Lz1PmDg2Ikl3ks1o854dabYQ/viewform" target="_blank" rel="noopener" onclick="try{goatcounter.count({path:'host-paid-interest',event:true})}catch(e){}">관심 있어요</a> · <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">의견 보내기</a> · <a href="../">모든 도구</a></footer>
 </main>
 <div id="sheet"><h2>Guest Guide · 入住指南 · ゲストガイド</h2><p class="n" id="sN"></p><div class="qr" id="sQ"></div>
 <p class="l">Scan with your phone camera · 用手机相机扫描 · 用手機相機掃描 · スマホのカメラで読み取ってください</p>
 <p class="l">Wi-Fi · Check-in/out · House rules · Taxi address card · Emergency</p><p class="w" id="sW"></p><small>휴대폰 카메라로 찍으세요</small></div>
-<script src="fix_data.js?v=2"></script>
+<script src="fix_data.js?v=3"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" integrity="sha384-mZT2gIty7ZDdOGkxfP6joZcYdMW1Jvj9dRlfpTmaJAKKXTqzygtB22k7FLe+KZC1" crossorigin="anonymous"></script>
 <script>
 const RULES=[['smoke','실내 금연'],['quiet','밤 10시~아침 8시 조용히'],['shoes','실내에서 신발 벗기'],['trash','쓰레기 분리배출(일반·재활용·음식물)'],['guests','예약하지 않은 사람 출입 금지'],['party','파티·큰 소음 금지'],['pets','반려동물 금지'],['cook','객실 안 요리 금지'],['door','현관 비밀번호 다른 사람에게 알리지 않기']];
@@ -101,6 +110,17 @@ const BASE='https://wayfen-games.github.io/wayfen-tools/';const $=s=>document.qu
 const box=(id,list)=>{$(id).innerHTML=list.map(([k,v])=>`<label class="chk"><input type="checkbox" value="${k}"> ${v}</label>`).join('')};
 box('#rules',RULES);box('#outs',OUTS);
 const HASFIX=typeof FIX==='object';
+const HASREPLY=typeof REPLY==='object';
+const RS=[['hw','온수가 안 나와요'],['ht','추워요·난방'],['dl','도어락이 안 열려요'],['wf','와이파이가 안 돼요'],['tr','쓰레기 버리는 곳'],['pw','전기가 나갔어요'],['ci','체크인 시간 문의'],['co','체크아웃 시간 문의'],['wifi','와이파이 비밀번호 문의'],['check','확인하고 연락드릴게요'],['thanks','감사 인사(퇴실 후)']];
+function reply(L){const d=read(),rs=$('#rs').value,R=k=>REPLY[k][L]||REPLY[k].en,sub=t=>t.replace('{ci}',d.ci||'15:00').replace('{co}',d.co||'11:00').replace('{w}',d.w||'(Wi-Fi)').replace('{p}',d.p||'(password)');
+  if(FIX[rs]){const f=d.f||{},opts=f[rs]||[],lv=f[FIX_LOCKEY[rs]],lt=lv&&FIX_LOC[lv]?(FIX_LOC[lv][L]||FIX_LOC[lv].en):'';
+    if(!opts.length)return '(위 “손님 스스로 해결”에서 이 상황에 맞는 방법을 먼저 골라 주세요)';
+    const steps=opts.filter(o=>FIX[rs].o[o]).map((o,i)=>{let x=FIX[rs].o[o][L]||FIX[rs].o[o].en;x=lt?x.replace('{L}',lt):x.replace(/[（(]\{L\}[)）]/,'').replace(/\s+([,，、。.])/,'$1').replace(/\s{2,}/g,' ').trim();return (i+1)+'. '+x});
+    return [R('hello'),R('sorry'),...steps,R('after')].join('\n')}
+  return [R('hello'),sub(R(rs))].join('\n')}
+function showReply(){if(!HASREPLY||!HASFIX)return;$('#ro').value=reply($('#rl').value);$('#rk').textContent=$('#rl').value==='ko'?'':'한국어 뜻:\n'+reply('ko')}
+if(typeof REPLY==='object'&&typeof FIX==='object'){$('#rs').innerHTML=RS.map(([k,v])=>`<option value="${k}">${v}</option>`).join('');['#rl','#rs'].forEach(x=>$(x).addEventListener('change',showReply));document.addEventListener('change',e=>{if(e.target.closest('fieldset')&&!e.target.closest('#rh'))showReply()});
+  $('#rc').onclick=async e=>{const b=e.target;try{await navigator.clipboard.writeText($('#ro').value);b.textContent='✓ 복사됨';setTimeout(()=>b.textContent='답장 복사',1500)}catch(err){$('#ro').select()}try{goatcounter.count({path:'host-reply-copy-'+$('#rs').value,event:true})}catch(err){}}}else{$('#rh').hidden=true}
 if(HASFIX){const lo='<option value="">모름·표시 안 함</option>'+Object.entries(FIX_LOC).map(([k,v])=>`<option value="${k}">${v.ko}</option>`).join('');['bl','rl','kl'].forEach(x=>$('#fl_'+x).innerHTML=lo);
   $('#fixes').innerHTML=FIX_ORDER.map(k=>`<p style="margin:12px 0 2px;font-weight:800">${FIX[k].t.ko}</p>`+Object.entries(FIX[k].o).map(([o,v])=>`<label class="chk"><input type="checkbox" data-fk="${k}" value="${o}"> ${v.ko.replace(/\(\{L\}\)/,'(위치는 위에서 고름)')}</label>`).join('')).join('')}
 const F=['n','ne','w','p','ci','co','bf','a','bd','st','ct','cid','ph','x'];
@@ -132,6 +152,7 @@ $('#print').onclick=()=>window.print();
 $('#open').onclick=()=>window.open(guest,'_blank','noopener');
 const cp=async(u,b,lbl)=>{try{await navigator.clipboard.writeText(u);b.textContent='✓ 복사됨'}catch(e){window.prompt(lbl,u)}};
 $('#copy').onclick=e=>cp(guest,e.target,'손님 주소');$('#edit').onclick=e=>cp(editUrl,e.target,'고치기용 주소');
+setTimeout(()=>{try{showReply()}catch(e){}},300);
 (async()=>{const m=location.hash.match(/^#edit=(.+)$/);
   if(m){try{fill(await dec(m[1]));return}catch(e){}}
   try{const s=localStorage.getItem('host.form');if(s){const d=JSON.parse(s);fill(d);if(d.w&&!$('#p').value){$('#p').style.borderColor='#c0392b';$('#p').placeholder='비밀번호를 다시 넣어 주세요';$('#p').addEventListener('input',()=>{$('#p').style.borderColor=''},{once:true});}}}catch(e){}})();
