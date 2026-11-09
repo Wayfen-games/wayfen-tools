@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>에어비앤비·숙소 수익 계산기 (손익분기 점유율·월 순이익)</title>
+<meta name="description" content="월세, 관리비, 청소비, 플랫폼 수수료, 1박 요금만 넣으면 숙소 운영 예상 월 순이익과 손익분기 점유율(몇 % 차야 본전인지)을 바로 계산해요. 매물 계약 전에 비교해 보세요. 무료, 가입 없음.">
+<link rel="canonical" href="https://wayfen-games.github.io/wayfen-tools/stay-profit/">
+<script data-goatcounter="https://wayfen.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"숙소 수익 계산기","url":"https://wayfen-games.github.io/wayfen-tools/stay-profit/","applicationCategory":"FinanceApplication","operatingSystem":"Any","inLanguage":"ko","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}}</script>
+<style>
+:root{--bg:#f6f3ee;--ink:#1d1a16;--muted:#6f6a62;--ac:#0f4c5c;--line:#e3ddd2;--warn:#b3361f;--good:#1f6b4a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Noto Sans KR",sans-serif}
+main{max-width:640px;margin:0 auto;padding:18px 16px 60px}h1{font-size:25px;line-height:1.3;margin:4px 0 6px}.lead{margin:0 0 12px;color:#3b3731}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0}
+.card h2{font-size:16px;color:var(--ac);margin:0 0 4px}
+label{display:block;font-weight:700;margin:10px 0 4px;font-size:15px}label small{font-weight:400;color:var(--muted)}
+input{width:100%;font:17px system-ui;padding:10px 12px;border:1px solid #cfc8bc;border-radius:10px;background:#fff}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.big{font-size:30px;font-weight:900;margin:2px 0}.line{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid #eee9df}.line:last-child{border:0}.line span{color:var(--muted)}
+.warn{color:var(--warn);font-weight:700}.good{color:var(--good)}h2{font-size:18px;margin:22px 0 6px}ul{padding-left:20px}footer{color:var(--muted);font-size:14px;margin-top:24px}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid var(--line);padding:6px;text-align:right}th{background:#f1eee7;text-align:center}td:first-child{text-align:center}
+.note{color:var(--muted);font-size:14px}
+</style></head>
+<body><main>
+<h1>숙소 수익 계산기</h1>
+<p class="lead">매물을 계약하기 전에, 이 집으로 에어비앤비·단기 숙소를 하면 <b>한 달에 얼마 남는지</b>, <b>방이 몇 % 차야 본전인지</b> 바로 계산해요. 숫자는 모두 직접 넣는 가정값이에요.</p>
+
+<div class="card"><h2>매달 나가는 돈</h2>
+<div class="row"><div><label>월세</label><input id="rent" type="number" inputmode="numeric" min="0" step="10000" value="900000"></div>
+<div><label>관리비</label><input id="mgmt" type="number" inputmode="numeric" min="0" step="10000" value="100000"></div></div>
+<div class="row"><div><label>공과금 <small>전기·가스·수도·인터넷</small></label><input id="util" type="number" inputmode="numeric" min="0" step="10000" value="150000"></div>
+<div><label>소모품·세탁 <small>월</small></label><input id="sup" type="number" inputmode="numeric" min="0" step="10000" value="100000"></div></div>
+</div>
+
+<div class="card"><h2>예약마다</h2>
+<div class="row"><div><label>1박 요금</label><input id="rate" type="number" inputmode="numeric" min="0" step="5000" value="90000"></div>
+<div><label>예상 점유율 <small>%</small></label><input id="occ" type="number" min="0" max="100" step="1" value="60"></div></div>
+<div class="row"><div><label>청소비 <small>1회, 맡기면</small></label><input id="clean" type="number" inputmode="numeric" min="0" step="5000" value="35000"></div>
+<div><label>평균 숙박 <small>예약 1건당 박</small></label><input id="stay" type="number" min="1" step="0.5" value="2.5"></div></div>
+<label>플랫폼 수수료 <small>% · 숙소 매출에서 빠지는 비율. 계정 설정에서 확인하세요</small></label><input id="fee" type="number" min="0" max="40" step="0.5" value="3">
+<p class="note">손님이 따로 내는 청소비를 받는다면 1박 요금에 나눠 넣어 주세요.</p>
+</div>
+
+<div class="card"><h2>처음 한 번 드는 돈</h2>
+<div class="row"><div><label>가구·인테리어·비품</label><input id="setup" type="number" inputmode="numeric" min="0" step="100000" value="5000000"></div>
+<div><label>몇 달에 나눠 갚을지</label><input id="months" type="number" min="1" step="1" value="12"></div></div>
+<p class="note">보증금은 돌려받는 돈이라 넣지 않았어요.</p>
+</div>
+
+<div class="card" id="res"></div>
+<div class="card"><h2 style="margin-top:0">점유율별 월 순이익</h2><div id="tbl"></div></div>
+
+<h2>이렇게 계산해요</h2>
+<ul>
+<li><b>숙박일:</b> 30일 × 점유율</li>
+<li><b>매출:</b> 숙박일 × 1박 요금. 여기서 플랫폼 수수료를 빼요.</li>
+<li><b>청소 횟수:</b> 숙박일 ÷ 평균 숙박. 청소비 × 청소 횟수.</li>
+<li><b>순이익:</b> 매출 − 수수료 − 청소비 − (월세 + 관리비 + 공과금 + 소모품) − 처음 비용 ÷ 갚는 달 수</li>
+<li><b>손익분기 점유율:</b> 순이익이 0이 되는 점유율</li>
+</ul>
+<h2>꼭 알아 두세요</h2>
+<ul>
+<li>추정값이에요. 실제 점유율과 요금은 계절, 위치, 후기에 따라 크게 달라요. 비슷한 동네 숙소의 요금과 예약 상황을 직접 확인해 넣으세요.</li>
+<li>세금(종합소득세·부가가치세)과 사업자 등록, 보험료는 넣지 않았어요.</li>
+<li><b>허가·계약:</b> 한국에서 숙박 영업을 하려면 보통 숙박업 등록이 필요해요. 외국인관광 도시민박업은 호스트가 그 집에 실제로 살아야 하는 등 조건이 있어요. 월세 집이라면 집주인 동의도 필요해요. 매물을 정하기 전에 관할 구청과 계약서에서 꼭 확인하세요.</li>
+<li>플랫폼 수수료 방식(호스트·손님이 나눠 내는지, 호스트만 내는지)은 계정마다 다를 수 있어요. 호스트만 내는 방식이면 수수료가 훨씬 높아요.</li>
+</ul>
+<footer>무료, 가입 없음, 입력한 숫자는 어디에도 보내지 않아요(방문 수만 셉니다). · <a href="../host/">숙소 외국인 손님 안내 QR</a> · <a href="../calc/">N잡 순수익</a> · <a href="../">모든 도구</a> · 확인일 2026-11-09</footer>
+</main>
+<script>
+const $=s=>document.querySelector(s);const n=id=>Math.max(0,+$('#'+id).value||0);const won=v=>Math.round(v).toLocaleString('ko-KR')+'원';
+function profitAt(o){const nights=30*o/100,rev=nights*n('rate'),fee=rev*Math.min(40,n('fee'))/100,cleans=nights/Math.max(1,n('stay')),clean=cleans*n('clean'),fixed=n('rent')+n('mgmt')+n('util')+n('sup'),setup=n('setup')/Math.max(1,Math.round(n('months')||1));
+  return {nights,rev,fee,clean,fixed,setup,profit:rev-fee-clean-fixed-setup}}
+function calc(){const o=Math.min(100,n('occ')),r=profitAt(o);
+  const perNight=n('rate')*(1-Math.min(40,n('fee'))/100)-n('clean')/Math.max(1,n('stay'));
+  const be=perNight>0?(r.fixed+r.setup)/perNight/30*100:Infinity;
+  const beTxt=!isFinite(be)?'<span class="warn">1박에 남는 돈이 없어서 본전이 안 나요</span>':be>100?`<span class="warn">${be.toFixed(0)}% (100%를 넘어 본전이 어려워요)</span>`:`${be.toFixed(0)}%`;
+  $('#res').innerHTML=`<span>예상 월 순이익 (점유율 ${o}%)</span><p class="big ${r.profit>=0?'good':'warn'}">${r.profit<0?'−':''}${won(Math.abs(r.profit))}</p>
+  <div class="line"><span>손익분기 점유율</span><b>${beTxt}</b></div>
+  <div class="line"><span>매출 (${r.nights.toFixed(1)}박)</span><b>${won(r.rev)}</b></div>
+  <div class="line"><span>플랫폼 수수료</span><b>−${won(r.fee)}</b></div>
+  <div class="line"><span>청소비</span><b>−${won(r.clean)}</b></div>
+  <div class="line"><span>월세·관리비·공과금·소모품</span><b>−${won(r.fixed)}</b></div>
+  <div class="line"><span>처음 비용 나눠 갚기</span><b>−${won(r.setup)}</b></div>
+  <p class="note">입력한 가정값으로 계산한 추정이에요. 세금은 빠져 있어요.</p>`;
+  $('#tbl').innerHTML='<table><tr><th>점유율</th><th>숙박일</th><th>월 순이익</th></tr>'+[30,40,50,60,70,80,90].map(x=>{const p=profitAt(x).profit;return `<tr><td>${x}%</td><td>${(30*x/100).toFixed(0)}박</td><td class="${p>=0?'good':'warn'}">${p<0?'−':''}${won(Math.abs(p))}</td></tr>`}).join('')+'</table>'}
+document.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));calc();
+let sent=0;document.addEventListener('input',()=>{if(sent)return;sent=1;try{goatcounter.count({path:'stay-profit-used',event:true})}catch(e){}});
+</script></body></html>
