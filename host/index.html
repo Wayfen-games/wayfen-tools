@@ -45,24 +45,28 @@ footer{color:var(--muted);font-size:14px;margin-top:24px}
 <fieldset><legend>체크인·체크아웃</legend>
 <div class="two"><div><label>체크인</label><input id="ci" type="text" placeholder="15:00"></div><div><label>체크아웃</label><input id="co" type="text" placeholder="11:00"></div></div>
 <label>조식 <small>없으면 비워 두세요</small></label><input id="bf" type="text" placeholder="08:00–10:00">
+<p class="hint">이 칸들은 번역되지 않아요. 숫자로만 적어 주세요(예: 15:00, 08:00–10:00).</p>
 </fieldset>
 
-<fieldset><legend>이용 수칙 (골라 주세요)</legend><div id="rules"></div></fieldset>
+<fieldset><legend>이용 수칙 (골라 주세요)</legend><div id="rules"></div><p class="hint">미리 번역해 둔 문장이 그대로 나가요. 우리 숙소와 다르면 체크하지 마세요.</p></fieldset>
 <fieldset><legend>나가실 때 부탁 (골라 주세요)</legend><div id="outs"></div></fieldset>
 
 <fieldset><legend>택시 주소 카드</legend>
 <label>한국어 주소 <small>택시 기사님이 읽을 주소</small></label><input id="a" type="text" placeholder="서울특별시 종로구 북촌로 00">
+<label>건물 이름·눈에 띄는 곳 <small>선택</small></label><input id="bd" type="text" placeholder="예: 북촌한옥마을 입구, 파란 대문 집">
 <label>가까운 역 <small>선택</small></label><input id="st" type="text" placeholder="안국역 2번 출구">
 </fieldset>
 
 <fieldset><legend>연락처</legend>
 <div class="two"><div><label>메신저</label><select id="ct"><option value="">없음</option><option>KakaoTalk</option><option>WhatsApp</option><option>LINE</option><option>WeChat</option><option>Instagram</option><option>Airbnb</option></select></div><div><label>아이디</label><input id="cid" type="text"></div></div>
-<label>전화 <small>선택</small></label><input id="ph" type="tel" placeholder="010-0000-0000">
+<label>전화 <small>선택 · 택시 카드에도 나와요(기사님이 길을 물을 때)</small></label><input id="ph" type="tel" placeholder="010-0000-0000">
 </fieldset>
 
 <fieldset><legend>호스트 메시지 <small>선택 · 한국어 그대로 나가요</small></legend>
-<textarea id="x" placeholder="예: 현관 비밀번호는 체크인 당일 메시지로 보내 드려요."></textarea>
-<p class="hint">이 칸은 번역되지 않고 한국어로 보여요. 꼭 필요한 말만 짧게 적어 주세요.</p>
+<textarea id="x" maxlength="200" placeholder="예: 현관 비밀번호는 체크인 당일 메시지로 보내 드려요."></textarea>
+<p class="hint">이 칸은 번역되지 않고 한국어로 보여요. 200자까지, 꼭 필요한 말만 짧게 적어 주세요.</p>
+</fieldset>
+<fieldset><legend>인쇄 안내판</legend><label class="chk"><input type="checkbox" id="pwprint" checked> 안내판에 와이파이 비밀번호도 인쇄 <small>(공용 공간에 붙이면 누구나 보게 돼요)</small></label>
 </fieldset>
 
 <button class="btn" id="make" type="button">손님용 안내 QR 만들기</button>
@@ -72,6 +76,7 @@ footer{color:var(--muted);font-size:14px;margin-top:24px}
 <div id="qr"></div>
 <p style="margin:8px 0"><button class="btn s" id="print" type="button">A4 안내판 인쇄</button><button class="btn s g" id="open" type="button">손님 화면 미리 보기</button><button class="btn s g" id="copy" type="button">손님 주소 복사</button></p>
 <p style="margin:8px 0"><button class="btn s g" id="edit" type="button">나중에 고치기용 주소 복사</button></p>
+<p class="hint">고치기용 주소를 열면 지금 넣은 내용이 그대로 채워져요. 메모장이나 나에게 보내는 메시지에 보관해 두세요(손님에게는 보내지 마세요).</p>
 <div class="warn">· 안내 주소 안에 와이파이 비밀번호가 들어 있어요. '고치기용 주소'는 호스트만 보관하세요.<br>· 내용을 바꾸면 QR도 새로 뽑아야 해요.<br>· 손님 화면은 호스트가 적은 내용 그대로예요. 수칙 문장은 미리 번역해 둔 문장만 써요.</div>
 </div>
 
@@ -80,14 +85,14 @@ footer{color:var(--muted);font-size:14px;margin-top:24px}
 <div id="sheet"><h2>Guest Guide · 入住指南 · ゲストガイド</h2><p class="n" id="sN"></p><div class="qr" id="sQ"></div>
 <p class="l">Scan with your phone camera · 用手机相机扫描 · 用手機相機掃描 · スマホのカメラで読み取ってください</p>
 <p class="l">Wi-Fi · Check-in/out · House rules · Taxi address card · Emergency</p><p class="w" id="sW"></p><small>휴대폰 카메라로 찍으세요</small></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" integrity="sha384-mZT2gIty7ZDdOGkxfP6joZcYdMW1Jvj9dRlfpTmaJAKKXTqzygtB22k7FLe+KZC1" crossorigin="anonymous"></script>
 <script>
 const RULES=[['smoke','실내 금연'],['quiet','밤 10시~아침 8시 조용히'],['shoes','실내에서 신발 벗기'],['trash','쓰레기 분리배출(일반·재활용·음식물)'],['guests','예약하지 않은 사람 출입 금지'],['party','파티·큰 소음 금지'],['pets','반려동물 금지'],['cook','객실 안 요리 금지'],['door','현관 비밀번호 다른 사람에게 알리지 않기']];
 const OUTS=[['key','열쇠(카드)는 방 안 탁자 위에'],['trash','쓰레기는 한곳에 모아 주기'],['power','에어컨·난방·불 끄기'],['dishes','쓴 그릇 설거지'],['msg','나갈 때 메시지 보내기']];
 const BASE='https://wayfen-games.github.io/wayfen-tools/';const $=s=>document.querySelector(s);
 const box=(id,list)=>{$(id).innerHTML=list.map(([k,v])=>`<label class="chk"><input type="checkbox" value="${k}"> ${v}</label>`).join('')};
 box('#rules',RULES);box('#outs',OUTS);
-const F=['n','ne','w','p','ci','co','bf','a','st','ct','cid','ph','x'];
+const F=['n','ne','w','p','ci','co','bf','a','bd','st','ct','cid','ph','x'];
 function read(){const d={};F.forEach(k=>{const v=$('#'+k).value.trim();if(v)d[k]=v});
   const r=[...document.querySelectorAll('#rules input:checked')].map(i=>i.value);if(r.length)d.r=r;
   const o=[...document.querySelectorAll('#outs input:checked')].map(i=>i.value);if(o.length)d.o=o;return d}
@@ -102,11 +107,11 @@ let guest='',editUrl='';
 function save(d){try{const c={...d};delete c.p;localStorage.setItem('host.form',JSON.stringify(c))}catch(e){}}
 $('#make').onclick=async()=>{const d=read();
   if(!d.n&&!d.ne){alert('숙소 이름을 넣어 주세요.');$('#n').focus();return}
-  const h=await enc(d);guest=BASE+'g/#'+h;editUrl=BASE+'host/#edit='+h;save(d);
+  const j='j'+encodeURIComponent(JSON.stringify(d));const h=(BASE.length+3+j.length<=700)?j:await enc(d);guest=BASE+'g/#'+h;editUrl=BASE+'host/#edit='+h;save(d);
   if(typeof qrcode!=='function'){$('#qr').textContent='인터넷에 연결된 상태에서 다시 눌러 주세요.';$('#out').hidden=false;return}
-  const q=qrcode(0,'M');q.addData(guest);q.make();const svg=q.createSvgTag({cellSize:6,margin:2,scalable:true});
+  let q;try{q=qrcode(0,'M');q.addData(guest);q.make()}catch(err){$('#qr').textContent='내용이 너무 길어 QR 하나에 안 들어가요. 호스트 메시지를 줄여 주세요.';$('#out').hidden=false;return}const svg=q.createSvgTag({cellSize:6,margin:2,scalable:true});
   $('#qr').innerHTML=svg;$('#sQ').innerHTML=svg;$('#sN').textContent=[d.ne,d.n].filter(Boolean).join(' · ');
-  $('#sW').textContent=d.w?`Wi-Fi: ${d.w}${d.p?'   /   PW: '+d.p:''}`:'';
+  $('#sW').textContent=d.w?`Wi-Fi: ${d.w}${d.p&&$('#pwprint').checked?'   /   PW: '+d.p:''}`:'';
   $('#out').hidden=false;$('#out').scrollIntoView({behavior:'smooth',block:'start'});
   try{goatcounter.count({path:'host-made',event:true})}catch(e){}};
 $('#print').onclick=()=>window.print();
@@ -115,5 +120,5 @@ const cp=async(u,b,lbl)=>{try{await navigator.clipboard.writeText(u);b.textConte
 $('#copy').onclick=e=>cp(guest,e.target,'손님 주소');$('#edit').onclick=e=>cp(editUrl,e.target,'고치기용 주소');
 (async()=>{const m=location.hash.match(/^#edit=(.+)$/);
   if(m){try{fill(await dec(m[1]));return}catch(e){}}
-  try{const s=localStorage.getItem('host.form');if(s)fill(JSON.parse(s))}catch(e){}})();
+  try{const s=localStorage.getItem('host.form');if(s){const d=JSON.parse(s);fill(d);if(d.w&&!$('#p').value){$('#p').style.borderColor='#c0392b';$('#p').placeholder='비밀번호를 다시 넣어 주세요';}}}catch(e){}})();
 </script></body></html>
