@@ -49,7 +49,7 @@ footer{color:var(--muted);font-size:14px;margin-top:24px}
 </fieldset>
 
 <fieldset><legend>이용 수칙 (골라 주세요)</legend><div id="rules"></div><p class="hint">미리 번역해 둔 문장이 그대로 나가요. 우리 숙소와 다르면 체크하지 마세요.</p></fieldset>
-<fieldset><legend>나가실 때 부탁 (골라 주세요)</legend><div id="outs"></div></fieldset>
+<fieldset><legend>나가실 때 부탁 (골라 주세요)</legend><div id="outs"></div><p class="hint">에어비앤비는 2026년 11월 20일 예약분부터 손님에게 설거지나 쓰레기를 밖에 내놓는 일을 요구할 수 없어요. 에어비앤비로 받는 숙소라면 '쓰레기 모아 주기'도 꼭 필요한 경우가 아니면 빼 주세요.</p></fieldset>
 
 <fieldset><legend>택시 주소 카드</legend>
 <label>한국어 주소 <small>택시 기사님이 읽을 주소</small></label><input id="a" type="text" placeholder="서울특별시 종로구 북촌로 00">
@@ -88,7 +88,7 @@ footer{color:var(--muted);font-size:14px;margin-top:24px}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" integrity="sha384-mZT2gIty7ZDdOGkxfP6joZcYdMW1Jvj9dRlfpTmaJAKKXTqzygtB22k7FLe+KZC1" crossorigin="anonymous"></script>
 <script>
 const RULES=[['smoke','실내 금연'],['quiet','밤 10시~아침 8시 조용히'],['shoes','실내에서 신발 벗기'],['trash','쓰레기 분리배출(일반·재활용·음식물)'],['guests','예약하지 않은 사람 출입 금지'],['party','파티·큰 소음 금지'],['pets','반려동물 금지'],['cook','객실 안 요리 금지'],['door','현관 비밀번호 다른 사람에게 알리지 않기']];
-const OUTS=[['key','열쇠(카드)는 방 안 탁자 위에'],['trash','쓰레기는 한곳에 모아 주기'],['power','에어컨·난방·불 끄기'],['dishes','쓴 그릇 설거지'],['msg','나갈 때 메시지 보내기']];
+const OUTS=[['key','열쇠(카드)는 방 안 탁자 위에'],['trash','쓰레기는 한곳에 모아 주기'],['power','에어컨·난방·불 끄기'],['msg','나갈 때 메시지 보내기']];
 const BASE='https://wayfen-games.github.io/wayfen-tools/';const $=s=>document.querySelector(s);
 const box=(id,list)=>{$(id).innerHTML=list.map(([k,v])=>`<label class="chk"><input type="checkbox" value="${k}"> ${v}</label>`).join('')};
 box('#rules',RULES);box('#outs',OUTS);
