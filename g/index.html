@@ -103,7 +103,7 @@ function render(){
   const outs=(D.o||[]).filter(k=>OUT[k]).map(k=>`<li>${esc(OUT[k][L])}</li>`).join('');
   const fx=(D.f&&typeof D.f==='object'&&typeof FIX==='object')?FIX_ORDER.filter(k=>Array.isArray(D.f[k])&&D.f[k].some(o=>FIX[k].o[o])):[];
   const fu=k=>FIX_UI[k][L]||FIX_UI[k].en;
-  const fline=(k,o)=>{let s=FIX[k].o[o][L]||FIX[k].o[o].en;const lv=D.f[FIX_LOCKEY[k]];const lt=lv&&FIX_LOC[lv]?(FIX_LOC[lv][L]||FIX_LOC[lv].en):'';return lt?s.replace('{L}',lt):s.replace(/\s?[（(]\{L\}[)）]\s?/,' ').replace(/\s+([,，、。.])/,'$1').trim()};
+  const fline=(k,o)=>{let s=FIX[k].o[o][L]||FIX[k].o[o].en;const lv=D.f[FIX_LOCKEY[k]];const lt=lv&&FIX_LOC[lv]?(FIX_LOC[lv][L]||FIX_LOC[lv].en):'';return lt?s.replace('{L}',lt):s.replace(/[（(]\{L\}[)）]/,'').replace(/\s+([,，、。.])/,'$1').replace(/\s{2,}/g,' ').trim()};
   const fixHtml=fx.length?`<section id="fix"><h2>${fu('title')}</h2><p class="note" style="margin:0 0 4px">${fu('sub')}</p>${fx.map(k=>`<details data-k="${k}"><summary>${esc(FIX[k].t[L]||FIX[k].t.en)}</summary><ol>${D.f[k].filter(o=>FIX[k].o[o]).map(o=>`<li>${esc(fline(k,o))}</li>`).join('')}</ol><div class="fb"><button class="btn ghost" type="button" data-ok="${k}">👍 ${fu('ok')}</button><button class="btn ghost" type="button" data-no="${k}">${fu('no')}</button></div><div class="fm" hidden></div></details>`).join('')}</section>`:'';
   const contact=[D.ct?`<div class="row"><span>${esc(D.ct)}</span><b>${esc(D.cid||'')}</b></div>`:'',D.ph?`<div class="row"><span>☎</span><b><a href="tel:${esc(D.ph.replace(/[^0-9+]/g,''))}">${esc(D.ph)}</a></b></div>`:''].join('');
   $('#app').innerHTML=`
