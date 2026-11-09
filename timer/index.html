@@ -219,6 +219,6 @@ try{ if ('mediaSession' in navigator){ const ms = navigator.mediaSession; const 
   meta(); aud.addEventListener('play', meta); ms.setActionHandler('play', () => { running ? aud.play().catch(()=>{}) : start() }); ms.setActionHandler('pause', () => pause()); ms.setActionHandler('nexttrack', () => { setTrack(ti + 1); aud.play().catch(()=>{}) }) } }catch(e){}
 </script>
 
-<p style="text-align:center;font:13px system-ui;margin:24px 0 8px;opacity:.75">Free tool · <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a></p>
+<p id="ft" style="text-align:center;font:13px system-ui;margin:24px 0 8px;opacity:.75">Free tool · <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a></p><script>if(/[?&]from=qr/.test(location.search))document.getElementById("ft").remove()</script>
 </body>
 </html>

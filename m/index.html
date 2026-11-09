@@ -91,7 +91,7 @@ function render(){
       return `<div class="item"><div class="num">${i+1}</div><div class="nm">${top}</div><div class="pr">${Number.isFinite(price) && price > 0 ? '₩' + price.toLocaleString('ko-KR') : ''}</div>
         <div><span class="ko">${sub}</span> <span class="tags">${tags}</span></div>
         <div class="qty"><button data-q="${i}" data-d="-1" aria-label="−">−</button><b>${qty[i]||0}</b><button data-q="${i}" data-d="1" aria-label="+">＋</button></div></div>` }).join('')
-    + `<p class="note">${t.note}</p><p class="note" lang="ko"><a href="../shop/#edit=${encodeURIComponent(location.hash.slice(1))}" style="color:inherit">사장님: 이 메뉴 고치기</a></p>`;
+    + `<p class="note">${t.note}</p><p class="note" lang="ko"><a href="../shop/?from=qr#edit=${encodeURIComponent(location.hash.slice(1))}" style="color:inherit">사장님: 이 메뉴 고치기</a></p>`;
   m.querySelectorAll('.langs button').forEach(b => b.addEventListener('click', () => { lang = b.dataset.l; render() }));
   m.querySelectorAll('[data-q]').forEach(b => b.addEventListener('click', () => { const i = +b.dataset.q; qty[i] = Math.max(0, (qty[i]||0) + +b.dataset.d); render() }));
   const n = Object.values(qty).reduce((a,b) => a+b, 0); let bar = document.getElementById('bar');
