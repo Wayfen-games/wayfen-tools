@@ -16,7 +16,7 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <body><main>
 <nav><a href="../../">All tools</a></nav>
 <h1>Gluten-Free in Korea: What to Avoid and What to Say</h1>
-<p class="toprow"><a class="cta2" href="../../food/#mine=gluten">Open the free tool →</a> <button class="sharebtn" type="button" onclick="(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(u);this.textContent='✓'}catch(e){}})()">Share</button></p>
+<p class="toprow"><a class="cta2" href="../../food/#mine=gluten">Open the free tool →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">Share</button></p>
 <p class="lead">Rice is everywhere in Korea, but wheat hides in the sauces. Most soy sauce contains wheat, and gochujang and factory-made doenjang often contain wheat or barley. Celiac disease is not widely known, so explain clearly.</p>
 <h2>The phrase to show</h2>
 <div class="card"><span class="ko" lang="ko">저는 셀리악병이 있어서 밀, 보리, 호밀을 먹으면 크게 아파요.</span><small>I have celiac disease. Wheat, barley and rye make me very sick.</small></div>
@@ -33,5 +33,6 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <h2>At convenience stores</h2>
 <p>Wheat must be listed in the allergen box (<span lang="ko">밀</span>). Barley is not in the required list, so also check the ingredient list for <span lang="ko">보리</span> (barley), <span lang="ko">맥아</span> and <span lang="ko">엿기름</span> (malt).</p>
 <a class="cta" href="../../food/#mine=gluten">Open the free tool: Korea Food Cards</a>
+<p style="font-size:14px">Found a mistake or have an idea? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a> · <a href="../../">All tools</a></p>
 <footer>Updated 2026-11-08</footer>
 </main></body></html>

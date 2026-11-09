@@ -16,7 +16,7 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <body><main>
 <nav><a href="../../">모든 도구</a></nav>
 <h1>외국인 손님이 아플 때: 약국·택시에서 보여 주는 한국어 카드 (무료)</h1>
-<p class="toprow"><a class="cta2" href="../../pharmacy/">무료 도구 열기 →</a> <button class="sharebtn" type="button" onclick="(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(u);this.textContent='✓'}catch(e){}})()">공유하기</button></p>
+<p class="toprow"><a class="cta2" href="../../pharmacy/">무료 도구 열기 →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">공유하기</button></p>
 <p class="lead">외국인 손님이 아프면 약국에서 증상을 설명하기가 가장 어려워요. 택시 기사님께 숙소 주소를 말하는 것도 마찬가지예요.</p>
 <h2>이 도구가 하는 일</h2>
 <ul><li>두통, 열, 기침, 목 아픔, 소화불량, 설사, 멀미, 생리통, 벌레 물림 등 22가지 증상을 고르면 약사님께 보여 줄 한국어 카드가 만들어져요.</li>
@@ -28,5 +28,6 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <h2>알아 두세요</h2>
 <p>의료 조언이 아니에요. 증상이 심하거나 나빠지면 병원에 가거나 119에 전화하도록 안내해 주세요.</p>
 <a class="cta" href="../../pharmacy/">무료 도구 열기: Korea Pharmacy, Taxi &amp; Shopping Cards</a>
+<p style="font-size:14px">틀린 곳이나 바라는 점이 있나요? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a> · <a href="../../">모든 도구</a></p>
 <footer>업데이트 2026-11-08</footer>
 </main></body></html>

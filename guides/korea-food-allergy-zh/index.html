@@ -22,7 +22,7 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <body><main>
 <nav><a href="../../">全部工具</a> · <a href="../food-allergy-korean/" hreflang="en" lang="en">English</a> · <a href="../korea-food-allergy-ja/" hreflang="ja" lang="ja">日本語</a> · <a href="../korea-food-allergy-tw/" hreflang="zh-Hant" lang="zh-Hant">繁體中文</a> · <a href="../korea-food-cards-vi/" hreflang="vi" lang="vi">Tiếng Việt</a></nav>
 <h1>韩国旅行过敏、素食韩语卡片（免费）</h1>
-<p class="toprow"><a class="cta2" href="../../food/?lang=zh">打开免费工具 →</a> <button class="sharebtn" type="button" onclick="(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(u);this.textContent='✓'}catch(e){}})()">分享</button></p>
+<p class="toprow"><a class="cta2" href="../../food/?lang=zh">打开免费工具 →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">分享</button></p>
 <p class="lead">韩国菜里常有看不见的食材，比如泡菜里的鱼露、汤里的鳀鱼高汤。只用翻译软件很难说清楚，所以我们做了可以直接给店员看的韩语卡片。</p>
 <h2>可以直接出示的句子</h2>
 <div class="card"><span class="ko" lang="ko">저는 땅콩과 견과류에 심한 알레르기가 있어요.</span><small>我对花生和坚果严重过敏。</small></div>
@@ -35,5 +35,6 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <li>无需注册，打开一次后离线也能用，界面可切换为中文（简体、繁体）</li></ul>
 <p>这些卡片帮助您沟通，但不能保证菜品安全。请务必随身携带您的药物。紧急情况请拨打119（救护车）。</p>
 <a class="cta" href="../../food/?lang=zh">打开免费工具：Korea Food Cards</a>
+<p style="font-size:14px">发现错误或有建议? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a> · <a href="../../">全部工具</a></p>
 <footer>更新 2026-11-08</footer>
 </main></body></html>

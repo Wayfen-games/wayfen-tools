@@ -16,7 +16,7 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <body><main>
 <nav><a href="../../">모든 도구</a></nav>
 <h1>무슬림 손님 응대: 식당에서 미리 알려 주면 좋은 것 (무료 QR 메뉴·안내판)</h1>
-<p class="toprow"><a class="cta2" href="../../shop/">무료 도구 열기 →</a> <button class="sharebtn" type="button" onclick="(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(u);this.textContent='✓'}catch(e){}})()">공유하기</button></p>
+<p class="toprow"><a class="cta2" href="../../shop/">무료 도구 열기 →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">공유하기</button></p>
 <p class="lead">무슬림 손님은 대개 돼지고기와 술이 들어간 음식을 먹지 않아요(지키는 정도는 사람마다 달라요). 메뉴만 보고는 알기 어려워서 주문을 망설이거나 그냥 나갈 수도 있어요. 미리 표시해 두면 손님이 고르기 쉬워져요.</p>
 <h2>손님이 가장 궁금해하는 것</h2>
 <ul><li><b>돼지고기가 들어가나요?</b> 고기뿐 아니라 햄·소시지·순대, 돼지 육수, 돼지기름(라드)도 포함이에요.</li>
@@ -32,5 +32,6 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <ul><li>손님이 자기 휴대폰으로 보여 주는 할랄 카드(인도네시아어 화면 포함): <a href="../makanan-halal-korea/">인도네시아어 안내</a></li>
 <li>프런트·테이블에 붙이는 할랄 QR 안내판: <a href="../../share/">QR 안내판 보기</a></li></ul>
 <a class="cta" href="../../shop/">무료 도구 열기: 우리 가게 외국어 안내</a>
+<p style="font-size:14px">틀린 곳이나 바라는 점이 있나요? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a> · <a href="../../">모든 도구</a></p>
 <footer>업데이트 2026-11-08</footer>
 </main></body></html>

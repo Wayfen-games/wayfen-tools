@@ -22,7 +22,7 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <body><main>
 <nav><a href="../../">ツール一覧</a> · <a href="../food-allergy-korean/" hreflang="en" lang="en">English</a> · <a href="../korea-food-allergy-zh/" hreflang="zh-Hans" lang="zh-Hans">简体中文</a> · <a href="../korea-food-allergy-tw/" hreflang="zh-Hant" lang="zh-Hant">繁體中文</a> · <a href="../korea-food-cards-vi/" hreflang="vi" lang="vi">Tiếng Việt</a></nav>
 <h1>韓国旅行で使える食物アレルギー・ベジタリアン韓国語カード（無料）</h1>
-<p class="toprow"><a class="cta2" href="../../food/?lang=ja">無料ツールを開く →</a> <button class="sharebtn" type="button" onclick="(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(u);this.textContent='✓'}catch(e){}})()">共有</button></p>
+<p class="toprow"><a class="cta2" href="../../food/?lang=ja">無料ツールを開く →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">共有</button></p>
 <p class="lead">韓国料理には、キムチの魚醤やスープの煮干しだしのように、見た目ではわからない食材がよく使われます。翻訳アプリだけでは伝わりにくいので、店員さんにそのまま見せられる韓国語カードを作りました。</p>
 <h2>そのまま見せられるフレーズ</h2>
 <div class="card"><span class="ko" lang="ko">저는 땅콩과 견과류에 심한 알레르기가 있어요.</span><small>ピーナッツとナッツ類に重いアレルギーがあります。</small></div>
@@ -35,5 +35,6 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <li>登録不要。一度開けばオフラインでも使えます。画面は日本語で表示できます</li></ul>
 <p>このカードは伝えるための道具で、料理の安全を保証するものではありません。常備薬は必ず持ち歩いてください。緊急時は119（救急車）です。</p>
 <a class="cta" href="../../food/?lang=ja">無料ツールを開く：Korea Food Cards</a>
+<p style="font-size:14px">間違いやご要望はありますか? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a> · <a href="../../">ツール一覧</a></p>
 <footer>更新日 2026-11-08</footer>
 </main></body></html>

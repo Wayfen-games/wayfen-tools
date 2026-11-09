@@ -16,7 +16,7 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <body><main>
 <nav><a href="../../">모든 도구</a></nav>
 <h1>외국인 손님이 &quot;이거 들어가요?&quot; 물을 때: 한식 44가지 재료 표</h1>
-<p class="toprow"><a class="cta2" href="../../shop/">무료 도구 열기 →</a> <button class="sharebtn" type="button" onclick="(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(u);this.textContent='✓'}catch(e){}})()">공유하기</button></p>
+<p class="toprow"><a class="cta2" href="../../shop/">무료 도구 열기 →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">공유하기</button></p>
 <p class="lead">외국인 손님은 메뉴를 보고 "돼지고기 들어가요?", "땅콩 있어요?", "밀가루 들어가요?"를 자주 물어요. 우리에겐 당연한 멸치 육수, 김치 속 젓갈, 간장 속 밀, 참기름이 손님에겐 알레르기나 종교 때문에 꼭 알아야 하는 재료일 수 있어요.</p>
 <h2>손님이 자주 묻는 재료</h2>
 <ul><li><b>알레르기:</b> 땅콩·견과, 갑각류(새우·게)·조개, 참깨·참기름, 달걀, 우유, 밀(셀리악병은 보리도), 메밀(냉면·막국수). 아주 적은 양이나 같은 기름에 튀긴 것도 위험할 수 있어요.</li>
@@ -32,5 +32,6 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <li>'메뉴 번역' 탭에서 가격 뒤에 돼지·소고기·해물·매움을 붙이면 외국어 메뉴판과 QR 메뉴에 표시가 나와요. 다른 알레르기 재료는 표시되지 않으니 손님이 물으면 직접 확인해 주세요.</li>
 <li>심한 알레르기 손님이 "괜찮아요?"라고 물으면, 같은 기름·도구를 쓰는지도 함께 알려 주세요.</li></ul>
 <a class="cta" href="../../shop/">무료 도구 열기: 우리 가게 외국어 안내</a>
+<p style="font-size:14px">틀린 곳이나 바라는 점이 있나요? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a> · <a href="../../">모든 도구</a></p>
 <footer>업데이트 2026-11-08</footer>
 </main></body></html>

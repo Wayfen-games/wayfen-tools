@@ -21,7 +21,7 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <body><main>
 <nav><a href="../../">全部工具</a> · <a href="../non-spicy-korean-food/" hreflang="en" lang="en">English</a> · <a href="../non-spicy-korean-food-ja/" hreflang="ja" lang="ja">日本語</a> · <a href="../non-spicy-korean-food-zh/" hreflang="zh-Hans" lang="zh-Hans">简体中文</a></nav>
 <h1>不辣的韓國菜：怎麼點菜，怎麼說「不要辣」</h1>
-<p class="toprow"><a class="cta2" href="../../food/?lang=tw#mine=nospicy">打開免費工具 →</a> <button class="sharebtn" type="button" onclick="(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(u);this.textContent='✓'}catch(e){}})()">分享</button></p>
+<p class="toprow"><a class="cta2" href="../../food/?lang=tw#mine=nospicy">打開免費工具 →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">分享</button></p>
 <p class="lead">韓國菜不是每道都辣，但辣椒常常出現在意想不到的地方。這裡整理了通常不辣的菜、可能會辣的菜，以及怎麼請店家少放辣。</p>
 <h2>可以直接給店員看的句子</h2>
 <div class="card"><span class="ko" lang="ko">맵지 않게 만들어 주실 수 있을까요? 고춧가루, 고추장, 청양고추를 빼 주세요.</span><small>可以做成不辣的嗎？請不要放辣椒粉、辣椒醬和青陽辣椒。</small></div>
@@ -47,5 +47,6 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <ul><li><span lang="ko">안 맵게</span>（an maep-ge）不辣 · <span lang="ko">덜 맵게</span>（deol maep-ge）不要那麼辣</li>
 <li><span lang="ko">고춧가루</span> 辣椒粉 · <span lang="ko">고추장</span> 辣椒醬 · <span lang="ko">청양고추</span> 青陽辣椒（很辣的青辣椒）</li></ul>
 <a class="cta" href="../../food/?lang=tw#mine=nospicy">打開免費工具：Korea Food Cards</a>
+<p style="font-size:14px">發現錯誤或有建議? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a> · <a href="../../">全部工具</a></p>
 <footer>更新 2026-11-08</footer>
 </main></body></html>

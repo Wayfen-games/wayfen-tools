@@ -16,7 +16,7 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <body><main>
 <nav><a href="../../">All tools</a></nav>
 <h1>How to Read Allergen Labels at Korean Convenience Stores</h1>
-<p class="toprow"><a class="cta2" href="../../food/">Open the free tool →</a> <button class="sharebtn" type="button" onclick="(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(u);this.textContent='✓'}catch(e){}})()">Share</button></p>
+<p class="toprow"><a class="cta2" href="../../food/">Open the free tool →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">Share</button></p>
 <p class="lead">Korean packaged food lists major allergens in a box marked <span lang="ko">알레르기 유발물질</span> (allergens). Learn a few words and you can check snacks and meals at any convenience store.</p>
 <h2>Words in the allergen box</h2>
 <ul><li><span lang="ko">땅콩</span> peanut · <span lang="ko">호두</span> walnut · <span lang="ko">잣</span> pine nut</li>
@@ -32,5 +32,6 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <p>A sentence with <span lang="ko">같은 제조시설에서 제조</span> means the product was made in the same facility as the allergens it names. It means traces are possible: if your allergy is severe, treat it as unsafe. No warning does not guarantee the product is free of traces.</p>
 <p>Freshly made or unpackaged food may have no allergen box. Rules checked in November 2026 against the Ministry of Food and Drug Safety labeling standard (<a href="https://www.mfds.go.kr/brd/m_207/view.do?seq=14028">MFDS</a>). The free tool below shows these words for your own diet.</p>
 <a class="cta" href="../../food/">Open the free tool: Korea Food Cards</a>
+<p style="font-size:14px">Found a mistake or have an idea? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a> · <a href="../../">All tools</a></p>
 <footer>Updated 2026-11-08</footer>
 </main></body></html>

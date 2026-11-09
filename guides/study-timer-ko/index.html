@@ -21,7 +21,7 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <body><main>
 <nav><a href="../../">모든 도구</a> · <a href="../study-timer-lofi/" hreflang="en" lang="en">English</a> · <a href="../study-timer-lofi-ja/" hreflang="ja" lang="ja">日本語</a> · <a href="../study-timer-lofi-tw/" hreflang="zh-Hant" lang="zh-Hant">繁體中文</a></nav>
 <h1>뽀모도로 공부 타이머 (25분 집중·5분 휴식, 로파이 음악 무료)</h1>
-<p class="toprow"><a class="cta2" href="../../timer/">무료 도구 열기 →</a> <button class="sharebtn" type="button" onclick="(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(u);this.textContent='✓'}catch(e){}})()">공유하기</button></p>
+<p class="toprow"><a class="cta2" href="../../timer/">무료 도구 열기 →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">공유하기</button></p>
 <p class="lead">뽀모도로는 정해진 시간 동안 집중하고 짧게 쉬는 공부법이에요. 이 타이머는 집중하는 동안 잔잔한 로파이 음악을 틀어 주고, 쉴 때가 되면 작은 종소리로 알려 줘요.</p>
 <h2>쓰는 법</h2>
 <ul><li>25분 집중·5분 휴식, 50/10, 90/20 중에서 고르세요.</li>
@@ -31,5 +31,6 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <p>홈 화면에 추가하면 앱처럼 열려요. 한 번 열어 두면 타이머는 인터넷 없이도 되고(음악은 인터넷이 필요해요), 타이머가 도는 동안 화면이 꺼지지 않게 폰에 요청해요(기기에 따라 안 될 수 있어요). 폰 언어가 한국어면 화면도 한국어로 나와요.</p>
 <p>음악: Wayfen Sounds.</p>
 <a class="cta" href="../../timer/">무료 도구 열기: Wayfen 공부 타이머</a>
+<p style="font-size:14px">틀린 곳이나 바라는 점이 있나요? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a> · <a href="../../">모든 도구</a></p>
 <footer>업데이트 2026-11-08</footer>
 </main></body></html>

@@ -16,7 +16,7 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <body><main>
 <nav><a href="../../">ツール一覧</a></nav>
 <h1>韓国料理に隠れたアレルゲン：甲殻類・ナッツ・ごまの注意点</h1>
-<p class="toprow"><a class="cta2" href="../../food/?lang=ja">無料ツールを開く →</a> <button class="sharebtn" type="button" onclick="(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(u);this.textContent='✓'}catch(e){}})()">共有</button></p>
+<p class="toprow"><a class="cta2" href="../../food/?lang=ja">無料ツールを開く →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">共有</button></p>
 <p class="lead">韓国料理では、メニュー名からはわからないところに甲殻類・ナッツ・ごまが入っています。韓国の飲食店の料理には、ふつうアレルギー表示がありません。毎回、韓国語で確認するのが安全です。</p>
 <p><b>先に知っておきたいこと：</b>店や地域でレシピは違い、キムチやおかず（パンチャン）、つけだれはメニューに書かれずに出てきます。油・鉄板・調理器具の共用もよくあります。このページは医療上の助言ではありません。</p>
 <h2>甲殻類・貝類</h2>
@@ -46,5 +46,6 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <h2>44品の一覧表と緊急時</h2>
 <p>よく食べる44品でどの食材が入りやすいかは<a href="../korean-food-allergen-chart-ja/">韓国料理のアレルゲン早見表</a>にまとめています。一覧で「入っていない」とされる料理でも安全とは限りません。症状が出たら、処方されたエピペンなどの自己注射薬を指示どおりに使い、119（救急車）に電話してください。下の無料ツールには、店員に119への通報を頼むSOSカードもあります。処方薬は必ず持ち歩いてください。</p>
 <a class="cta" href="../../food/?lang=ja">無料ツールを開く：Korea Food Cards</a>
+<p style="font-size:14px">間違いやご要望はありますか? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a> · <a href="../../">ツール一覧</a></p>
 <footer>更新日 2026-11-08</footer>
 </main></body></html>

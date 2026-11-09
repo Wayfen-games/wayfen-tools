@@ -21,7 +21,7 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <body><main>
 <nav><a href="../../">全部工具</a> · <a href="../study-timer-lofi/" hreflang="en" lang="en">English</a> · <a href="../study-timer-lofi-ja/" hreflang="ja" lang="ja">日本語</a> · <a href="../study-timer-ko/" hreflang="ko" lang="ko">한국어</a></nav>
 <h1>免費讀書計時器＋Lo-fi音樂（番茄鐘 25/5、50/10、90/20）</h1>
-<p class="toprow"><a class="cta2" href="../../timer/?lang=tw">打開免費工具 →</a> <button class="sharebtn" type="button" onclick="(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(u);this.textContent='✓'}catch(e){}})()">分享</button></p>
+<p class="toprow"><a class="cta2" href="../../timer/?lang=tw">打開免費工具 →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">分享</button></p>
 <p class="lead">番茄工作法是把專注時間和短暫休息交替進行的時間管理方法，適合讀書和工作。這個計時器在專注時播放 Lo-fi 音樂，到了休息時間會用輕柔的鈴聲提醒。</p>
 <h2>使用方法</h2>
 <ul><li>選擇節奏：25分鐘專注＋5分鐘休息、50/10，或需要長時間投入時用 90/20。</li>
@@ -32,5 +32,6 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <p>加到主畫面後可以像App一樣打開。打開過一次之後，沒有網路也能使用計時器（音樂需要網路）；計時時會請手機保持螢幕亮著（部分裝置可能不支援）。右上角的按鈕可以切換語言。</p>
 <p>音樂：Wayfen Sounds</p>
 <a class="cta" href="../../timer/?lang=tw">打開免費工具：Wayfen Study Timer</a>
+<p style="font-size:14px">發現錯誤或有建議? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a> · <a href="../../">全部工具</a></p>
 <footer>更新 2026-11-08</footer>
 </main></body></html>

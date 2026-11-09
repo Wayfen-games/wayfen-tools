@@ -16,7 +16,7 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <body><main>
 <nav><a href="../../">모든 도구</a></nav>
 <h1>외국어 QR 메뉴판 무료로 만들기 (영어·중국어·일본어)</h1>
-<p class="toprow"><a class="cta2" href="../../shop/">무료 도구 열기 →</a> <button class="sharebtn" type="button" onclick="(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}try{await navigator.clipboard.writeText(u);this.textContent='✓'}catch(e){}})()">공유하기</button></p>
+<p class="toprow"><a class="cta2" href="../../shop/">무료 도구 열기 →</a> <button class="sharebtn" type="button" onclick="const COPIED={en:'Link copied',ko:'주소 복사됨',ja:'リンクをコピーしました','zh-Hans':'已复制链接','zh-Hant':'已複製連結',id:'Tautan disalin',ms:'Pautan disalin',vi:'Đã sao chép liên kết',th:'คัดลอกลิงก์แล้ว'};(async()=>{const u=location.href;try{if(navigator.share){await navigator.share({title:document.title,url:u});return}}catch(e){if(e&&e.name==='AbortError')return}const b=this;try{await navigator.clipboard.writeText(u);b.textContent='✓ '+(COPIED[document.documentElement.lang]||'Link copied')}catch(e){window.prompt('Copy:',u)}})()">공유하기</button></p>
 <p class="lead">외국인 손님이 메뉴판 앞에서 사진 번역기를 켜고 한참 서 있는 일, 자주 보시죠. 테이블에 QR 하나만 붙여 두면 손님 휴대폰에서 영어·중국어·일본어 메뉴가 바로 열려요.</p>
 <h2>만드는 법 (3분)</h2>
 <ol><li>도구의 '메뉴 번역' 탭에서 메뉴를 한 줄에 하나씩 써요. 가격은 뒤에 숫자로: <b>김치찌개 9000</b></li>
@@ -30,5 +30,6 @@ p,li{color:var(--ink)} .lead{color:var(--muted)} a{color:var(--accent)} .ko{font
 <li>흔한 한식·음료 173개는 바로 번역되고, 가게 고유 메뉴는 손님 화면에 한국어 이름과 '직원에게 문의'로 나와요.</li>
 <li>번역은 AI로 만들었고 원어민 검수 전이에요. 재료 표시는 실제 레시피대로 확인해 주세요.</li></ul>
 <a class="cta" href="../../shop/">무료 도구 열기: 우리 가게 외국어 안내</a>
+<p style="font-size:14px">틀린 곳이나 바라는 점이 있나요? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcOeAI3G8Y638szKaql2xxSWz_MboW9ihJPsUs42HXp8wkqQ/viewform" target="_blank" rel="noopener">Feedback</a> · <a href="../../">모든 도구</a></p>
 <footer>업데이트 2026-11-08</footer>
 </main></body></html>
