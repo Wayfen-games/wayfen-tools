@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>프리랜서 3.3% 환급 계산기 (종합소득세 어림 계산)</title>
+<meta name="description" content="3.3% 떼고 받은 수입과 경비율만 넣으면 5월 종합소득세를 어림해서 환급받을지, 더 낼지 보여 줘요. 2025년 귀속(2026년 5월 신고) 세율표, 기본공제, 표준세액공제 반영. 무료, 가입 없음.">
+<link rel="canonical" href="https://wayfen-games.github.io/wayfen-tools/refund/">
+<script data-goatcounter="https://wayfen.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"프리랜서 3.3% 환급 계산기","url":"https://wayfen-games.github.io/wayfen-tools/refund/","applicationCategory":"FinanceApplication","operatingSystem":"Any","inLanguage":"ko","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}}</script>
+<style>
+:root{--bg:#f5f4f0;--ink:#1d1b18;--muted:#6a655d;--ac:#1f5f4a;--line:#e1dcd2;--warn:#b3361f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Noto Sans KR",sans-serif}
+main{max-width:620px;margin:0 auto;padding:18px 16px 60px}h1{font-size:25px;line-height:1.3;margin:4px 0 6px}.lead{margin:0 0 12px;color:#3a3630}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0}
+label{display:block;font-weight:700;margin:10px 0 4px;font-size:15px}label small{font-weight:400;color:var(--muted)}
+input,select{width:100%;font:17px system-ui;padding:10px 12px;border:1px solid #cdc6b9;border-radius:10px;background:#fff}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.res .big{font-size:30px;font-weight:900;margin:2px 0}.res .line{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid #eee9df}.res .line:last-child{border:0}.res span{color:var(--muted)}
+.warn{color:var(--warn);font-weight:700}.good{color:var(--ac)}h2{font-size:18px;margin:22px 0 6px}ul{padding-left:20px}footer{color:var(--muted);font-size:14px;margin-top:24px}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid var(--line);padding:5px;text-align:center}th{background:#f1eee7}
+</style></head>
+<body><main>
+<h1>프리랜서 3.3% 환급 계산기</h1>
+<p class="lead">3.3%를 떼고 받은 1년 수입과 경비만 넣으면, 5월 종합소득세 신고 때 돌려받을지 더 낼지 어림해 줘요. <b>다른 소득 없이 3.3% 사업소득만 있고, 단순경비율로 신고하는 경우</b> 기준이에요.</p>
+<div class="card">
+<label>1년 동안 받은 수입 <small>3.3% 떼기 전 금액 합계</small></label>
+<input id="inc" type="number" inputmode="numeric" min="0" step="100000" value="20000000">
+<label>경비 계산 방법</label>
+<select id="mode"><option value="rate">단순경비율로 어림(장부 없음)</option><option value="real">실제 경비 금액 넣기(장부 작성)</option></select>
+<div id="rateBox"><div class="row"><div><label>단순경비율(기본율) <small>%</small></label><input id="rate" type="number" min="0" max="100" step="0.1" value="64.1"></div>
+<div><label>초과율 <small>수입 4천만 원 넘는 부분, %</small></label><input id="rate2" type="number" min="0" max="100" step="0.1" value="49.7"></div></div>
+<label>직전 연도 수입 <small>단순경비율 대상인지 확인용, 모르면 비워 두세요</small></label><input id="prev" type="number" min="0" step="100000" placeholder="예: 20000000"></div>
+<div id="realBox" hidden><label>실제 경비 <small>1년 합계</small></label><input id="exp" type="number" min="0" step="100000" value="0"></div>
+<label>기본공제 인원 <small>본인 포함. 배우자·부양가족은 연 소득금액 100만 원 이하 등 요건이 있어요</small></label>
+<input id="ppl" type="number" min="1" max="10" step="1" value="1">
+</div>
+<div class="card res" id="res"></div>
+
+<h2>이렇게 계산해요</h2>
+<ul>
+<li><b>낸 세금(기납부세액):</b> 수입 × 3%(소득세) + 그 10%(지방소득세) = 3.3%</li>
+<li><b>소득금액:</b> 수입 − 경비. 장부가 없으면 업종별 단순경비율로 경비를 어림해요(수입 4천만 원을 넘는 부분은 더 낮은 초과율). 기준경비율 대상이면 계산 방식이 달라 이 계산기로 어림할 수 없어요.</li>
+<li><b>과세표준:</b> 소득금액 − 기본공제(1명당 150만 원). 국민연금·건강보험료 공제 등은 넣지 않았어요.</li>
+<li><b>세금:</b> 아래 세율표로 계산한 뒤 표준세액공제 7만 원을 빼고, 지방소득세 10%를 더해요.</li>
+<li><b>환급:</b> 낸 세금이 계산한 세금보다 많으면 그 차이를 돌려받고, 적으면 더 내요. 지방소득세 환급분은 국세와 따로 지자체가 돌려줘요.</li>
+</ul>
+<table><tr><th>과세표준</th><th>세율</th><th>누진공제</th></tr>
+<tr><td>1,400만 원 이하</td><td>6%</td><td>-</td></tr>
+<tr><td>5,000만 원 이하</td><td>15%</td><td>126만 원</td></tr>
+<tr><td>8,800만 원 이하</td><td>24%</td><td>576만 원</td></tr>
+<tr><td>1.5억 원 이하</td><td>35%</td><td>1,544만 원</td></tr>
+<tr><td>3억 원 이하</td><td>38%</td><td>1,994만 원</td></tr>
+<tr><td>5억 원 이하</td><td>40%</td><td>2,594만 원</td></tr>
+<tr><td>10억 원 이하</td><td>42%</td><td>3,594만 원</td></tr>
+<tr><td>10억 원 초과</td><td>45%</td><td>6,594만 원</td></tr></table>
+<h2>꼭 알아 두세요</h2>
+<ul>
+<li>어림한 값이에요. 실제 세금은 경비율 종류(단순·기준), 근로소득 등 다른 소득, 각종 공제·감면, 신고 방식에 따라 크게 달라질 수 있어요. 정확한 금액은 홈택스(hometax.go.kr) 신고 화면이나 세무서, 국세청 상담센터(국번 없이 126)에서 확인하세요.</li>
+<li>근로소득(회사 월급)이 함께 있으면 합쳐서 계산하므로 이 계산기와 결과가 달라져요.</li>
+<li><b>단순경비율 대상:</b> 업종마다 기준이 달라요. 940909(기타 자영업) 같은 서비스업은 직전 연도 수입 3,600만 원 미만이고 그해 수입 7,500만 원 미만일 때만 단순경비율을 써요. 기준을 넘으면 기준경비율이 적용돼 세금이 크게 늘 수 있어요.</li>
+<li>기본값 64.1%·초과율 49.7%는 940909 업종의 2024년 귀속 예시예요(매년 바뀜). 본인 업종의 올해 경비율은 홈택스 '기준·단순경비율 조회'에서 꼭 확인하세요.</li>
+<li>근거: <a href="https://www.law.go.kr/법령/소득세법" target="_blank" rel="noopener">소득세법</a> 제50조(기본공제), 제55조(세율), 제59조의4(표준세액공제), 국세청 경비율 고시.</li>
+</ul>
+<footer>무료, 가입 없음, 입력한 숫자는 어디에도 보내지 않아요(방문 수만 셉니다). · <a href="../calc/">N잡 순수익</a> · <a href="../pay/">주휴수당</a> · <a href="../severance/">퇴직금</a> · <a href="../">모든 도구</a> · 확인일 2026-11-09</footer>
+</main>
+<script>
+const $=s=>document.querySelector(s); const fmt=n=>Math.round(n).toLocaleString('ko-KR')+'원';
+const BR=[[14e6,.06,0],[50e6,.15,1.26e6],[88e6,.24,5.76e6],[150e6,.35,15.44e6],[300e6,.38,19.94e6],[500e6,.40,25.94e6],[1e9,.42,35.94e6],[Infinity,.45,65.94e6]];
+$('#mode').addEventListener('change',()=>{const r=$('#mode').value==='rate';$('#rateBox').hidden=!r;$('#realBox').hidden=r;calc()});
+function calc(){
+  const n=v=>Math.max(0,+v||0); const inc=n($('#inc').value);
+  if(!inc){$('#res').innerHTML='<p class="warn">수입을 입력해 주세요.</p>';return}
+  const r1=Math.min(100,n($('#rate').value))/100, r2=Math.min(100,n($('#rate2').value))/100;
+  const exp=$('#mode').value==='rate'?(Math.min(inc,4e7)*r1+Math.max(0,inc-4e7)*r2):Math.min(inc,n($('#exp').value));
+  const prev=$('#prev')?n($('#prev').value):0;
+  const over=$('#mode').value==='rate'&&(prev>=3.6e7||inc>=7.5e7);
+  const ppl=Math.max(1,Math.min(10,Math.round(n($('#ppl').value)||1)));
+  const income=inc-exp; const base=Math.max(0,income-1.5e6*ppl);
+  const b=BR.find(x=>base<=x[0]); let tax=Math.max(0,base*b[1]-b[2]);
+  tax=Math.max(0,tax-7e4); const total=tax*1.1; const paid=inc*0.033; const diff=paid-total;
+  $('#res').innerHTML=`${over?'<p class="warn">수입이 단순경비율 기준(서비스업 예: 직전 연도 3,600만 원, 그해 7,500만 원)을 넘으면 기준경비율이 적용돼 아래 결과보다 세금이 훨씬 많을 수 있어요. 세무서·세무사에게 확인하세요.</p>':''}<span>${diff>=0?'예상 환급액':'더 낼 세금(예상)'}</span><p class="big ${diff>=0?'good':'warn'}">${fmt(Math.abs(diff))}</p>
+  <div class="line"><span>낸 세금(3.3%)</span><b>${fmt(paid)}</b></div>
+  <div class="line"><span>경비</span><b>${fmt(exp)}</b></div>
+  <div class="line"><span>소득금액</span><b>${fmt(income)}</b></div>
+  <div class="line"><span>과세표준(기본공제 ${ppl}명)</span><b>${fmt(base)}</b></div>
+  <div class="line"><span>계산한 세금(지방세 포함)</span><b>${fmt(total)}</b></div>
+  <p style="color:var(--muted);font-size:14px">어림값이에요. 실제 신고 결과는 다를 수 있어요.</p>`;
+}
+document.querySelectorAll('input,select').forEach(i=>{i.addEventListener('input',calc);i.addEventListener('change',calc)});calc();
+</script></body></html>
