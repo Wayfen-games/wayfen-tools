@@ -28,7 +28,7 @@ ul{margin:0;padding-left:20px}li{margin:4px 0}
 </style></head>
 <body><main id="app"><p class="err">Loading…</p></main>
 <div id="big" hidden><p class="say">이 주소로 가 주세요.</p><p class="ko" id="bigAddr"></p><p class="ko" id="bigSt" style="font-size:24px;font-weight:700;white-space:pre-line"></p><button class="btn" id="bigClose">✕</button></div>
-<script src="fix_data.js?v=7"></script>
+<script src="fix_data.js?v=8"></script>
 <script>
 const LANGS=[['en','English'],['zh','简体中文'],['tw','繁體中文'],['ja','日本語'],['id','Bahasa Indonesia'],['vi','Tiếng Việt'],['th','ไทย'],['ko','한국어']];
 const HTML_LANG={en:'en',zh:'zh-Hans',tw:'zh-Hant',ja:'ja',id:'id',vi:'vi',th:'th',ko:'ko'};
@@ -108,7 +108,7 @@ function render(){
   const contact=[D.ct?`<div class="row"><span>${esc(D.ct)}</span><b>${esc(D.cid||'')}</b></div>`:'',D.ph?`<div class="row"><span>☎</span><b><a href="tel:${esc(D.ph.replace(/[^0-9+]/g,''))}">${esc(D.ph)}</a></b></div>`:''].join('');
   $('#app').innerHTML=`
   <p class="sub" style="margin:0">${esc(t('welcome'))}</p><h1>${esc(L==='ko'?(D.n||D.ne):(D.ne||D.n))}</h1>${D.ne&&D.n&&L!=='ko'?`<p class="sub" lang="ko">${esc(D.n)}</p>`:''}
-  <div class="langs">${LANGS.map(([k,n])=>`<button type="button" data-l="${k}" aria-pressed="${k===L}" lang="${HTML_LANG[k]}">${n}</button>`).join('')}</div>
+  <div class="langs">${LANGS.map(([k,n])=>`<button type="button" data-l="${k}" aria-pressed="${k===L}" lang="${HTML_LANG[k]}">${n}</button>`).join('')}</div>${fx.length?`<p style="margin:10px 0 0"><a href="#fix" class="btn ghost" style="display:inline-block;text-decoration:none">🔧 ${esc(fu('title'))}</a></p>`:''}
   ${D.w?`<section><h2>${t('wifi')}</h2><div class="row"><span>${t('net')}</span><b>${esc(D.w)}</b></div><div class="row"><span>${t('pw')}</span><b>${D.p?esc(D.p):t('nopw')}</b></div>${D.p?`<p style="margin:10px 0 0"><button class="btn ghost" id="cp" type="button">${t('copy')}</button></p>`:''}</section>`:''}
   ${(D.ci||D.co||D.bf)?`<section><h2>${t('stay')}</h2>${D.ci?`<div class="row"><span>${t('ci')}</span><b>${esc(D.ci)}</b></div>`:''}${D.co?`<div class="row"><span>${t('co')}</span><b>${esc(D.co)}</b></div>`:''}${D.bf?`<div class="row"><span>${t('bf')}</span><b>${esc(D.bf)}</b></div>`:''}</section>`:''}
   ${rules?`<section><h2>${t('rules')}</h2><ul>${rules}</ul></section>`:''}
