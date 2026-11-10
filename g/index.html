@@ -134,4 +134,4 @@ addEventListener('popstate',()=>{$('#big').hidden=true});
 (async()=>{const h=location.hash.slice(1);L=pick();
   try{D=await decode(h);if(!D||typeof D!=='object')throw 0;['r','o'].forEach(k=>{if(!Array.isArray(D[k]))delete D[k]});if(D.f&&(typeof D.f!=='object'||Array.isArray(D.f)))delete D.f}catch(e){$('#app').innerHTML=`<p class="err">${esc((e==='old'?T.old:T.bad)[L])}</p>`;return}
   const q=new URLSearchParams(location.search).get('lang');if(OK(q))L=q;render()})();
-</script></body></html>
+</script><!--copyright--><style>@media print{.cpr{display:none}}</style><p class="cpr" style="text-align:center;font:12px/1.5 system-ui,sans-serif;color:#888;margin:24px 0 16px">© 2026 Wayfen. All rights reserved. 무단 복제·재배포 금지</p></body></html>

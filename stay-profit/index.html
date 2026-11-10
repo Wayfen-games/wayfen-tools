@@ -95,4 +95,4 @@ function comps(){const v=($('#comps').value.match(/\d[\d,]*/g)||[]).map(x=>+x.re
   $('#compsOut').textContent=`${v.length}개 · 가장 낮음 ${won(v[0])} · 중간값 ${won(m)} · 가장 높음 ${won(v[v.length-1])}${v.length<5?' · 5개 이상이면 더 믿을 만해요':''}`;return m}
 $('#comps').addEventListener('input',comps);$('#compsUse').onclick=()=>{const m=comps();if(m){$('#rate').value=Math.round(m/1000)*1000;calc();try{goatcounter.count({path:'stay-profit-comps',event:true})}catch(e){}}};
 let sent=0;document.addEventListener('input',()=>{if(sent)return;sent=1;try{goatcounter.count({path:'stay-profit-used',event:true})}catch(e){}});
-</script></body></html>
+</script><!--copyright--><style>@media print{.cpr{display:none}}</style><p class="cpr" style="text-align:center;font:12px/1.5 system-ui,sans-serif;color:#888;margin:24px 0 16px">© 2026 Wayfen. All rights reserved. 무단 복제·재배포 금지</p></body></html>

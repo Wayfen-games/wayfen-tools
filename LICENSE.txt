@@ -1,0 +1,7 @@
+Copyright (c) 2026 Wayfen. All rights reserved.
+
+이 사이트의 글, 번역 문장, 디자인, 코드, 이미지의 저작권은 Wayfen에 있습니다.
+개인이 도구를 쓰는 것은 자유롭지만, 허락 없이 복제·수정·재배포하거나 판매하는 것은 금지합니다.
+
+The text, translations, design, code and images on this site are the property of Wayfen.
+You may use the tools personally. Copying, modifying, redistributing or selling them without permission is not allowed.
