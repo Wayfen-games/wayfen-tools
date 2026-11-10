@@ -321,9 +321,11 @@ $('#menuPrev').addEventListener('click', () => { $('#menuIn').value = store.get(
 // 손님 화면의 '사장님: 이 메뉴 고치기'로 오면(#edit=QR 주소의 # 뒷부분) 그 메뉴를 다시 채움
 { const m = location.hash.match(/^#edit=(.+)$/); if (m){ try { const h = decodeURIComponent(m[1]), p = h.split(';'); if (p[0] === '1'){
     const rev = {}; Object.keys(DATA.qrIds).forEach(k => rev[DATA.qrIds[k]] = k);
+    let custom = 0;
     const lines = p.slice(2).join(';').split(',').filter(Boolean).map(t => { const a = t.split('.'); const mk = (a.pop() || '').replace(/[^PBSH]/g, ''); const pr = Number(a.pop()); const id = a.join('.');
-      const nm = id[0] === '~' ? decodeURIComponent(id.slice(1).split('~')[0]) : rev[id]; return nm ? nm + (pr > 0 ? ' ' + pr : '') + [...mk].map(x => ' ' + MKN[x]).join('') : '' }).filter(Boolean);
-    if (lines.length){ if ($('#menuIn').value.trim()) store.set('menuPrev', $('#menuIn').value); $('#menuIn').value = lines.join('\n'); $('#shopName').value = decodeURIComponent(p[1] || ''); store.set('shopName', $('#shopName').value); store.set('menu', $('#menuIn').value) } } } catch(e) {}
+      if (id[0] === '~' && id.slice(1).split('~').length > 1) custom++; const nm = id[0] === '~' ? decodeURIComponent(id.slice(1).split('~')[0]) : rev[id]; return nm ? nm + (pr > 0 ? ' ' + pr : '') + [...mk].map(x => ' ' + MKN[x]).join('') : '' }).filter(Boolean);
+    if (lines.length){ if ($('#menuIn').value.trim()) store.set('menuPrev', $('#menuIn').value); $('#menuIn').value = lines.join('\n'); $('#shopName').value = decodeURIComponent(p[1] || ''); store.set('shopName', $('#shopName').value); store.set('menu', $('#menuIn').value)
+      if (custom) $('#menuIn').insertAdjacentHTML('beforebegin', '<p class="warn" style="background:#fff3e0;border-radius:8px;padding:8px 10px;font-size:14px">이 QR에는 맞춤 번역된 가게 고유 메뉴가 ' + custom + '개 있어요. 여기서 새로 만들면 그 메뉴는 한국어 이름과 \'직원에게 문의\'로만 나와요. 맞춤 제작으로 받으셨다면 직접 고치지 말고 구매하신 곳에 메뉴·가격 수정을 요청해 주세요. 새 QR을 붙이면 옛 QR 카드는 모두 떼 주세요.</p>') } } } catch(e) {}
   try { history.replaceState(null, '', location.pathname + location.search) } catch(e) {} setTimeout(() => { const b = document.querySelector('nav button[data-tab="menu"]'); b && b.click() }, 0) } }
 $('#menuIn').addEventListener('input', translate);
 // QR 메뉴: 메뉴를 주소(#) 안에 넣음 → 서버·가입 없이 손님 휴대폰에서 열림
