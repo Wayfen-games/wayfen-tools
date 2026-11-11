@@ -12,7 +12,7 @@ main{max-width:620px;margin:0 auto;padding:18px 16px 60px}h1{font-size:25px;line
 .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0}
 label{display:block;font-weight:700;margin:10px 0 4px;font-size:15px}label small{font-weight:400;color:var(--muted)}
 input{width:100%;font:17px system-ui;padding:10px 12px;border:1px solid #cdc6b9;border-radius:10px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:420px){.row{grid-template-columns:minmax(0,1fr)}}
 .chk{display:flex;gap:8px;align-items:flex-start;font-weight:500;margin:8px 0}.chk input{width:18px;height:18px;margin-top:5px}
 .res .big{font-size:30px;font-weight:900;margin:2px 0}.res .line{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid #eee9df}.res .line:last-child{border:0}.res span{color:var(--muted)}
 .warn{color:var(--warn);font-weight:700}.note{color:var(--muted);font-size:14px}h2{font-size:18px;margin:22px 0 6px}ul{padding-left:20px}footer{color:var(--muted);font-size:14px;margin-top:24px}
