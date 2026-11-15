@@ -55,6 +55,7 @@ https://wayfen-games.github.io/wayfen-tools/guides/foreign-guest-allergen-chart/
 https://wayfen-games.github.io/wayfen-tools/guides/muslim-guests-restaurant/
 https://wayfen-games.github.io/wayfen-tools/guides/restaurant-indonesian-vietnamese/
 https://wayfen-games.github.io/wayfen-tools/guides/urban-minbak-guide/
+https://wayfen-games.github.io/wayfen-tools/guides/lodging-rate-posting/
 https://wayfen-games.github.io/wayfen-tools/guides/airbnb-profit-calc/
 https://wayfen-games.github.io/wayfen-tools/guides/host-guest-complaints/
 https://wayfen-games.github.io/wayfen-tools/guides/host-japanese-messages/
